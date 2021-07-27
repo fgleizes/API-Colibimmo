@@ -15,7 +15,10 @@
 
 $router->get('/', function () use ($router) {
     return $router->app->version();
+    
 });
+$router->post('/users/','AutoController@register');
+$router->get('/users/','AutoController@login');
 
 // Pour générer une clée aléatoire à copier dans .env APP_KEY
 // if (!app()->environment('prod'))     $router->get('/key', function () {
