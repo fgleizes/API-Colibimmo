@@ -13,7 +13,7 @@ class CreateAddressesTable extends Migration
      */
     public function up()
     {
-        Schema::create('addresses', function (Blueprint $table) {
+        Schema::create('Address', function (Blueprint $table) {
             $table->id();
             $table->unsignedSmallInteger('number')->nullable();
             $table->string('street', 60);
@@ -22,7 +22,7 @@ class CreateAddressesTable extends Migration
             $table->tinyInteger('floor')->nullable();
             $table->string('residence', 20)->nullable();
             $table->string('staircase', 2)->nullable();
-            $table->foreignId('city_id')->constrained('cities');
+            $table->foreignId('id_City')->constrained('City');
         });
     }
 
