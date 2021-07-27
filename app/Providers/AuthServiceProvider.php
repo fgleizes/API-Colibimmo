@@ -3,6 +3,10 @@
 namespace App\Providers;
 
 use App\Models\User;
+use App\Models\UserS;
+use App\User as AppUser;
+use Faker\Provider\ar_JO\Person;
+use Faker\Provider\UserAgent;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -32,7 +36,7 @@ class AuthServiceProvider extends ServiceProvider
 
         $this->app['auth']->viaRequest('api', function ($request) {
             if ($request->input('api_token')) {
-                return User::where('api_token', $request->input('api_token'))->first();
+                return Users::where('api_token', $request->input('api_token'))->first();
             }
         });
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
@@ -11,10 +11,10 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 
 
 
-class User extends Model implements AuthenticatableContract, AuthorizableContract,JWTSubject
+class Users extends Model implements AuthenticatableContract, AuthorizableContract, JWTSubject
 {
     use Authenticatable, Authorizable;
-    protected $table='users';
+    protected $table='Users';
     protected $primaryKey='id';
    // Rest omitted for brevity
 
