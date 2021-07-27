@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
-class CreateCitiesTable extends Migration
+class CreateCityTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,17 @@ class CreateCitiesTable extends Migration
      */
     public function up()
     {
-        Schema::create('City', function (Blueprint $table) {
-            $table->id();
+        Schema::create('city', function (Blueprint $table) {
+            $table->integer('id')->primary();
             $table->string('zip_code', 5)->nullable();
             $table->string('name', 40);
             $table->string('insee_code', 5)->nullable();
             $table->string('slug', 40);
-            $table->double('gps_lng', 17, 14);
-            $table->double('gps_lat', 16, 14);
+            $table->double('gps_lat');
+            $table->double('gps_lng');
             $table->string('department_code', 3);
-            $table->foreignId('id_Department')->constrained('Department');
+            $table->integer('id_Department');
+            $table->foreign('id_Department', 'City_Department_FK')->references('id')->on('department');
         });
     }
 
@@ -33,6 +34,6 @@ class CreateCitiesTable extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('city');
     }
 }
