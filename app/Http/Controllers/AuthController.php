@@ -27,10 +27,8 @@ class AuthController extends Controller
         ]);
 
         $credentials = $request->only(['mail', 'password']);
-        // dd(Auth::attempt($credentials));
 
         if (!$token = Auth::attempt($credentials)) {
-            // dd($token);
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
@@ -77,7 +75,7 @@ class AuthController extends Controller
     //  */
     // public function login()
     // {
-    //     $credentials = request(['email', 'password']);
+    //     $credentials = request(['mail', 'password']);
 
     //     if (!$token = Auth::attempt($credentials)) {
     //         return response()->json(['error' => 'Unauthorized'], 401);
@@ -86,37 +84,37 @@ class AuthController extends Controller
     //     return $this->respondWithToken($token);
     // }
 
-    // /**
-    //  * Get the authenticated User.
-    //  *
-    //  * @return \Illuminate\Http\JsonResponse
-    //  */
-    // public function me()
-    // {
-    //     return response()->json(auth()->user());
-    // }
+    /**
+     * Get the authenticated User.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function profile()
+    {
+        return response()->json(Auth::user());
+    }
 
-    // /**
-    //  * Log the user out (Invalidate the token).
-    //  *
-    //  * @return \Illuminate\Http\JsonResponse
-    //  */
-    // public function logout()
-    // {
-    //     Auth::logout();
+    /**
+     * Log the user out (Invalidate the token).
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function logout()
+    {
+        Auth::logout();
 
-    //     return response()->json(['message' => 'Successfully logged out']);
-    // }
+        return response()->json(['message' => 'Successfully logged out']);
+    }
 
-    // /**s
-    //  * Refresh a token.
-    //  *
-    //  * @return \Illuminate\Http\JsonResponse
-    //  */
-    // public function refresh()
-    // {
-    //     return $this->respondWithToken(Auth::refresh());
-    // }
+    /**s
+     * Refresh a token.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function refresh()
+    {
+        return $this->respondWithToken(Auth::refresh());
+    }
 
     /**
      * Get the token array structure.
