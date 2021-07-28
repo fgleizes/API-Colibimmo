@@ -14,12 +14,11 @@ class CreateNoteTable extends Migration
     public function up()
     {
         Schema::create('note', function (Blueprint $table) {
-            $table->integer('id')->primary();
+            $table->id();
             $table->string('title')->nullable();
             $table->mediumText('content_text');
             $table->timestamps();
-            $table->integer('id_Project');
-            $table->foreign('id_Project', 'Note_Project_FK')->references('id')->on('project');
+            $table->foreignId('id_Project')->constrained('Project');
         });
     }
 
