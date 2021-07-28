@@ -22,15 +22,15 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $this->validate($request, [
-            'email' => 'required|string',
+            'mail' => 'required|string',
             'password' => 'required|string'
         ]);
 
-        $credentials = $request->only(['email', 'password']);
-        dd(Auth::attempt($credentials));
+        $credentials = $request->only(['mail', 'password']);
+        // dd(Auth::attempt($credentials));
 
         if (!$token = Auth::attempt($credentials)) {
-            dd($token);
+            // dd($token);
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
@@ -45,23 +45,22 @@ class AuthController extends Controller
             'mail' => 'required|string|unique:person',
             'phone' => 'required|string',
             'password' => 'required|string',
-            // 'id_Agency' => 'exists:agency,id',
-            // 'id_Address' => 'exists:address,id',
-            // 'id_role' => 'exists:role,id',
+            'id_Agency' => 'exists:agency,id',
+            'id_Address' => 'exists:address,id',
+            'id_role' => 'exists:role,id'
         ]);
 
         try {
             $user = new Person;
             $user->lastname = $request->input('lastname');
             $user->firstname = $request->input('firstname');
-            $user->phone = $request->input('phone');
             $user->mail = $request->input('mail');
-            $user->id_Agency = null;
-            $user->id_Address = null;
-            $user->id_role = 1;
+            $user->phone = $request->input('phone');
             $plainPassword = $request->input('password');
             $user->password = app('hash')->make($plainPassword);
-
+            $user->id_Agency = null;
+            $user->id_Address = null;
+            $user->id_Role = 1;
 
             $user->save();
 
