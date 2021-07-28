@@ -42,10 +42,16 @@ class AuthController extends Controller
 
         try {
             $user = new Person;
-            $user->username = $request->input('username');
-            $user->email = $request->input('email');
+            $user->lastname = $request->input('lastname');
+            $user->firstname = $request->input('firstname');
+            $user->phone = $request->input('phone');
+            $user->mail = $request->input('mail');
+            $user->id_Agency = null;
+            $user->id_Address = null;
+            $user->id_role = 1;
             $plainPassword = $request->input('password');
             $user->password = app('hash')->make($plainPassword);
+
 
             $user->save();
 
