@@ -22,15 +22,15 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $this->validate($request, [
-            'email' => 'required|string',
+            'mail' => 'required|string',
             'password' => 'required|string'
         ]);
 
-        $credentials = $request->only(['email', 'password']);
-        dd(Auth::attempt($credentials));
+        $credentials = $request->only(['mail', 'password']);
+        // dd(Auth::attempt($credentials));
 
         if (!$token = Auth::attempt($credentials)) {
-            dd($token);
+            // dd($token);
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
