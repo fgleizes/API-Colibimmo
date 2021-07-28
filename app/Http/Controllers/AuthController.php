@@ -42,7 +42,7 @@ class AuthController extends Controller
         $this->validate($request, [
             'lastname' => 'required|string',
             'firstname' => 'required|string',
-            'mail' => 'required|string|unique::person',
+            'mail' => 'required|string|unique:person',
             'phone' => 'required|string',
             'password' => 'required|string',
             // 'id_Agency' => 'exists:agency,id',
