@@ -14,7 +14,7 @@ class CreateEnergyIndexTable extends Migration
     public function up()
     {
         Schema::create('energy_index', function (Blueprint $table) {
-            $table->integer('id')->primary();
+            $table->id();
             $table->string('index', 1);
         });
     }

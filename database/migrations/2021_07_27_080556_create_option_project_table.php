@@ -14,11 +14,9 @@ class CreateOptionProjectTable extends Migration
     public function up()
     {
         Schema::create('option_project', function (Blueprint $table) {
-            $table->integer('id')->primary();
-            $table->integer('id_Option');
-            $table->integer('id_Project');
-            $table->foreign('id_Option', 'Option_project_Option_FK')->references('id')->on('option');
-            $table->foreign('id_Project', 'Option_project_Project0_FK')->references('id')->on('project');
+            $table->id();
+            $table->foreignId('id_Option')->constrained('option');
+            $table->foreignId('id_Project')->constrained('project');
         });
     }
 

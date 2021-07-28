@@ -14,11 +14,9 @@ class CreateRoomProjectTable extends Migration
     public function up()
     {
         Schema::create('room_project', function (Blueprint $table) {
-            $table->integer('id')->primary();
-            $table->integer('id_room');
-            $table->integer('id_Project');
-            $table->foreign('id_Project', 'Room_project_Project0_FK')->references('id')->on('project');
-            $table->foreign('id_room', 'Room_project_room_FK')->references('id')->on('room');
+            $table->id();
+            $table->foreignId('id_Room')->constrained('room');
+            $table->foreignId('id_Project')->constrained('project');
         });
     }
 

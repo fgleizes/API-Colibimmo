@@ -14,11 +14,9 @@ class CreateTypePropertyProjectTable extends Migration
     public function up()
     {
         Schema::create('type_property_project', function (Blueprint $table) {
-            $table->integer('id')->primary();
-            $table->integer('id_Type_property');
-            $table->integer('id_Project');
-            $table->foreign('id_Project', 'Type_property_project_Project0_FK')->references('id')->on('project');
-            $table->foreign('id_Type_property', 'Type_property_project_Type_property_FK')->references('id')->on('type_property');
+            $table->id();
+            $table->foreignId('id_Type_property')->constrained('type_property');
+            $table->foreignId('id_Project')->constrained('project');
         });
     }
 

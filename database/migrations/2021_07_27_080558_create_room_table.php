@@ -15,9 +15,8 @@ class CreateRoomTable extends Migration
     {
         Schema::create('room', function (Blueprint $table) {
             $table->integer('id')->primary();
-            $table->float('area');
-            $table->integer('id_type_room');
-            $table->foreign('id_type_room', 'room_type_room_FK')->references('id')->on('type_room');
+            $table->unsignedFloat('area');
+            $table->foreignId('id_Type_room')->constrained('type_room');
         });
     }
 

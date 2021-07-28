@@ -14,32 +14,26 @@ class CreateProjectTable extends Migration
     public function up()
     {
         Schema::create('project', function (Blueprint $table) {
-            $table->integer('id')->primary();
+            $table->id();
             $table->char('reference', 20);
             $table->text('note')->nullable();
-            $table->tinyInteger('commission')->nullable();
+            $table->unsignedTinyInteger('commission')->nullable();
             $table->timestamps();
-            $table->float('area')->nullable();
-            $table->smallInteger('min_area')->nullable();
-            $table->smallInteger('max_area')->nullable();
-            $table->float('price')->nullable();
-            $table->float('min_price')->nullable();
-            $table->float('max_price')->nullable();
+            $table->unsignedFloat('area')->nullable();
+            $table->unsignedSmallInteger('min_area')->nullable();
+            $table->unsignedSmallInteger('max_area')->nullable();
+            $table->unsignedFloat('price')->nullable();
+            $table->unsignedFloat('min_price')->nullable();
+            $table->unsignedFloat('max_price')->nullable();
             $table->string('short_description')->nullable();
             $table->mediumText('description')->nullable();
-            $table->tinyInteger('visibility_priority')->nullable();
-            $table->integer('id_Person');
-            $table->integer('id_Type_project');
-            $table->integer('id_Status_project');
-            $table->integer('id_Energy_index')->nullable();
-            $table->integer('id_Address')->nullable();
-            $table->integer('id_manage_project');
-            $table->foreign('id_Address', 'Project_Address3_FK')->references('id')->on('address');
-            $table->foreign('id_Energy_index', 'Project_Energy_index2_FK')->references('id')->on('energy_index');
-            $table->foreign('id_Person', 'Project_Person_FK')->references('id')->on('person');
-            $table->foreign('id_Status_project', 'Project_Status_project1_FK')->references('id')->on('status_project');
-            $table->foreign('id_Type_project', 'Project_Type_project0_FK')->references('id')->on('type_project');
-            $table->foreign('id_manage_project', 'Project_manage_project4_FK')->references('id')->on('manage_project');
+            $table->unsignedTinyInteger('visibility_priority')->nullable();
+            $table->foreignId('id_Person')->constrained('person');
+            $table->foreignId('id_Type_project')->constrained('type_project');
+            $table->foreignId('id_Statut_project')->constrained('status-project');
+            $table->foreignId('id_Energy_index')->nullable()->constrained('energy_index');
+            $table->foreignId('id_Address')->nullable()->constrained('address');
+            $table->foreignId('id_Manage_project')->constrained('manage_project');
         });
     }
 
