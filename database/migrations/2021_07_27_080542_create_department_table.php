@@ -14,13 +14,12 @@ class CreateDepartmentTable extends Migration
     public function up()
     {
         Schema::create('department', function (Blueprint $table) {
-            $table->integer('id')->primary();
+            $table->id();
             $table->string('code', 3);
             $table->string('name', 30);
             $table->string('slug', 30);
             $table->string('region_code', 3);
-            $table->integer('id_Region');
-            $table->foreign('id_Region', 'Department_Region_FK')->references('id')->on('region');
+            $table->foreignId('id_Region')->constrained('region');
         });
     }
 

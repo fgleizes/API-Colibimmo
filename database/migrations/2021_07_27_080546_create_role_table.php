@@ -14,9 +14,9 @@ class CreateRoleTable extends Migration
     public function up()
     {
         Schema::create('role', function (Blueprint $table) {
-            $table->integer('id')->primary();
+            $table->id();
             $table->string('name', 20);
-            $table->tinyInteger('Priority');
+            $table->unsignedTinyInteger('priority');
         });
     }
 

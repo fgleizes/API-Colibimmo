@@ -14,13 +14,12 @@ class CreateAgencyTable extends Migration
     public function up()
     {
         Schema::create('agency', function (Blueprint $table) {
-            $table->integer('id')->primary();
+            $table->id();
             $table->string('name', 40);
             $table->string('mail', 50)->nullable();
             $table->string('phone', 10)->nullable();
             $table->timestamps();
-            $table->integer('id_Address')->unique('Agency_Address_AK');
-            $table->foreign('id_Address', 'Agency_Address_FK')->references('id')->on('address');
+            $table->foreignId('id_Address')->constrained('address');
         });
     }
 

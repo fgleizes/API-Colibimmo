@@ -14,8 +14,8 @@ class CreateManageProjectTable extends Migration
     public function up()
     {
         Schema::create('manage_project', function (Blueprint $table) {
-            $table->integer('id')->primary();
-            $table->integer('id_Person')->unique('manage_project_Person_AK');
+            $table->id();
+            $table->unsignedBigInteger('id_Person')->unique('manage_project_Person_AK');
             $table->foreign('id_Person', 'manage_project_Person_FK')->references('id')->on('person');
         });
     }
