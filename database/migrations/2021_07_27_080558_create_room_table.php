@@ -14,7 +14,7 @@ class CreateRoomTable extends Migration
     public function up()
     {
         Schema::create('room', function (Blueprint $table) {
-            $table->integer('id')->primary();
+            $table->id();
             $table->unsignedFloat('area');
             $table->foreignId('id_Type_room')->constrained('type_room');
         });

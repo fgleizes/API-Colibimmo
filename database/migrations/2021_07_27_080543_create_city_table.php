@@ -22,7 +22,7 @@ class CreateCityTable extends Migration
             $table->double('gps_lat');
             $table->double('gps_lng');
             $table->string('department_code', 3);
-            $table->foreignId('id_Departement')->constrained('departement');
+            $table->foreignId('id_Department')->constrained('department');
         });
     }
 

@@ -21,7 +21,7 @@ class CreateAppointmentTable extends Migration
             $table->boolean('is_canceled')->nullable();
             $table->timestamps();
             
-            $table->foreignId('id_Type_appointment')->constrained('type-appointment');
+            $table->foreignId('id_Type_appointment')->constrained('type_appointment');
         });
     }
 

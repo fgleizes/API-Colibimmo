@@ -30,7 +30,7 @@ class CreateProjectTable extends Migration
             $table->unsignedTinyInteger('visibility_priority')->nullable();
             $table->foreignId('id_Person')->constrained('person');
             $table->foreignId('id_Type_project')->constrained('type_project');
-            $table->foreignId('id_Statut_project')->constrained('status-project');
+            $table->foreignId('id_Statut_project')->constrained('status_project');
             $table->foreignId('id_Energy_index')->nullable()->constrained('energy_index');
             $table->foreignId('id_Address')->nullable()->constrained('address');
             $table->foreignId('id_Manage_project')->constrained('manage_project');
