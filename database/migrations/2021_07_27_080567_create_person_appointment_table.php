@@ -17,7 +17,7 @@ class CreatePersonAppointmentTable extends Migration
             $table->id();
          
             $table->foreignId('id_Appointment')->constrained('appointment');
-            $table->foreignId('id_Project')->constrained('Project');
+            $table->foreignId('id_Project')->constrained('project');
         });
     }
 

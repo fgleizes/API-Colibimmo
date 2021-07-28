@@ -16,8 +16,8 @@ class CreateFavoriteTable extends Migration
         Schema::create('favorite', function (Blueprint $table) {
             $table->id();
            
-            $table->foreignId('id_Person')->constrained('Person');
-            $table->foreignId('id_Project')->constrained('Project');
+            $table->foreignId('id_Person')->constrained('person');
+            $table->foreignId('id_Project')->constrained('project');
          
         }); 
     }

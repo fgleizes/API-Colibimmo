@@ -17,7 +17,7 @@ class CreateDocumentTable extends Migration
         Schema::create('document', function (Blueprint $table) {
             $table->id();
             $table->string('pathname', 150);
-            $table->foreignId('id_Project')->constrained('Project');
+            $table->foreignId('id_Project')->constrained('project');
             $table->foreignId('id_Type_document')->constrained('type_document');
         });
     }

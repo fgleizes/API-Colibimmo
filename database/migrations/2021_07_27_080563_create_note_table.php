@@ -18,7 +18,7 @@ class CreateNoteTable extends Migration
             $table->string('title')->nullable();
             $table->mediumText('content_text');
             $table->timestamps();
-            $table->foreignId('id_Project')->constrained('Project');
+            $table->foreignId('id_Project')->constrained('project');
         });
     }
 
