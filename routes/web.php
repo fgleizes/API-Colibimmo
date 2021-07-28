@@ -17,9 +17,6 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
     
 });
-$router->post('/users/','AutoController@register');
-$router->get('/users/','AutoController@login');
-
 
 /*
 |--------------------------------------------------------------------------
@@ -27,8 +24,8 @@ $router->get('/users/','AutoController@login');
 |--------------------------------------------------------------------------
 */
 
-$router->get('user', 'AuthController@login');
 $router->post('user', 'AuthController@register');
+$router->get('user', 'AuthController@login');
 
 // $router->get('user', function () {
 //     return 'Hello World';

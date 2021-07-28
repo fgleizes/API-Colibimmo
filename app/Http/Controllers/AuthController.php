@@ -4,66 +4,114 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Models\Person;
 
 class AuthController extends Controller
 {
-    /**
-     * Create a new AuthController instance.
-     *
-     * @return void
-     */
-    public function __construct()
+    public function login(Request $request)
     {
-        $this->middleware('auth:api', ['except' => ['login']]);
-    }
+        $this->validate($request, [
+            'email' => 'required|string',
+            'password' => 'required|string'
+        ]);
 
-    /**
-     * Get a JWT via given credentials.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function login()
-    {
-        $credentials = request(['email', 'password']);
+        $credentials = $request->only(['email', 'password']);
+        dd(Auth::attempt($credentials));
 
         if (!$token = Auth::attempt($credentials)) {
+            dd($token);
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
         return $this->respondWithToken($token);
     }
 
-    /**
-     * Get the authenticated User.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function me()
+    public function register(Request $request)
     {
-        return response()->json(auth()->user());
+        $this->validate($request, [
+            'lastname' => 'required|string',
+            'firstname' => 'required|string',
+            'mail' => 'required|string|unique::person',
+            'phone' => 'required|string',
+            'password' => 'required|string',
+            // 'id_Agency' => 'exists:agency,id',
+            // 'id_Address' => 'exists:address,id',
+            // 'id_role' => 'exists:role,id',
+        ]);
+
+        try {
+            $user = new Person;
+            $user->username = $request->input('username');
+            $user->email = $request->input('email');
+            $plainPassword = $request->input('password');
+            $user->password = app('hash')->make($plainPassword);
+
+            $user->save();
+
+            return response()->json(['message' => 'CREATED'], 201);
+        } catch (\Exception $ex) {
+            return response()->json(['message' => $ex->getMessage()], 409);
+        }
     }
 
-    /**
-     * Log the user out (Invalidate the token).
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function logout()
-    {
-        Auth::logout();
+    // /**
+    //  * Create a new AuthController instance.
+    //  *
+    //  * @return void
+    //  */
+    // public function __construct()
+    // {
+    //     $this->middleware('auth:api', ['except' => ['login']]);
+    // }
 
-        return response()->json(['message' => 'Successfully logged out']);
-    }
+    // /**
+    //  * Get a JWT via given credentials.
+    //  *
+    //  * @return \Illuminate\Http\JsonResponse
+    //  */
+    // public function login()
+    // {
+    //     $credentials = request(['email', 'password']);
 
-    /**s
-     * Refresh a token.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function refresh()
-    {
-        return $this->respondWithToken(Auth::refresh());
-    }
+    //     if (!$token = Auth::attempt($credentials)) {
+    //         return response()->json(['error' => 'Unauthorized'], 401);
+    //     }
+
+    //     return $this->respondWithToken($token);
+    // }
+
+    // /**
+    //  * Get the authenticated User.
+    //  *
+    //  * @return \Illuminate\Http\JsonResponse
+    //  */
+    // public function me()
+    // {
+    //     return response()->json(auth()->user());
+    // }
+
+    // /**
+    //  * Log the user out (Invalidate the token).
+    //  *
+    //  * @return \Illuminate\Http\JsonResponse
+    //  */
+    // public function logout()
+    // {
+    //     Auth::logout();
+
+    //     return response()->json(['message' => 'Successfully logged out']);
+    // }
+
+    // /**s
+    //  * Refresh a token.
+    //  *
+    //  * @return \Illuminate\Http\JsonResponse
+    //  */
+    // public function refresh()
+    // {
+    //     return $this->respondWithToken(Auth::refresh());
+    // }
 
     /**
      * Get the token array structure.
