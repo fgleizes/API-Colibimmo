@@ -14,12 +14,12 @@ class CreateFavoriteTable extends Migration
     public function up()
     {
         Schema::create('favorite', function (Blueprint $table) {
-            $table->integer('id')->primary();
-            $table->integer('id_Person');
-            $table->integer('id_Project');
-            $table->foreign('id_Person', 'Favorite_Person_FK')->references('id')->on('person');
-            $table->foreign('id_Project', 'Favorite_Project0_FK')->references('id')->on('project');
-        });
+            $table->id();
+           
+            $table->foreignId('id_Person')->constrained('Person');
+            $table->foreignId('id_Project')->constrained('Project');
+         
+        }); 
     }
 
     /**

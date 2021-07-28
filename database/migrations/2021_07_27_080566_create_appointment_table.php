@@ -14,14 +14,14 @@ class CreateAppointmentTable extends Migration
     public function up()
     {
         Schema::create('appointment', function (Blueprint $table) {
-            $table->integer('id')->primary();
+            $table->id();
             $table->string('subject');
             $table->dateTime('start_datetime');
             $table->dateTime('end_datetime');
             $table->boolean('is_canceled')->nullable();
             $table->timestamps();
-            $table->integer('id_Type_appointment');
-            $table->foreign('id_Type_appointment', 'Appointment_Type_appointment_FK')->references('id')->on('type_appointment');
+            
+            $table->foreignId('id_Type_appointment')->constrained('Type-appointment');
         });
     }
 
