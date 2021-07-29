@@ -33,9 +33,9 @@ class AgencyController extends Controller
             $agency->id_Address = 1;
             $agency->save();
 
-            return response()->json(['message' => 'CREATED AGENCY'], 201);
+            return response()->json(['message' => 'CREATED AGENCY'], 200);
         } catch (\Exception $ex) {
-            return response()->json(['message' => $ex->getMessage()], 409);
+            return response()->json(['message' => $ex->getMessage()], 404);
         }
 
     }
@@ -80,9 +80,9 @@ class AgencyController extends Controller
         $agency->id_Address = 1;
         $agency->save();
 
-        return response()->json(['message' => 'AGENCY UPDATED'], 201);
+        return response()->json(['message' => 'AGENCY UPDATED'], 200);
         }catch (\Exception $ex) {
-            return response()->json(['message' => $ex->getMessage()], 409);
+            return response()->json(['message' => $ex->getMessage()], 404);
         }
 
     }
