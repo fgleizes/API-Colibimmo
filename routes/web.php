@@ -35,6 +35,10 @@ $router->group([
 });
 
 
+$router->post('address', 'AddressController@create');
+
+
+
 
 // Pour générer une clée aléatoire à copier dans .env APP_KEY
 // if (!app()->environment('prod'))     $router->get('/key', function () {
