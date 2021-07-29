@@ -34,6 +34,13 @@ $router->group([
     $router->get('profile', 'AuthController@profile');
 });
 
+$router->post('agency', 'AgencyController@create');
+$router->get('agency', 'AgencyController@show');
+$router->delete('agency/{id}', 'AgencyController@delete');
+$router->get('agency/{id}', 'AgencyController@oneShow');
+$router->put('agency', 'AgencyController@update');
+
+
 
 
 // Pour générer une clée aléatoire à copier dans .env APP_KEY
