@@ -61,7 +61,7 @@ class AgencyController extends Controller
         $agency = Agency::findOrFail($id);
         $agency->delete();
       
-        return response()->json(['message' => 'AGENCY Deleted'], 201);
+        return response()->json(['message' => 'AGENCY Deleted'], 200);
     }
 
     public function update(Request $request)
