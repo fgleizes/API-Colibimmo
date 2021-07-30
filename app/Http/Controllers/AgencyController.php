@@ -13,14 +13,14 @@ class AgencyController extends Controller
      */
     public function __construct()
     {
-        //
+        $this->middleware('auth:api');
     }
 
 
     public function create(Request $request){
         $this->validate($request, [
             'name' => 'required|string',
-            'mail' => 'required|string',
+            'mail' => 'required|string|email|unique:agency',
             'phone' => 'required|string',
             'id_Address' => 'exists:address,id',
         ]);
@@ -64,16 +64,16 @@ class AgencyController extends Controller
         return response()->json(['message' => 'AGENCY Deleted'], 200);
     }
 
-    public function update(Request $request)
+    public function update(Request $request, $id)
     {
         $this->validate($request, [
             'name' => 'required|string',
-            'mail' => 'required|string',
+            'mail' => 'required|string|email|unique:agency',
             'phone' => 'required|string',
             'id_Address' => 'exists:address,id',
         ]);
         try {
-        $agency = Agency::findOrFail($request->input('id'));
+        $agency = Agency::findOrFail($id);
         $agency->name = $request->input('name');
         $agency->mail = $request->input('mail');
         $agency->phone = $request->input('phone');

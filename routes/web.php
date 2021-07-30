@@ -38,7 +38,12 @@ $router->post('agency', 'AgencyController@create');
 $router->get('agency', 'AgencyController@show');
 $router->delete('agency/{id}', 'AgencyController@delete');
 $router->get('agency/{id}', 'AgencyController@oneShow');
-$router->put('agency', 'AgencyController@update');
+$router->put('agency/{id}', 'AgencyController@update');
+
+$router->get('role', 'RoleController@show');
+$router->get('role/{id}', 'RoleController@oneShow');
+$router->put('role/{id}', 'RoleController@update');
+
 
 
 
