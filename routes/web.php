@@ -34,10 +34,17 @@ $router->group([
     $router->get('profile', 'AuthController@profile');
 });
 
+$router->group([
+    'prefix' => 'address'
 
-$router->post('address', 'AddressController@create');
+], function () use ($router) {
 
-
+    $router->post('', 'AddressController@create');
+    $router->delete('{id}','AddressController@delete');
+    $router->put('{id}','AddressController@update');
+    $router->get('','AddressController@show');
+    $router->get('{id}', 'AddressController@oneShow');
+});
 
 
 // Pour générer une clée aléatoire à copier dans .env APP_KEY
