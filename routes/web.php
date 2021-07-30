@@ -43,12 +43,12 @@ $router->group([
 
 ], function () use ($router) {
 
-    $router->get('{id}', 'PersonController@showOne');
-    $router->get('/', 'PersonController@showAll');
-    $router->get('role/{idRole}', 'PersonController@showAllByRole');
-    $router->get('agency/{idAgency}', 'PersonController@showAllByAgency');
     $router->put('{id}', 'PersonController@update');
     $router->delete('{id}', 'PersonController@delete');
+    $router->get('/', 'PersonController@show');
+    $router->get('{id}', 'PersonController@showOne');
+    $router->get('role/{idRole}', 'PersonController@showByRole');
+    $router->get('agency/{idAgency}', 'PersonController@showByAgency');
 });
 
 /**
@@ -60,10 +60,10 @@ $router->group([
 ], function () use ($router) {
     
     $router->post('/', 'AgencyController@create');
-    $router->get('/', 'AgencyController@show');
-    $router->delete('{id}', 'AgencyController@delete');
-    $router->get('{id}', 'AgencyController@oneShow');
     $router->put('{id}', 'AgencyController@update');
+    $router->delete('{id}', 'AgencyController@delete');
+    $router->get('/', 'AgencyController@show');
+    $router->get('{id}', 'AgencyController@showOne');
 });
 
 /**
@@ -74,9 +74,9 @@ $router->group([
 
 ], function () use ($router) {
 
+    $router->put('{id}', 'RoleController@update');
     $router->get('/', 'RoleController@show');
     $router->get('{id}', 'RoleController@oneShow');
-    $router->put('{id}', 'RoleController@update');
 });
 
 /**
@@ -88,10 +88,10 @@ $router->group([
 ], function () use ($router) {
 
     $router->post('/', 'AddressController@create');
-    $router->delete('{id}','AddressController@delete');
     $router->put('/{id}','AddressController@update');
-    $router->get('/','AddressController@show');
-    $router->get('showByCity/{name}','AddressController@showByCity');
-    $router->get('showByPerson/{id}','AddressController@showByPerson');
-    $router->get('{id}', 'AddressController@oneShow');
+    $router->delete('{id}','AddressController@delete');
+    $router->get('/','AddressController@showAdresses');
+    $router->get('{id}', 'AddressController@showAdress');
+    $router->get('showByCity/{name}','AddressController@showAddressesByCity');
+    $router->get('showByPerson/{id}','AddressController@showAddressByPerson');
 });

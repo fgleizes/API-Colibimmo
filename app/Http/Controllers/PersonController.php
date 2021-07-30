@@ -17,30 +17,6 @@ class PersonController extends Controller
         $this->middleware('auth:api');
     }
 
-    public function showOne($id) 
-    {
-        try {
-            return response()->json(Person::findOrFail($id), 200);
-        } catch (\Exception $ex) {
-            return response()->json(['message' => $ex->getMessage()], 409);
-        }
-    }
-
-    public function showAll()
-    {
-        return response()->json(Person::all(), 200);
-    }
-
-    public function showAllByRole($idRole)
-    {
-        return response()->json(Person::where('id_Role', '=', $idRole)->get(), 200);
-    }
-
-    public function showAllByAgency($idAgency)
-    {
-        return response()->json(Person::where('id_Role', 1)->where('id_Agency', $idAgency)->get(), 200);
-    }
-
     public function update(Request $request, $id)
     {
         $this->validate($request, [
@@ -57,7 +33,7 @@ class PersonController extends Controller
         try {
             $user = Person::findOrFail($id);
 
-            if($request->input('mail') && $request->input('mail') != $user->mail && Person::where('mail', '=', $request->input('mail'))->first()) {
+            if ($request->input('mail') && $request->input('mail') != $user->mail && Person::where('mail', $request->input('mail'))->first()) {
                 return response()->json(['mail' => ['The mail has already been taken.']], 409);
             }
 
@@ -73,9 +49,32 @@ class PersonController extends Controller
         try {
             Person::findOrFail($id)->delete();
             return response()->json(['message' => 'USER DELETED'], 200);
-            // return response()->json(Person::findOrFail($id)->delete(), 200);
         } catch (\Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 409);
         }
+    }
+
+    public function show()
+    {
+        return response()->json(Person::all(), 200);
+    }
+
+    public function showOne($id) 
+    {
+        try {
+            return response()->json(Person::findOrFail($id), 200);
+        } catch (\Exception $ex) {
+            return response()->json(['message' => $ex->getMessage()], 409);
+        }
+    }
+
+    public function showByRole($idRole)
+    {
+        return response()->json(Person::where('id_Role', $idRole)->get(), 200);
+    }
+
+    public function showByAgency($idAgency)
+    {
+        return response()->json(Person::where('id_Role', 1)->where('id_Agency', $idAgency)->get(), 200);
     }
 }

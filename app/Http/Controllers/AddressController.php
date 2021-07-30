@@ -7,10 +7,8 @@ use App\Models\Person;
 use App\Models\Region;
 use App\Models\Address;
 use App\Models\Department;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Middleware\ConvertEmptyStringsToNull;
 
 
 class AddressController extends Controller
@@ -25,13 +23,13 @@ class AddressController extends Controller
     {
         $this->validate($request, [
             'number' => 'integer|nullable',
-            'street' => 'required|string',
+            'street' => 'string|required',
             'additional_address' => 'string|nullable',
             'building' => 'string|nullable',
             'floor' => 'integer|nullable',
             'residence' => 'string|nullable',
             'staircase' => 'string|nullable',
-            'name' => 'required|string',
+            'name' => 'string|required',
             // 'id_City' => 'exist:city,id'
         ]);
 
@@ -49,36 +47,26 @@ class AddressController extends Controller
 
             $address->save();
 
-            // $address->id_City = City::where('name', $request->input('name'))->firstOrFail()->id;
-            // $address->create($request->all());
-
-            return response()->json(['message' => 'CREATED'], 201);
+            return response()->json(['message' => 'ADDRESS CREATED'], 201);
         } catch (\Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 409);
         }
-    }
-
-    public function delete($id)
-    {
-        $agency = Address::findOrFail($id);
-        $agency->delete();
-      
-        return response()->json(['message' => 'ADDRESS Deleted'], 201);
     }
 
     public function update(Request $request, $id)
     {
         $this->validate($request, [
             'number' => 'integer|nullable',
-            'street' => 'required|string',
+            'street' => 'string|required',
             'additional_address' => 'string|nullable',
             'building' => 'string|nullable',
             'floor' => 'integer|nullable',
             'residence' => 'string|nullable',
             'staircase' => 'string|nullable',
-            'name' => 'required|string'
+            'name' => 'string|required'
             // 'id_City' => 'exist:city,id'
         ]);
+
         try {
             $address = Address::findOrFail($id);
             $userInput = $request->all();
@@ -95,31 +83,49 @@ class AddressController extends Controller
 
             $address->save();
 
-            // $address->id_City = City::where('name',$request->input('name'))->firstOrFail()->id;
-            // $address->update($request->all());
-
             return response()->json(['message' => 'ADDRESS UPDATED'], 201);
-        }catch (\Exception $ex) {
-            return response()->json(['message' => $ex->getMessage()], 409);
-        }
-    }
-
-    public function show()
-    {
-        return response()->json(Address::all(), 200);
-    }
-
-    public function showByCity($name)
-    {
-        try {
-            $id_City = City::where('name',"=",$name)->firstOrFail()->id ;
-            return response()->json(Address::where('id_City','=',$id_City)->get(), 200);
         } catch (\Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 409);
         }
     }
 
-    public function showByPerson($id)
+    public function delete($id)
+    {
+        try {
+            $agency = Address::findOrFail($id);
+            $agency->delete();
+          
+            return response()->json(['message' => 'ADDRESS DELETED'], 201);
+        } catch (\Exception $ex) {
+            return response()->json(['message' => $ex->getMessage()], 409);
+        }
+    }
+
+    public function showAdresses()
+    {
+        return response()->json(Address::all(), 200);
+    }
+
+    public function showAdress($id)
+    {
+        try {
+            return response()->json(Address::findOrFail($id), 200);
+        } catch (\Exception $ex) {
+            return response()->json(['message' => $ex->getMessage()], 404);
+        }
+    }
+
+    public function showAdressesByCity($name)
+    {
+        try {
+            $idCity = City::where('name', $name)->firstOrFail()->id ;
+            return response()->json(Address::where('id_City','=',$idCity)->get(), 200);
+        } catch (\Exception $ex) {
+            return response()->json(['message' => $ex->getMessage()], 409);
+        }
+    }
+
+    public function showAdressByPerson($id)
     {
         try{
             $idAddress = Person::findOrfail($id)->id_Address ;
@@ -129,12 +135,44 @@ class AddressController extends Controller
         }
     }
 
-
-    public function oneShow($id)
+    public function showCities()
     {
-        try{
-            return response()->json(Address::findOrFail($id), 200);
-        }catch (\Exception $ex){
+        return response()->json(Address::all(), 200);
+    }
+
+    public function showCity($id)
+    {
+        try {
+            return response()->json(City::findOrFail($id), 200);
+        } catch (\Exception $ex) {
+            return response()->json(['message' => $ex->getMessage()], 404);
+        }
+    }
+
+    public function showDepartments()
+    {
+        return response()->json(Address::all(), 200);
+    }
+
+    public function showDepartment($id)
+    {
+        try {
+            return response()->json(Department::findOrFail($id), 200);
+        } catch (\Exception $ex) {
+            return response()->json(['message' => $ex->getMessage()], 404);
+        }
+    }
+
+    public function showRegions()
+    {
+        return response()->json(Address::all(), 200);
+    }
+
+    public function showRegion($id)
+    {
+        try {
+            return response()->json(Region::findOrFail($id), 200);
+        } catch (\Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 404);
         }
     }
