@@ -18,29 +18,13 @@ class AuthController extends Controller
     {
         $this->middleware('auth:api', ['except' => ['login', 'register']]);
     }
-    
-    public function login(Request $request)
-    {
-        $this->validate($request, [
-            'mail' => 'required|string',
-            'password' => 'required|string'
-        ]);
-
-        $credentials = $request->only(['mail', 'password']);
-
-        if (!$token = Auth::attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
-
-        return $this->respondWithToken($token);
-    }
 
     public function register(Request $request)
     {
         $this->validate($request, [
             'lastname' => 'required|string',
             'firstname' => 'required|string',
-            'mail' => 'required|string|unique:person',
+            'mail' => 'required|string|email|unique:person',
             'phone' => 'required|string',
             'password' => 'required|string',
             'id_Agency' => 'exists:agency,id',
@@ -73,23 +57,28 @@ class AuthController extends Controller
     //  *
     //  * @return \Illuminate\Http\JsonResponse
     //  */
-    // public function login()
-    // {
-    //     $credentials = request(['mail', 'password']);
+    public function login(Request $request)
+    {
+        $this->validate($request, [
+            'mail' => 'required|string',
+            'password' => 'required|string'
+        ]);
 
-    //     if (!$token = Auth::attempt($credentials)) {
-    //         return response()->json(['error' => 'Unauthorized'], 401);
-    //     }
+        $credentials = $request->only(['mail', 'password']);
 
-    //     return $this->respondWithToken($token);
-    // }
+        if (!$token = Auth::attempt($credentials)) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        return $this->respondWithToken($token);
+    }
 
     /**
      * Get the authenticated User.
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function profile()
+    public function me()
     {
         return response()->json(Auth::user());
     }

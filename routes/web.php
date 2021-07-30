@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+
 /** @var \Laravel\Lumen\Routing\Router $router */
 
 /*
@@ -19,7 +21,7 @@ $router->get('/', function () use ($router) {
 });
 
 /**
- * Routes User
+ * Routes user liées à l'authentification
  */
 
 $router->group([
@@ -31,9 +33,25 @@ $router->group([
     $router->get('login', 'AuthController@login');
     $router->get('logout', 'AuthController@logout');
     $router->get('refresh', 'AuthController@refresh');
-    $router->get('profile', 'AuthController@profile');
+    $router->get('me', 'AuthController@me');
 });
 
+/**
+ * Routes person liées aux utilisateurs/clients et employés
+ */
+
+$router->group([
+    'prefix' => 'person'
+
+], function () use ($router) {
+
+    $router->get('{id}', 'PersonController@showOne');
+    $router->get('/', 'PersonController@showAll');
+    $router->get('role/{idRole}', 'PersonController@showAllByRole');
+    $router->get('agency/{idAgency}', 'PersonController@showAllByRole');
+    $router->put('{id}', 'PersonController@update');
+    $router->delete('{id}', 'PersonController@delete');
+});
 
 
 // Pour générer une clée aléatoire à copier dans .env APP_KEY
