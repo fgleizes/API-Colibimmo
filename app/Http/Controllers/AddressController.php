@@ -14,10 +14,10 @@ use App\Models\Department;
 class AddressController extends Controller
 {
 
-    public function __construct()
-    {
-        $this->middleware('auth:api', [['login', 'register']]);
-    }
+    // public function __construct()
+    // {
+    //     $this->middleware('auth:api', [['login', 'register']]);
+    // }
 
     public function create(Request $request)
     {
@@ -106,6 +106,13 @@ class AddressController extends Controller
     {
         return response()->json(Address::all(), 200);
     }
+
+    public function showByCity($name)
+    {
+        $id_City = City::where('name',"=",$name)->firstOrFail()->id ;
+        return response()->json(Address::where('id_City','=',$id_City)->get(), 200);
+    }
+
 
     public function oneShow($id)
     {

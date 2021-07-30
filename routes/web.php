@@ -43,6 +43,7 @@ $router->group([
     $router->delete('{id}','AddressController@delete');
     $router->put('{id}','AddressController@update');
     $router->get('','AddressController@show');
+    $router->get('showCity/{name}','AddressController@showByCity');
     $router->get('{id}', 'AddressController@oneShow');
 });
 
