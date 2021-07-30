@@ -6,6 +6,7 @@ use Illuminate\Http\Middleware\ConvertEmptyStringsToNull;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Address;
+use App\Models\Person;
 use App\Models\Region;
 use App\Models\City;
 use App\Models\Department;
@@ -111,6 +112,12 @@ class AddressController extends Controller
     {
         $id_City = City::where('name',"=",$name)->firstOrFail()->id ;
         return response()->json(Address::where('id_City','=',$id_City)->get(), 200);
+    }
+
+    public function showByPerson($id)
+    {
+        $idAddress = Person::where('id',"=",$id)->firstOrFail()->id_Address ;
+        return response()->json(Address::where('id','=',$idAddress)->first(), 200);
     }
 
 
