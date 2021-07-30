@@ -2,23 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Middleware\ConvertEmptyStringsToNull;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Address;
+use App\Models\City;
 use App\Models\Person;
 use App\Models\Region;
-use App\Models\City;
+use App\Models\Address;
 use App\Models\Department;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Middleware\ConvertEmptyStringsToNull;
 
 
 class AddressController extends Controller
 {
 
-    // public function __construct()
-    // {
-    //     $this->middleware('auth:api', [['login', 'register']]);
-    // }
+    public function __construct()
+    {
+        $this->middleware('auth:api');
+    }
 
     public function create(Request $request)
     {
@@ -30,28 +31,26 @@ class AddressController extends Controller
             'floor' => 'integer|nullable',
             'residence' => 'string|nullable',
             'staircase' => 'string|nullable',
-            'id_City' => 'exist:city,id',
-            
-            
+            'name' => 'required|string',
+            // 'id_City' => 'exist:city,id'
         ]);
 
         try {
             $address = new Address();
-        
+            $userInput = $request->all();
 
-            if($request->input('number')){
-                $address->number =  $request->input('number');
+            foreach ($userInput as $key => $value) {
+                if(!empty($value) && $key != 'name'){
+                    $address->$key = $value;
+                } else if($key == 'name') {
+                    $address->id_City = City::where('name', $value)->firstOrFail()->id;
+                }
             }
-            $address->street = $request->input('street');
-            $address->additional_address = $request->input('additional_address');
-            $address->building = $request->input('building');
-            $address->floor = $request->input('floor');
-            $address->residence = $request->input('residence');
-            $address->staircase = $request->input('staircase');
-            $address->id_City = (City::where('name',"=",$request->input('name')))->firstOrFail()->id ;
-            
 
             $address->save();
+
+            // $address->id_City = City::where('name', $request->input('name'))->firstOrFail()->id;
+            // $address->create($request->all());
 
             return response()->json(['message' => 'CREATED'], 201);
         } catch (\Exception $ex) {
@@ -61,7 +60,6 @@ class AddressController extends Controller
 
     public function delete($id)
     {
-        
         $agency = Address::findOrFail($id);
         $agency->delete();
       
@@ -78,29 +76,32 @@ class AddressController extends Controller
             'floor' => 'integer|nullable',
             'residence' => 'string|nullable',
             'staircase' => 'string|nullable',
-            'id_City' => 'exist:city,id',
+            'name' => 'required|string'
+            // 'id_City' => 'exist:city,id'
         ]);
         try {
-        $address = Address::findOrFail($id);
-        // $address->number =  $request->input('number');
-        // $address->street = $request->input('street');
-        // $address->additional_address = $request->input('additional_address');
-        // $address->building = $request->input('building');
-        // $address->floor = $request->input('floor');
-        // $address->residence = $request->input('residence');
-        // $address->staircase = $request->input('staircase');
-        $address->id_City = (City::where('name',$request->input('name')))->firstOrFail()->id ;
-        
+            $address = Address::findOrFail($id);
+            $userInput = $request->all();
 
-        // $address->save();
+            foreach ($userInput as $key => $value) {
+                if (!empty($value) && $key != 'name') {
+                    $address->$key = $value;
+                } else if ($key == 'name') {
+                    $address->id_City = City::where('name', $value)->firstOrFail()->id;
+                } else {
+                    $address->$key = null;
+                }
+            }
 
-        $address->update($request->all());
+            $address->save();
 
-        return response()->json(['message' => 'ADDRESS UPDATED'], 201);
+            // $address->id_City = City::where('name',$request->input('name'))->firstOrFail()->id;
+            // $address->update($request->all());
+
+            return response()->json(['message' => 'ADDRESS UPDATED'], 201);
         }catch (\Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 409);
         }
-
     }
 
     public function show()
@@ -110,18 +111,19 @@ class AddressController extends Controller
 
     public function showByCity($name)
     {
-        $id_City = City::where('name',"=",$name)->firstOrFail()->id ;
-        return response()->json(Address::where('id_City','=',$id_City)->get(), 200);
+        try {
+            $id_City = City::where('name',"=",$name)->firstOrFail()->id ;
+            return response()->json(Address::where('id_City','=',$id_City)->get(), 200);
+        } catch (\Exception $ex) {
+            return response()->json(['message' => $ex->getMessage()], 409);
+        }
     }
 
     public function showByPerson($id)
     {
-        $idAddress = Person::findOrfail($id)->id_Address ;
         try{
-        
-            return response()->json(Address::first($idAddress), 200);
-            
-        
+            $idAddress = Person::findOrfail($id)->id_Address ;
+            return response()->json(Address::firstOfFail($idAddress), 200);
         } catch (\Exception $sex){
             return response()->json(['message'=>$sex->getMessage()],404);
         }
@@ -135,9 +137,7 @@ class AddressController extends Controller
         }catch (\Exception $ex){
             return response()->json(['message' => $ex->getMessage()], 404);
         }
-        
     }
-
 }
 
 

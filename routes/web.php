@@ -39,17 +39,11 @@ $router->group([
 
 ], function () use ($router) {
 
-    $router->post('', 'AddressController@create');
+    $router->post('/', 'AddressController@create');
     $router->delete('{id}','AddressController@delete');
-    $router->put('{id}','AddressController@update');
-    $router->get('','AddressController@show');
+    $router->put('/{id}','AddressController@update');
+    $router->get('/','AddressController@show');
     $router->get('showByCity/{name}','AddressController@showByCity');
     $router->get('showByPerson/{id}','AddressController@showByPerson');
     $router->get('{id}', 'AddressController@oneShow');
 });
-
-
-// Pour générer une clée aléatoire à copier dans .env APP_KEY
-// if (!app()->environment('prod'))     $router->get('/key', function () {
-//     return 'APP_KEY=base64:' . base64_encode(\Illuminate\Support\Str::random(32));
-// });
