@@ -95,3 +95,8 @@ $router->group([
     $router->get('showByCity/{name}','AddressController@showAddressesByCity');
     $router->get('showByPerson/{id}','AddressController@showAddressByPerson');
 });
+
+/**
+ * Routes Appointment
+ */
+$router->post('appointment', 'AppointmentController@create');
