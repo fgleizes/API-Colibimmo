@@ -123,7 +123,7 @@ class AddressController extends Controller
     {
         try{
             $idAddress = Person::findOrfail($id)->id_Address ;
-            return response()->json(Address::firstOfFail($idAddress), 200);
+            return response()->json(Address::findOrFail($idAddress), 200);
         } catch (\Exception $sex){
             return response()->json(['message'=>$sex->getMessage()],404);
         }
