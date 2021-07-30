@@ -70,16 +70,16 @@ class AddressController extends Controller
 
     public function update(Request $request, $id)
     {
-        // $this->validate($request, [
-        //     'number' => 'integer|nullable',
-        //     'street' => 'required|string',
-        //     'additional_address' => 'string|nullable',
-        //     'building' => 'string|nullable',
-        //     'floor' => 'integer|nullable',
-        //     'residence' => 'string|nullable',
-        //     'staircase' => 'string|nullable',
-        //     'id_City' => 'exist:city,id',
-        // ]);
+        $this->validate($request, [
+            'number' => 'integer|nullable',
+            'street' => 'required|string',
+            'additional_address' => 'string|nullable',
+            'building' => 'string|nullable',
+            'floor' => 'integer|nullable',
+            'residence' => 'string|nullable',
+            'staircase' => 'string|nullable',
+            'id_City' => 'exist:city,id',
+        ]);
         try {
         $address = Address::findOrFail($id);
         // $address->number =  $request->input('number');
@@ -89,7 +89,7 @@ class AddressController extends Controller
         // $address->floor = $request->input('floor');
         // $address->residence = $request->input('residence');
         // $address->staircase = $request->input('staircase');
-        $address->id_City = (City::where('name',"=",$request->input('name')))->firstOrFail()->id ;
+        $address->id_City = (City::where('name',$request->input('name')))->firstOrFail()->id ;
         
 
         // $address->save();
@@ -116,8 +116,15 @@ class AddressController extends Controller
 
     public function showByPerson($id)
     {
-        $idAddress = Person::where('id',"=",$id)->firstOrFail()->id_Address ;
-        return response()->json(Address::where('id','=',$idAddress)->first(), 200);
+        $idAddress = Person::findOrfail($id)->id_Address ;
+        try{
+        
+            return response()->json(Address::first($idAddress), 200);
+            
+        
+        } catch (\Exception $sex){
+            return response()->json(['message'=>$sex->getMessage()],404);
+        }
     }
 
 
