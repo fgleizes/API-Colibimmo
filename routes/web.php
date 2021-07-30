@@ -78,3 +78,20 @@ $router->group([
     $router->get('{id}', 'RoleController@oneShow');
     $router->put('{id}', 'RoleController@update');
 });
+
+/**
+ * Routes Address
+ */
+$router->group([
+    'prefix' => 'address'
+
+], function () use ($router) {
+
+    $router->post('/', 'AddressController@create');
+    $router->delete('{id}','AddressController@delete');
+    $router->put('/{id}','AddressController@update');
+    $router->get('/','AddressController@show');
+    $router->get('showByCity/{name}','AddressController@showByCity');
+    $router->get('showByPerson/{id}','AddressController@showByPerson');
+    $router->get('{id}', 'AddressController@oneShow');
+});

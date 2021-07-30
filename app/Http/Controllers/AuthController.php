@@ -29,7 +29,7 @@ class AuthController extends Controller
             'password' => 'required|string',
             'id_Agency' => 'exists:agency,id',
             'id_Address' => 'exists:address,id',
-            'id_role' => 'exists:role,id'
+            'id_Role' => 'exists:role,id'
         ]);
 
         try {
@@ -41,7 +41,7 @@ class AuthController extends Controller
             $plainPassword = $request->input('password');
             $user->password = app('hash')->make($plainPassword);
             $user->id_Agency = null;
-            $user->id_Address = null;
+            $user->id_Address = 1;
             $user->id_Role = 1;
 
             $user->save();
