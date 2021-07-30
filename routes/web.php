@@ -23,7 +23,6 @@ $router->get('/', function () use ($router) {
 /**
  * Routes user liées à l'authentification
  */
-
 $router->group([
     'prefix' => 'user'
 
@@ -39,7 +38,6 @@ $router->group([
 /**
  * Routes person liées aux utilisateurs/clients et employés
  */
-
 $router->group([
     'prefix' => 'person'
 
@@ -48,26 +46,35 @@ $router->group([
     $router->get('{id}', 'PersonController@showOne');
     $router->get('/', 'PersonController@showAll');
     $router->get('role/{idRole}', 'PersonController@showAllByRole');
-    $router->get('agency/{idAgency}', 'PersonController@showAllByRole');
+    $router->get('agency/{idAgency}', 'PersonController@showAllByAgency');
     $router->put('{id}', 'PersonController@update');
     $router->delete('{id}', 'PersonController@delete');
 });
 
-$router->post('agency', 'AgencyController@create');
-$router->get('agency', 'AgencyController@show');
-$router->delete('agency/{id}', 'AgencyController@delete');
-$router->get('agency/{id}', 'AgencyController@oneShow');
-$router->put('agency/{id}', 'AgencyController@update');
+/**
+ * Routes agency
+ */
+$router->group([
+    'prefix' => 'agency'
 
-$router->get('role', 'RoleController@show');
-$router->get('role/{id}', 'RoleController@oneShow');
-$router->put('role/{id}', 'RoleController@update');
+], function () use ($router) {
+    
+    $router->post('/', 'AgencyController@create');
+    $router->get('/', 'AgencyController@show');
+    $router->delete('{id}', 'AgencyController@delete');
+    $router->get('{id}', 'AgencyController@oneShow');
+    $router->put('{id}', 'AgencyController@update');
+});
 
+/**
+ * Routes role
+ */
+$router->group([
+    'prefix' => 'role'
 
+], function () use ($router) {
 
-
-
-// Pour générer une clée aléatoire à copier dans .env APP_KEY
-// if (!app()->environment('prod'))     $router->get('/key', function () {
-//     return 'APP_KEY=base64:' . base64_encode(\Illuminate\Support\Str::random(32));
-// });
+    $router->get('/', 'RoleController@show');
+    $router->get('{id}', 'RoleController@oneShow');
+    $router->put('{id}', 'RoleController@update');
+});

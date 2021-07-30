@@ -36,7 +36,7 @@ class PersonController extends Controller
         return response()->json(Person::where('id_Role', '=', $idRole)->get(), 200);
     }
 
-    public function showAllEmployeesByAgency($idAgency)
+    public function showAllByAgency($idAgency)
     {
         return response()->json(Person::where('id_Role', 1)->where('id_Agency', $idAgency)->get(), 200);
     }
