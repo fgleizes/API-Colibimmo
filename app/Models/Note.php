@@ -8,5 +8,5 @@ class Note extends Model
 {
     protected $table = 'note';
     protected $primaryKey = 'id';
-    protected $fillable = ['title','content_text',];
+    protected $fillable = ['title','content_text'];
 }
