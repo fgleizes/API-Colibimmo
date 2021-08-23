@@ -9,6 +9,7 @@ use App\Models\Address;
 use App\Models\Department;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Symfony\Component\Console\Input\Input;
 
 
 class AddressController extends Controller
@@ -135,47 +136,63 @@ class AddressController extends Controller
         }
     }
 
+    // public function showCities(Request $request)
+    // public function showCities($search)
     public function showCities()
     {
-        return response()->json(Address::all(), 200);
+        return response()->json(City::all(), 200);
+
+        // $this->validate($request, ['name' => 'string|nullable',]);
+
+        // try {
+        //     $cities = City::Where('name', 'like', '%' . /*preg_replace("/[^A-Za-z]/", '', $request->input('name'))*/ . '%')->get();
+        //     return response()->json(Address::findOrFail($cities), 200);
+        // } catch (\Exception $sex) {
+        //     return response()->json(['message' => $sex->getMessage()], 404);
+        // }
+
+        // $cities = City::Where('name', 'like', '%' . preg_replace("/[^A-Za-z]/", '', $search) . '%')->get();
+        // return response()->json($cities, 200);
     }
 
-    public function showCity($id)
-    {
-        try {
-            return response()->json(City::findOrFail($id), 200);
-        } catch (\Exception $ex) {
-            return response()->json(['message' => $ex->getMessage()], 404);
-        }
-    }
+    // public function showCity($id)
+    // {
+    //     try {
+    //         return response()->json(City::findOrFail($id), 200);
+    //     } catch (\Exception $ex) {
+    //         return response()->json(['message' => $ex->getMessage()], 404);
+    //     }
+    // }
 
-    public function showDepartments()
-    {
-        return response()->json(Address::all(), 200);
-    }
 
-    public function showDepartment($id)
-    {
-        try {
-            return response()->json(Department::findOrFail($id), 200);
-        } catch (\Exception $ex) {
-            return response()->json(['message' => $ex->getMessage()], 404);
-        }
-    }
 
-    public function showRegions()
-    {
-        return response()->json(Address::all(), 200);
-    }
+    // public function showDepartments()
+    // {
+    //     return response()->json(Address::all(), 200);
+    // }
 
-    public function showRegion($id)
-    {
-        try {
-            return response()->json(Region::findOrFail($id), 200);
-        } catch (\Exception $ex) {
-            return response()->json(['message' => $ex->getMessage()], 404);
-        }
-    }
+    // public function showDepartment($id)
+    // {
+    //     try {
+    //         return response()->json(Department::findOrFail($id), 200);
+    //     } catch (\Exception $ex) {
+    //         return response()->json(['message' => $ex->getMessage()], 404);
+    //     }
+    // }
+
+    // public function showRegions()
+    // {
+    //     return response()->json(Address::all(), 200);
+    // }
+
+    // public function showRegion($id)
+    // {
+    //     try {
+    //         return response()->json(Region::findOrFail($id), 200);
+    //     } catch (\Exception $ex) {
+    //         return response()->json(['message' => $ex->getMessage()], 404);
+    //     }
+    // }
 }
 
 

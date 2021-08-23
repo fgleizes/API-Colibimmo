@@ -94,6 +94,7 @@ $router->group([
     $router->get('{id}', 'AddressController@showAdress');
     $router->get('showByCity/{name}','AddressController@showAddressesByCity');
     $router->get('showByPerson/{id}','AddressController@showAddressByPerson');
+    $router->get('cities','AddressController@showCities');
 });
 
 /**
