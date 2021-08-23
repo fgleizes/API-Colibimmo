@@ -10,25 +10,48 @@ class AppointmentController extends Controller
     public function create(Request $request){
         $this->validate($request, [
             'subject' => 'string',
-            'start_datetime' => 'date_format:d/m/Y',
-            'end_datetime' => 'date_format:d/m/Y',
+            'start_datetime' => 'date_format:Y-m-d H:i:s',
+            'end_datetime' => 'date_format:Y-m-d H:i:s',
             'is_canceled' => 'integer',
-            'id_Type_appointment' => 'exists:type_appointment,id',
+            'id_Type_appointment' => 'integer',
         ]);
 
         try {
-            $agency = new Appointment();
-            $agency->name = $request->input('subject');
-            $agency->mail = $request->input('start_datetime');
-            $agency->phone = $request->input('end_datetime');
-            $agency->phone = $request->input('id_Type_appointment');
-            $agency->id_Type_appointment = 1;
-            $agency->save();
+            $appointment = new Appointment();
+            $appointment->subject = $request->input('subject');
+            $appointment->start_datetime = $request->input('start_datetime');
+            $appointment->end_datetime = $request->input('end_datetime');
+            $appointment->id_Type_appointment = $request->input('id_Type_appointment');
+            $appointment->save();
 
-            return response()->json(['message' => 'CREATED AGENCY'], 200);
+            return response()->json(['message' => 'CREATED APPOINTMENT'], 200);
         } catch (\Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 404);
         }
 
+    }
+
+    public function update(Request $request, $id)
+    {
+        $this->validate($request, [
+            'subject' => 'string',
+            'start_datetime' => 'date_format:Y-m-d H:i:s',
+            'end_datetime' => 'date_format:Y-m-d H:i:s',
+            'is_canceled' => 'integer',
+            'id_Type_appointment' => 'integer',
+        ]);
+
+        try {
+            $appointment = Appointment::findOrFail($id);
+            $appointment->subject = $request->input('subject');
+            $appointment->start_datetime = $request->input('start_datetime');
+            $appointment->end_datetime = $request->input('end_datetime');
+            $appointment->id_Type_appointment = $request->input('id_Type_appointment');
+            $appointment->save();
+
+            return response()->json(['message' => 'AGENCY UPDATED'], 200);
+        } catch (\Exception $ex) {
+            return response()->json(['message' => $ex->getMessage()], 404);
+        }
     }
 }

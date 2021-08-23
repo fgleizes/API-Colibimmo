@@ -100,3 +100,4 @@ $router->group([
  * Routes Appointment
  */
 $router->post('appointment', 'AppointmentController@create');
+$router->post('type_appointment', 'typeAppointmentController@create');
