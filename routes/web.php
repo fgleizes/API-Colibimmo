@@ -97,6 +97,18 @@ $router->group([
     $router->get('cities','AddressController@showCities');
 });
 
+
+/**
+ * Routes Project
+ */
+$router->group([
+    'prefix' => 'project'
+
+], function () use ($router) {
+    $router->get('/','ProjectController@showProjects');
+    $router->get('{id}', 'ProjectController@showProject');
+});
+
 /**
  * Routes Appointment
  */

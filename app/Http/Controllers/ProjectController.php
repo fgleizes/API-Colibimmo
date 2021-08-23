@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\City;
+use App\Models\Project;
 use App\Models\Note;
 use App\Models\Person;
 use App\Models\Address;
@@ -50,6 +51,8 @@ class ProjectController extends Controller
             'short_description' => 'string|nullable',
             'description' => 'string|nullable',
             'visibility_priority' => 'integer|nullable',
+            'description' => 'string|nullable',
+
                       
         ]);
 
@@ -79,9 +82,18 @@ class ProjectController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function showController($id)
     {
-        //
+        try {
+            return response()->json(Project::findOrFail($id), 200);
+        } catch (\Exception $ex) {
+            return response()->json(['message' => $ex->getMessage()], 404);
+        }
+    }
+
+    public function showProjects()
+    {
+        return response()->json(Address::all(), 200);
     }
 
     /**
