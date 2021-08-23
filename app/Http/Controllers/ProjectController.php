@@ -91,6 +91,12 @@ class ProjectController extends Controller
         }
     }
 
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+
     public function showProjects()
     {
         return response()->json(Address::all(), 200);
@@ -116,6 +122,13 @@ class ProjectController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            $agency = Project::findOrFail($id);
+            $agency->delete();
+          
+            return response()->json(['message' => 'ADDRESS DELETED'], 201);
+        } catch (\Exception $ex) {
+            return response()->json(['message' => $ex->getMessage()], 409);
+        }
     }
 }

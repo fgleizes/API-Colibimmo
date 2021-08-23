@@ -107,6 +107,7 @@ $router->group([
 ], function () use ($router) {
     $router->get('/','ProjectController@showProjects');
     $router->get('{id}', 'ProjectController@showProject');
+    $router->delete('{id}','ProjectController@destroy');
 });
 
 /**
