@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 
 class AppointmentController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:api');
+    }
     public function create(Request $request){
         $this->validate($request, [
             'subject' => 'string',
@@ -34,11 +38,11 @@ class AppointmentController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'subject' => 'string',
-            'start_datetime' => 'date_format:Y-m-d H:i:s',
-            'end_datetime' => 'date_format:Y-m-d H:i:s',
-            'is_canceled' => 'integer',
-            'id_Type_appointment' => 'integer',
+            'subject' => 'required|string',
+            'start_datetime' => 'required|date_format:Y-m-d H:i:s',
+            'end_datetime' => 'required|date_format:Y-m-d H:i:s',
+            'is_canceled' => 'nullable|integer',
+            'id_Type_appointment' => 'required|integer',
         ]);
 
         try {
@@ -49,9 +53,31 @@ class AppointmentController extends Controller
             $appointment->id_Type_appointment = $request->input('id_Type_appointment');
             $appointment->save();
 
-            return response()->json(['message' => 'AGENCY UPDATED'], 200);
+            return response()->json(['message' => 'APPOINTMENT UPDATED'], 200);
         } catch (\Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 404);
         }
+    }
+
+    public function delete($id)
+    {
+        $agency = Appointment::findOrFail($id);
+        $agency->delete();
+
+        return response()->json(['message' => 'APPOINTMENT DELETED'], 200);
+    }
+
+    public function show()
+    {
+        return response()->json(Appointment::all(), 200);
+    }
+
+    public function showOne($id)
+    {
+        try{
+            return response()->json(Appointment::findOrFail($id), 200);
+        }catch (\Exception $ex){
+            return response()->json(['message' => $ex->getMessage()], 404);
+        }   
     }
 }
