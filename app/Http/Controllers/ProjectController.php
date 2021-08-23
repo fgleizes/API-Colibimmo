@@ -126,7 +126,7 @@ class ProjectController extends Controller
             $agency = Project::findOrFail($id);
             $agency->delete();
           
-            return response()->json(['message' => 'ADDRESS DELETED'], 201);
+            return response()->json(['message' => 'PROJECT DELETED'], 201);
         } catch (\Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 409);
         }
