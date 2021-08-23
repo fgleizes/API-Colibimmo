@@ -94,7 +94,7 @@ $router->group([
     $router->get('{id}', 'AddressController@showAdress');
     $router->get('showByCity/{name}','AddressController@showAddressesByCity');
     $router->get('showByPerson/{id}','AddressController@showAddressByPerson');
-    $router->get('cities','AddressController@showCities');
+    $router->get('cities/','AddressController@showCities');
 });
 
 
@@ -108,6 +108,7 @@ $router->group([
     $router->get('/','ProjectController@showProjects');
     $router->get('{id}', 'ProjectController@showProject');
     $router->delete('{id}','ProjectController@destroy');
+    $router->post('/', 'AppointmentController@create');
 });
 
 /**

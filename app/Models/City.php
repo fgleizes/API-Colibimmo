@@ -8,7 +8,8 @@ class City extends Model
 {
     protected $table = 'city';
     protected $primaryKey = 'id';
-    protected $fillable = ['zip_code','name','insee_code','slug','gps_lat','gps_lng','department_code','id_Department'];
+    protected $fillable = ['id','zip_code','name','department_code','id_Department'];
+    protected $hidden = ['insee_code','slug','gps_lat','gps_lng'];
 
     // public $timestamps = false;
 }
