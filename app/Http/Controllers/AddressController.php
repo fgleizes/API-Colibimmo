@@ -140,7 +140,7 @@ class AddressController extends Controller
     // public function showCities($search)
     public function showCities()
     {
-        return response()->json(City::all(), 200);
+        return response()->json(City::all('id', 'name', 'slug', 'zip_code', 'id_Department'), 200);
 
         // $this->validate($request, ['name' => 'string|nullable',]);
 

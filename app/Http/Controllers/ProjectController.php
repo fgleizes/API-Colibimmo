@@ -2,19 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\City;
+use App\Models\Note;
 use App\Models\Person;
-use App\Models\Appointment;
 use App\Models\Address;
 use App\Models\Document;
-use App\Models\Note;
-use App\Models\Type_project;
+use App\Models\Appointment;
 use App\Models\Energy_index;
-use App\Models\Status_project;
-use Illuminate\Http\Request;
 use App\Models\Room_project;
+use App\Models\Type_project;
+use Illuminate\Http\Request;
 use App\Models\Option_project;
-use App\Models\Type_property_project;
+use App\Models\Status_project;
 use App\Models\Location_project;
+use App\Models\Type_property_project;
 
 class ProjectController extends Controller
 {
