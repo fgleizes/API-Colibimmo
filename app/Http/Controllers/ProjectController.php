@@ -6,6 +6,7 @@ use App\Models\City;
 use App\Models\Note;
 use App\Models\Person;
 use App\Models\Address;
+use App\Models\Project;
 use App\Models\Document;
 use App\Models\Appointment;
 use App\Models\Energy_index;
@@ -38,36 +39,44 @@ class ProjectController extends Controller
     public function create(Request $request)
     {
         $this->validate($request, [
-            
             'note' => 'string|nullable',
             'commission' => 'integer|nullable',
-            'area' => 'integer|nullable',
+            // 'area' => 'nullable|regex:/^\d{1,6}(\.\d{1,2})?$/',
+            'area' => 'numeric|nullable',
             'min_area' => 'integer|nullable',
             'max_area' => 'integer|nullable',
-            'price' => 'integer|nullable',
-            'min_price' => 'integer|nullable',
-            'max_price' => 'integer|nullable',
+            'price' => 'numeric|nullable',
+            'min_price' => 'numeric|nullable',
+            'max_price' => 'numeric|nullable',
             'short_description' => 'string|nullable',
             'description' => 'string|nullable',
             'visibility_priority' => 'integer|nullable',
-                      
+            'id_Person' => 'exists:person,id|required',
+            'id_Type_project' => 'exists:type_project,id|required',
+            'id_Statut_project' => 'exists:status_project,id|required',
+            'id_Energy_index' => 'exists:energy_index,id|nullable',
+            'id_Address' => 'exists:address,id|nullable'
         ]);
 
         try {
-            $address = new Address();
-            $userInput = $request->all();
+            $project = new Project();
+            $project->note = $request->input('note');
+            $project->comission = $request->input('comission');
+            $project->area = $request->input('area');
+            $project->min_area = $request->input('min_area');
+            $project->max_area = $request->input('max_area');
+            $project->short_description = $request->input('short_description');
+            $project->description = $request->input('description');
+            $project->visivility_priority = $request->input('visivility_priority');
+            $project->id_Person = null;
+            $project->id_Type_project = 1;
+            $project->id_Statut_project = 1;
+            $project->id_Energy_index = 1;
+            $project->id_Address = 1;
 
-            foreach ($userInput as $key => $value) {
-                if(!empty($value) && $key != 'name'){
-                    $address->$key = $value;
-                } else if($key == 'name') {
-                    $address->id_City = City::where('name', $value)->firstOrFail()->id;
-                }
-            }
+            $project->save();
 
-            $address->save();
-
-            return response()->json(['message' => 'ADDRESS CREATED'], 201);
+            return response()->json(['message' => 'CREATED'], 201);
         } catch (\Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 409);
         }

@@ -131,28 +131,25 @@ class AddressController extends Controller
         try{
             $idAddress = Person::findOrfail($id)->id_Address ;
             return response()->json(Address::findOrFail($idAddress), 200);
-        } catch (\Exception $sex){
-            return response()->json(['message'=>$sex->getMessage()],404);
+        } catch (\Exception $ex){
+            return response()->json(['message'=>$ex->getMessage()],404);
         }
     }
 
-    // public function showCities(Request $request)
-    // public function showCities($search)
-    public function showCities()
+    public function showCities(Request $request)
     {
-        return response()->json(City::all('id', 'name', 'slug', 'zip_code', 'id_Department'), 200);
+        $this->validate($request, ['search' => 'alpha_num|required']);
 
-        // $this->validate($request, ['name' => 'string|nullable',]);
+        $cities = City::Where('name', 'like', '%' . $request->input('search') . '%')
+            ->orWhere('zip_code', 'like', '%' . $request->input('search') . '%')
+            ->get()
+        ;
 
-        // try {
-        //     $cities = City::Where('name', 'like', '%' . /*preg_replace("/[^A-Za-z]/", '', $request->input('name'))*/ . '%')->get();
-        //     return response()->json(Address::findOrFail($cities), 200);
-        // } catch (\Exception $sex) {
-        //     return response()->json(['message' => $sex->getMessage()], 404);
-        // }
-
-        // $cities = City::Where('name', 'like', '%' . preg_replace("/[^A-Za-z]/", '', $search) . '%')->get();
-        // return response()->json($cities, 200);
+        if (sizeof($cities)) {
+            return response()->json($cities, 200);
+        } else {
+            return response()->json(['message' => 'RESOURCE NOT FOUND'], 404);
+        }
     }
 
     // public function showCity($id)
