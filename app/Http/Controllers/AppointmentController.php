@@ -38,7 +38,7 @@ class AppointmentController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'subject' => 'required|string',
+            'subject' => 'string',
             'start_datetime' => 'required|date_format:Y-m-d H:i:s',
             'end_datetime' => 'required|date_format:Y-m-d H:i:s',
             'is_canceled' => 'nullable|integer',
@@ -47,10 +47,15 @@ class AppointmentController extends Controller
 
         try {
             $appointment = Appointment::findOrFail($id);
-            $appointment->subject = $request->input('subject');
-            $appointment->start_datetime = $request->input('start_datetime');
-            $appointment->end_datetime = $request->input('end_datetime');
-            $appointment->id_Type_appointment = $request->input('id_Type_appointment');
+            $userInput = $request->all();
+
+            foreach ($userInput as $key => $value) {
+                if (!empty($value) || $key != 'subject' || $key != 'start_datetime' || $key != 'end_datetime' || $key != 'is_canceled' || $key != 'id_Type_appointment') {
+                    $appointment->$key = $value;
+                }else {
+                    $appointment->$key = null;
+                }
+            }
             $appointment->save();
 
             return response()->json(['message' => 'APPOINTMENT UPDATED'], 200);

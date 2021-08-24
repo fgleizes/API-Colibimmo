@@ -29,7 +29,7 @@ class AgencyController extends Controller
             $agency->name = $request->input('name');
             $agency->mail = $request->input('mail');
             $agency->phone = $request->input('phone');
-            $agency->id_Address = 1;
+            $agency->id_Address = $request->input('id_Address');
             $agency->save();
 
             return response()->json(['message' => 'AGENCY CREATED'], 200);
@@ -41,18 +41,22 @@ class AgencyController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'name' => 'required|string',
-            'mail' => 'required|string|email|unique:agency',
-            'phone' => 'required|string',
+            'name' => 'string',
+            'mail' => 'string|email|unique:agency',
+            'phone' => 'string',
             'id_Address' => 'exists:address,id',
         ]);
-
         try {
             $agency = Agency::findOrFail($id);
-            $agency->name = $request->input('name');
-            $agency->mail = $request->input('mail');
-            $agency->phone = $request->input('phone');
-            $agency->id_Address = 1;
+            $userInput = $request->all();
+
+            foreach ($userInput as $key => $value) {
+                if (!empty($value) || $key != 'name' || $key != 'mail' ||$key != 'phone') {
+                    $agency->$key = $value;
+                }else {
+                    $agency->$key = null;
+                }
+            }
             $agency->save();
 
             return response()->json(['message' => 'AGENCY UPDATED'], 200);

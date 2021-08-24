@@ -103,10 +103,10 @@ $router->group([
     'prefix' => 'appointment'
 
 ], function () use ($router) {
-    $router->post('create', 'AppointmentController@create');
+    $router->post('/', 'AppointmentController@create');
     $router->put('/{id}', 'AppointmentController@update');
-    $router->delete('/delete/{id}', 'AppointmentController@delete');
+    $router->delete('{id}', 'AppointmentController@delete');
     $router->post('type_appointment', 'typeAppointmentController@create');
     $router->get('/','AppointmentController@show');
-    $router->get('show/{id}','AppointmentController@showOne');
+    $router->get('{id}','AppointmentController@showOne');
 });
