@@ -7,7 +7,6 @@ use App\Models\Project;
 use App\Models\Note;
 use App\Models\Person;
 use App\Models\Address;
-use App\Models\Project;
 use App\Models\Document;
 use App\Models\Appointment;
 use App\Models\Energy_index;
@@ -69,11 +68,11 @@ class ProjectController extends Controller
             $project->short_description = $request->input('short_description');
             $project->description = $request->input('description');
             $project->visivility_priority = $request->input('visivility_priority');
-            $project->id_Person = null;
-            $project->id_Type_project = 1;
-            $project->id_Statut_project = 1;
-            $project->id_Energy_index = 1;
-            $project->id_Address = 1;
+            $project->id_Person = $request->input('id_Person');
+            $project->id_Type_project = $request->input('id_Type_project');
+            $project->id_Statut_project = $request->input('id_Statut_project');
+            $project->id_Energy_index = $request->input('id_Energy_index');
+            $project->id_Address = $request->input('id_Address');
 
             $project->save();
 

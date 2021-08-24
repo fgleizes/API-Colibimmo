@@ -45,10 +45,10 @@ $router->group([
 
     $router->put('{id}', 'PersonController@update');
     $router->delete('{id}', 'PersonController@delete');
-    $router->get('/', 'PersonController@show');
-    $router->get('{id}', 'PersonController@showOne');
-    $router->get('role/{idRole}', 'PersonController@showByRole');
     $router->get('agency/{idAgency}', 'PersonController@showByAgency');
+    $router->get('role/{idRole}', 'PersonController@showByRole');
+    $router->get('{id}', 'PersonController@showOne');
+    $router->get('/', 'PersonController@show');
 });
 
 /**
@@ -62,8 +62,8 @@ $router->group([
     $router->post('/', 'AgencyController@create');
     $router->put('{id}', 'AgencyController@update');
     $router->delete('{id}', 'AgencyController@delete');
-    $router->get('/', 'AgencyController@show');
     $router->get('{id}', 'AgencyController@showOne');
+    $router->get('/', 'AgencyController@show');
 });
 
 /**
@@ -75,8 +75,8 @@ $router->group([
 ], function () use ($router) {
 
     $router->put('{id}', 'RoleController@update');
-    $router->get('/', 'RoleController@show');
     $router->get('{id}', 'RoleController@oneShow');
+    $router->get('/', 'RoleController@show');
 });
 
 /**
@@ -88,13 +88,13 @@ $router->group([
 ], function () use ($router) {
 
     $router->post('/', 'AddressController@create');
-    $router->put('/{id}','AddressController@update');
+    $router->put('{id}','AddressController@update');
     $router->delete('{id}','AddressController@delete');
-    $router->get('/','AddressController@showAdresses');
-    $router->get('{id}', 'AddressController@showAdress');
     $router->get('showByCity/{name}','AddressController@showAddressesByCity');
     $router->get('showByPerson/{id}','AddressController@showAddressByPerson');
-    $router->get('cities/','AddressController@showCities');
+    $router->get('cities', 'AddressController@showCities');
+    $router->get('{id}', 'AddressController@showAdress');
+    $router->get('/','AddressController@showAdresses');
 });
 
 
@@ -105,10 +105,11 @@ $router->group([
     'prefix' => 'project'
 
 ], function () use ($router) {
-    $router->get('/','ProjectController@showProjects');
-    $router->get('{id}', 'ProjectController@showProject');
-    $router->delete('{id}','ProjectController@destroy');
     $router->post('/', 'AppointmentController@create');
+    $router->put('{id}', 'AppointmentController@update');
+    $router->delete('{id}','ProjectController@destroy');
+    $router->get('{id}', 'ProjectController@showProject');
+    $router->get('/','ProjectController@showProjects');
 });
 
 /**

@@ -10,7 +10,6 @@ class Region extends Model
     protected $table = 'region';
     protected $primaryKey = 'id';
     protected $fillable = ['code','name','slug'];
-
     public $timestamps = false;
 }
 

@@ -116,7 +116,7 @@ class AddressController extends Controller
         }
     }
 
-    public function showAdressesByCity($name)
+    public function showAddressesByCity($name)
     {
         try {
             $idCity = City::where('name', $name)->firstOrFail()->id ;
@@ -126,7 +126,7 @@ class AddressController extends Controller
         }
     }
 
-    public function showAdressByPerson($id)
+    public function showAddressByPerson($id)
     {
         try{
             $idAddress = Person::findOrfail($id)->id_Address ;

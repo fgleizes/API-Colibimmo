@@ -9,7 +9,6 @@ class Department extends Model
     protected $table = 'department';
     protected $primaryKey = 'id';
     protected $fillable = ['code','name','slug','region_code','id_Region'];
-
-    // public $timestamps = false;
+    public $timestamps = false;
 }
 
