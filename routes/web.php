@@ -59,9 +59,9 @@ $router->group([
 
 ], function () use ($router) {
     
-    $router->post('/create', 'AgencyController@create');
-    $router->put('/update/{id}', 'AgencyController@update');
-    $router->delete('/delete/{id}', 'AgencyController@delete');
+    $router->post('/', 'AgencyController@create');
+    $router->put('{id}', 'AgencyController@update');
+    $router->delete('{id}', 'AgencyController@delete');
     $router->get('/', 'AgencyController@show');
     $router->get('{id}', 'AgencyController@showOne');
 });
