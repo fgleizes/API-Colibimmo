@@ -41,9 +41,9 @@ class AgencyController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'name' => 'string',
-            'mail' => 'string|email|unique:agency',
-            'phone' => 'string',
+            'name' => 'nullable|string',
+            'mail' => 'nullable|string|email|unique:agency',
+            'phone' => 'nullable|string',
             'id_Address' => 'exists:address,id',
         ]);
         try {

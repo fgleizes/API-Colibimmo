@@ -4,9 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\City;
 use App\Models\Person;
-use App\Models\Region;
 use App\Models\Address;
-use App\Models\Department;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -57,13 +55,13 @@ class AddressController extends Controller
     {
         $this->validate($request, [
             'number' => 'integer|nullable',
-            'street' => 'string|required',
+            'street' => 'string|nullable',
             'additional_address' => 'string|nullable',
             'building' => 'string|nullable',
             'floor' => 'integer|nullable',
             'residence' => 'string|nullable',
             'staircase' => 'string|nullable',
-            'name' => 'string|required'
+            'name' => 'string|nullable'
             // 'id_City' => 'exist:city,id'
         ]);
 
@@ -115,7 +113,7 @@ class AddressController extends Controller
         }
     }
 
-    public function showAdressesByCity($name)
+    public function showAddressesByCity($name)
     {
         try {
             $idCity = City::where('name', $name)->firstOrFail()->id ;
@@ -125,57 +123,70 @@ class AddressController extends Controller
         }
     }
 
-    public function showAdressByPerson($id)
+    public function showAddressByPerson($id)
     {
         try{
             $idAddress = Person::findOrfail($id)->id_Address ;
             return response()->json(Address::findOrFail($idAddress), 200);
-        } catch (\Exception $sex){
-            return response()->json(['message'=>$sex->getMessage()],404);
+        } catch (\Exception $ex){
+            return response()->json(['message'=>$ex->getMessage()],404);
         }
     }
 
-    public function showCities()
+    public function showCities(Request $request)
     {
-        return response()->json(Address::all(), 200);
-    }
+        $this->validate($request, ['search' => 'alpha_num|required']);
 
-    public function showCity($id)
-    {
-        try {
-            return response()->json(City::findOrFail($id), 200);
-        } catch (\Exception $ex) {
-            return response()->json(['message' => $ex->getMessage()], 404);
+        $cities = City::Where('name', 'like', '%' . $request->input('search') . '%')
+            ->orWhere('zip_code', 'like', '%' . $request->input('search') . '%')
+            ->get()
+        ;
+
+        if (sizeof($cities)) {
+            return response()->json($cities, 200);
+        } else {
+            return response()->json(['message' => 'RESOURCE NOT FOUND'], 404);
         }
     }
 
-    public function showDepartments()
-    {
-        return response()->json(Address::all(), 200);
-    }
+    // public function showCity($id)
+    // {
+    //     try {
+    //         return response()->json(City::findOrFail($id), 200);
+    //     } catch (\Exception $ex) {
+    //         return response()->json(['message' => $ex->getMessage()], 404);
+    //     }
+    // }
 
-    public function showDepartment($id)
-    {
-        try {
-            return response()->json(Department::findOrFail($id), 200);
-        } catch (\Exception $ex) {
-            return response()->json(['message' => $ex->getMessage()], 404);
-        }
-    }
 
-    public function showRegions()
-    {
-        return response()->json(Address::all(), 200);
-    }
 
-    public function showRegion($id)
-    {
-        try {
-            return response()->json(Region::findOrFail($id), 200);
-        } catch (\Exception $ex) {
-            return response()->json(['message' => $ex->getMessage()], 404);
-        }
-    }
+    // public function showDepartments()
+    // {
+    //     return response()->json(Address::all(), 200);
+    // }
+
+    // public function showDepartment($id)
+    // {
+    //     try {
+    //         return response()->json(Department::findOrFail($id), 200);
+    //     } catch (\Exception $ex) {
+    //         return response()->json(['message' => $ex->getMessage()], 404);
+    //     }
+    // }
+
+    // public function showRegions()
+    // {
+    //     return response()->json(Address::all(), 200);
+    // }
+
+    // public function showRegion($id)
+    // {
+    //     try {
+    //         return response()->json(Region::findOrFail($id), 200);
+    //     } catch (\Exception $ex) {
+    //         return response()->json(['message' => $ex->getMessage()], 404);
+    //     }
+    // }
 }
 
 
