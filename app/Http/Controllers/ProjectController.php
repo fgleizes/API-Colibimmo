@@ -138,28 +138,43 @@ class ProjectController extends Controller
             'id_Type_project' => 'exists:type_project,id|required',
             'id_Statut_project' => 'exists:status_project,id|required',
             'id_Energy_index' => 'exists:energy_index,id|nullable',
-            'id_Address' => 'exists:address,id|nullable'
+            'id_Address' => 'exists:address,id|nullable',
+            'id_Manage_project' => 'exists:manage_project,id|required'
         ]);
 
         try {
-            $project = new Project();
-            $project->note = $request->input('note');
-            $project->comission = $request->input('comission');
-            $project->area = $request->input('area');
-            $project->min_area = $request->input('min_area');
-            $project->max_area = $request->input('max_area');
-            $project->short_description = $request->input('short_description');
-            $project->description = $request->input('description');
-            $project->visivility_priority = $request->input('visivility_priority');
-            $project->id_Person = $request->input('id_Person');
-            $project->id_Type_project = $request->input('id_Type_project');
-            $project->id_Statut_project = $request->input('id_Statut_project');
-            $project->id_Energy_index = $request->input('id_Energy_index');
-            $project->id_Address = $request->input('id_Address');
+            $project = Project::findOrFail($id);
+            $userInput = $request->all();
+
+            foreach ($userInput as $key => $value) {
+                if (!empty($value)) {
+                    $project->$key = $value;
+                } else {
+                    $project->$key = null;
+                }
+            };
+            // $project->reference;
+            // $project->note = $request->input('note');
+            // $project->commission = $request->input('commission');
+            // $project->area = $request->input('area');
+            // $project->min_area = $request->input('min_area');
+            // $project->max_area = $request->input('max_area');
+            // $project->price = $request->input('price');
+            // $project->min_price = $request->input('min_price');
+            // $project->max_price = $request->input('max_price');
+            // $project->short_description = $request->input('short_description');
+            // $project->description = $request->input('description');
+            // $project->visibility_priority = $request->input('visibility_priority');
+            // $project->id_Person = $request->input('id_Person');
+            // $project->id_Type_project = $request->input('id_Type_project');
+            // $project->id_Statut_project = $request->input('id_Statut_project');
+            // $project->id_Energy_index = $request->input('id_Energy_index');
+            // $project->id_Address = $request->input('id_Address');
+            // $project->id_Manage_project = $request->input('id_Manage_project');
 
             $project->save();
 
-            return response()->json(['message' => 'CREATED'], 201);
+            return response()->json(['message' => 'UPDATED'], 201);
         } catch (\Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 409);
         }

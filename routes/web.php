@@ -105,8 +105,8 @@ $router->group([
     'prefix' => 'project'
 
 ], function () use ($router) {
-    $router->post('/', 'AppointmentController@create');
-    $router->put('{id}', 'AppointmentController@update');
+    $router->post('/', 'ProjectController@create');
+    $router->put('{id}', 'ProjectController@update');
     $router->delete('{id}','ProjectController@delete');
     $router->get('{id}', 'ProjectController@showOne');
     $router->get('/','ProjectController@show');
