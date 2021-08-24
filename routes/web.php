@@ -87,14 +87,14 @@ $router->group([
 
 ], function () use ($router) {
 
-    $router->post('/', 'AddressController@create');
-    $router->put('{id}','AddressController@update');
-    $router->delete('{id}','AddressController@delete');
-    $router->get('showByCity/{name}','AddressController@showAddressesByCity');
-    $router->get('showByPerson/{id}','AddressController@showAddressByPerson');
-    $router->get('cities', 'AddressController@showCities');
-    $router->get('{id}', 'AddressController@showAdress');
-    $router->get('/','AddressController@showAdresses');
+    // $router->post('/', 'AddressController@create');
+    // $router->put('{id}','AddressController@update');
+    // $router->delete('{id}','AddressController@delete');
+    // $router->get('showByCity/{name}','AddressController@showAddressesByCity');
+    // $router->get('showByPerson/{id}','AddressController@showAddressByPerson');
+    // $router->get('cities', 'AddressController@showCities');
+    // $router->get('{id}', 'AddressController@showAdress');
+    // $router->get('/','AddressController@showAdresses');
 });
 
 
@@ -105,8 +105,8 @@ $router->group([
     'prefix' => 'project'
 
 ], function () use ($router) {
-    $router->post('/', 'AppointmentController@create');
-    $router->put('{id}', 'AppointmentController@update');
+    $router->post('/', 'ProjectController@create');
+    $router->put('{id}', 'ProjectController@update');
     $router->delete('{id}','ProjectController@destroy');
     $router->get('{id}', 'ProjectController@showOne');
     $router->get('/','ProjectController@show');
