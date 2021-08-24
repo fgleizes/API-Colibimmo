@@ -51,7 +51,7 @@ class AgencyController extends Controller
             $userInput = $request->all();
 
             foreach ($userInput as $key => $value) {
-                if (!empty($value) || $key != 'name' || $key != 'mail' ||$key != 'phone') {
+                if (!empty($value)) {
                     $agency->$key = $value;
                 }else {
                     $agency->$key = null;

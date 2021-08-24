@@ -50,7 +50,7 @@ class AppointmentController extends Controller
             $userInput = $request->all();
 
             foreach ($userInput as $key => $value) {
-                if (!empty($value) || $key != 'subject' || $key != 'start_datetime' || $key != 'end_datetime' || $key != 'is_canceled' || $key != 'id_Type_appointment') {
+                if (!empty($value)) {
                     $appointment->$key = $value;
                 }else {
                     $appointment->$key = null;

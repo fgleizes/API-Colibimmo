@@ -106,7 +106,6 @@ $router->group([
     $router->post('/', 'AppointmentController@create');
     $router->put('/{id}', 'AppointmentController@update');
     $router->delete('{id}', 'AppointmentController@delete');
-    $router->post('type_appointment', 'typeAppointmentController@create');
     $router->get('/','AppointmentController@show');
     $router->get('{id}','AppointmentController@showOne');
 });
