@@ -108,8 +108,8 @@ $router->group([
     $router->post('/', 'AppointmentController@create');
     $router->put('{id}', 'AppointmentController@update');
     $router->delete('{id}','ProjectController@destroy');
-    $router->get('{id}', 'ProjectController@showProject');
-    $router->get('/','ProjectController@showProjects');
+    $router->get('{id}', 'ProjectController@showOne');
+    $router->get('/','ProjectController@show');
 });
 
 /**

@@ -88,7 +88,7 @@ class ProjectController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function showController($id)
+    public function showOne($id)
     {
         try {
             return response()->json(Project::findOrFail($id), 200);
@@ -103,7 +103,7 @@ class ProjectController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function showProjects()
+    public function show()
     {
         return response()->json(Address::all(), 200);
     }
