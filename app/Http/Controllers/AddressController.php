@@ -4,12 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\City;
 use App\Models\Person;
-use App\Models\Region;
 use App\Models\Address;
-use App\Models\Department;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Symfony\Component\Console\Input\Input;
 
 
 class AddressController extends Controller
@@ -58,13 +55,13 @@ class AddressController extends Controller
     {
         $this->validate($request, [
             'number' => 'integer|nullable',
-            'street' => 'string|required',
+            'street' => 'string|nullable',
             'additional_address' => 'string|nullable',
             'building' => 'string|nullable',
             'floor' => 'integer|nullable',
             'residence' => 'string|nullable',
             'staircase' => 'string|nullable',
-            'name' => 'string|required'
+            'name' => 'string|nullable'
             // 'id_City' => 'exist:city,id'
         ]);
 

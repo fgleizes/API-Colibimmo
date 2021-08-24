@@ -107,7 +107,7 @@ $router->group([
 ], function () use ($router) {
     $router->post('/', 'AppointmentController@create');
     $router->put('{id}', 'AppointmentController@update');
-    $router->delete('{id}','ProjectController@destroy');
+    $router->delete('{id}','ProjectController@delete');
     $router->get('{id}', 'ProjectController@showOne');
     $router->get('/','ProjectController@show');
 });
