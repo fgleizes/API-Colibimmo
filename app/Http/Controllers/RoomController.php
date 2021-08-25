@@ -7,6 +7,7 @@ use App\Models\Room;
 use App\Models\Room_project;
 use App\Models\Type_project;
 use App\Models\Project;
+use App\Models\Type_room;
 
 class RoomController extends Controller
 {
@@ -29,18 +30,18 @@ class RoomController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request)
+    public function createType(Request $request)
     {
         $this->validate($request, [
             'name' => 'string|required'
         ]);
 
         try {
-            $Room = new Room();
-            $Room->name = $request->input('name');
-            $Room->save();
+            $type = new Type_room();
+            $type->name = $request->input('name');
+            $type->save();
 
-            return response()->json(['message' => 'ROOM CREATED'], 200);
+            return response()->json(['message' => 'TYPE OF ROOM CREATED'], 200);
         } catch (\Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 404);
         }
@@ -63,9 +64,18 @@ class RoomController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function showType()
     {
-        //
+        return response()->json(Type_room::all(), 200);
+    }
+
+    public function showOneType($id)
+    {
+        try{
+            return response()->json(Type_room::findOrFail($id), 200);
+        }catch (\Exception $ex){
+            return response()->json(['message' => $ex->getMessage()], 404);
+        }   
     }
 
     /**
@@ -86,9 +96,29 @@ class RoomController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function updateType(Request $request, $id)
     {
-        //
+        $this->validate($request, [
+            'name' => 'nullable|string',
+            
+        ]);
+        try {
+            $type = Type_room::findOrFail($id);
+            $userInput = $request->all();
+
+            foreach ($userInput as $key => $value) {
+                if (!empty($value)) {
+                    $type->$key = $value;
+                }else {
+                    $type->$key = null;
+                }
+            }
+            $type->save();
+
+            return response()->json(['message' => 'TYPE OF ROOM UPDATED'], 200);
+        } catch (\Exception $ex) {
+            return response()->json(['message' => $ex->getMessage()], 404);
+        }
     }
 
     /**

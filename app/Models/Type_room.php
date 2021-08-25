@@ -8,5 +8,6 @@ class Type_room extends Model
 {
     protected $table = 'type_room';
     protected $primaryKey = "id";
-    protected $fillable = ['name'];    
+    protected $fillable = ['name'];   
+    public $timestamps = false; 
 }

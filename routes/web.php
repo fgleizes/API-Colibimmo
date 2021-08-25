@@ -125,3 +125,17 @@ $router->group([
     $router->get('{id}','AppointmentController@showOne');
     $router->get('/','AppointmentController@show');
 });
+
+/**
+ * Routes Room
+ */
+$router->group([
+    'prefix' => 'room'
+
+], function () use ($router) {
+    $router->post('/', 'RoomController@createType');
+    $router->put('{id}', 'RoomController@updateType');
+    $router->get('{id}', 'RoomController@showOneType');
+    $router->get('/', 'RoomController@showType');
+    
+});
