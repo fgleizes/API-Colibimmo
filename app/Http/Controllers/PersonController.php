@@ -34,21 +34,22 @@ class PersonController extends Controller
             'residence' => 'string|nullable',
             'staircase' => 'string|nullable',
             'name' => 'string|required',
-            // 'id_City' => 'exist:city,id',
+            'id_City' => 'exist:city,id',
             'id_Agency' => 'nullable|exists:agency,id',
             'id_Role' => 'required|exists:role,id'
         ]);
 
         try {
+
             $address = new Address;
-            $userInput = $request->all();
-            foreach ($userInput as $key => $value) {
-                if (!empty($value) && $key != 'name') {
-                    $address->$key = $value;
-                } else if ($key == 'name') {
-                    $address->id_City = City::where('name', $value)->firstOrFail()->id;
-                }
-            }
+            $address->number = $request->input('number');
+            $address->street = $request->input('street');
+            $address->additional_address = $request->input('additional_address');
+            $address->building = $request->input('building');
+            $address->floor = $request->input('floor');
+            $address->residence = $request->input('residence');
+            $address->staircase = $request->input('staircase');
+            $address->id_City = City::where('name', $request->input('name'))->firstOrFail()->id;
             $address->save();
 
             $user = new Person;
@@ -56,10 +57,10 @@ class PersonController extends Controller
             $user->firstname = $request->input('firstname');
             $user->mail = $request->input('mail');
             $user->phone = $request->input('phone');
-            $plainPassword = $request->input('password');
+            $plainPassword = "toto";
             $user->password = app('hash')->make($plainPassword);
             $user->id_Agency = null;
-            $user->id_Address = 1;
+            $user->id_Address = $address->id;
             $user->id_Role = 1;
 
             $user->save();
