@@ -54,7 +54,7 @@ class ProjectController extends Controller
             'visibility_priority' => 'integer|nullable',
             'id_Person' => 'exists:person,id|required',
             'id_Type_project' => 'exists:type_project,id|required',
-            'id_Statut_project' => 'exists:status_project,id|required',
+            // 'id_Statut_project' => 'exists:status_project,id|required',
             'id_Energy_index' => 'exists:energy_index,id|nullable',
             'id_Address' => 'exists:address,id|nullable',
             'id_Manage_project' => 'exists:manage_project,id|required'
@@ -73,7 +73,7 @@ class ProjectController extends Controller
             $project->visibility_priority = $request->input('visibility_priority');
             $project->id_Person = $request->input('id_Person');
             $project->id_Type_project = $request->input('id_Type_project');
-            $project->id_Statut_project = $request->input('id_Statut_project');
+            $project->id_Statut_project = 1;
             $project->id_Energy_index = $request->input('id_Energy_index');
             $project->id_Address = $request->input('id_Address');
             $project->id_Manage_project = $request->input('id_Manage_project');

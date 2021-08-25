@@ -14,7 +14,7 @@ class AddressController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:api');
+        $this->middleware('auth:api', ['except' => ['showCities']]);
     }
 
     public function create(Request $request)

@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\City;
 use App\Models\Person;
+use App\Models\Address;
 use Illuminate\Http\Request;
 
 class PersonController extends Controller
@@ -15,6 +17,57 @@ class PersonController extends Controller
     public function __construct()
     {
         $this->middleware('auth:api');
+    }
+
+    public function create(Request $request)
+    {
+        $this->validate($request, [
+            'lastname' => 'required|string',
+            'firstname' => 'required|string',
+            'mail' => 'required|string|email|unique:person',
+            'phone' => 'nullable|string',
+            'number' => 'integer|nullable',
+            'street' => 'string|nullable',
+            'additional_address' => 'string|nullable',
+            'building' => 'string|nullable',
+            'floor' => 'integer|nullable',
+            'residence' => 'string|nullable',
+            'staircase' => 'string|nullable',
+            'name' => 'string|required',
+            // 'id_City' => 'exist:city,id',
+            'id_Agency' => 'nullable|exists:agency,id',
+            'id_Role' => 'required|exists:role,id'
+        ]);
+
+        try {
+            $address = new Address;
+            $userInput = $request->all();
+            foreach ($userInput as $key => $value) {
+                if (!empty($value) && $key != 'name') {
+                    $address->$key = $value;
+                } else if ($key == 'name') {
+                    $address->id_City = City::where('name', $value)->firstOrFail()->id;
+                }
+            }
+            $address->save();
+
+            $user = new Person;
+            $user->lastname = $request->input('lastname');
+            $user->firstname = $request->input('firstname');
+            $user->mail = $request->input('mail');
+            $user->phone = $request->input('phone');
+            $plainPassword = $request->input('password');
+            $user->password = app('hash')->make($plainPassword);
+            $user->id_Agency = null;
+            $user->id_Address = 1;
+            $user->id_Role = 1;
+
+            $user->save();
+
+            return response()->json(['message' => 'CREATED'], 201);
+        } catch (\Exception $ex) {
+            return response()->json(['message' => $ex->getMessage()], 409);
+        }
     }
 
     public function update(Request $request, $id)

@@ -122,6 +122,6 @@ $router->group([
     $router->post('/', 'AppointmentController@create');
     $router->put('/{id}', 'AppointmentController@update');
     $router->delete('{id}', 'AppointmentController@delete');
-    $router->get('/','AppointmentController@show');
     $router->get('{id}','AppointmentController@showOne');
+    $router->get('/','AppointmentController@show');
 });

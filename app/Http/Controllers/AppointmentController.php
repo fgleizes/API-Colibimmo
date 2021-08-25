@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Appointment;
 use Illuminate\Http\Request;
+use App\Models\Person_appointment;
 
 class AppointmentController extends Controller
 {
@@ -13,11 +14,11 @@ class AppointmentController extends Controller
     }
     public function create(Request $request){
         $this->validate($request, [
-            'subject' => 'string',
-            'start_datetime' => 'date_format:Y-m-d H:i:s',
-            'end_datetime' => 'date_format:Y-m-d H:i:s',
-            'is_canceled' => 'integer',
-            'id_Type_appointment' => 'integer',
+            'subject' => 'string|nullable',
+            'start_datetime' => 'date_format:Y-m-d H:i:s|required',
+            'end_datetime' => 'date_format:Y-m-d H:i:s|required',
+            'id_Type_appointment' => 'integer|required',
+            
         ]);
 
         try {
@@ -27,8 +28,13 @@ class AppointmentController extends Controller
             $appointment->end_datetime = $request->input('end_datetime');
             $appointment->id_Type_appointment = $request->input('id_Type_appointment');
             $appointment->save();
+            
+            // $personAppointment = new Person_appointment();
+            // $personAppointment->id_Appointment = $appointment->id;
 
-            return response()->json(['message' => 'CREATED APPOINTMENT'], 200);
+
+
+            return response()->json(['message' => 'APPOINTMENT CREATED'], 200);
         } catch (\Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 404);
         }
@@ -66,10 +72,14 @@ class AppointmentController extends Controller
 
     public function delete($id)
     {
-        $agency = Appointment::findOrFail($id);
-        $agency->delete();
-
-        return response()->json(['message' => 'APPOINTMENT DELETED'], 200);
+        try {
+            $agency = Appointment::findOrFail($id);
+            $agency->delete();
+    
+            return response()->json(['message' => 'APPOINTMENT DELETED'], 200);
+        } catch (\Exception $ex) {
+            return response()->json(['message' => $ex->getMessage()], 409);
+        }
     }
 
     public function show()

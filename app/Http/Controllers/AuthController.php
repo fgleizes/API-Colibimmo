@@ -25,11 +25,9 @@ class AuthController extends Controller
             'lastname' => 'required|string',
             'firstname' => 'required|string',
             'mail' => 'required|string|email|unique:person',
-            'phone' => 'required|string',
+            'phone' => 'nullable|string',
             'password' => 'required|string',
-            'id_Agency' => 'exists:agency,id',
-            'id_Address' => 'exists:address,id',
-            'id_Role' => 'exists:role,id'
+            'id_Address' => 'nullable|exists:address,id',
         ]);
 
         try {
@@ -40,8 +38,7 @@ class AuthController extends Controller
             $user->phone = $request->input('phone');
             $plainPassword = $request->input('password');
             $user->password = app('hash')->make($plainPassword);
-            $user->id_Agency = null;
-            $user->id_Address = 1;
+            // $user->id_Address = 1;
             $user->id_Role = 1;
 
             $user->save();
