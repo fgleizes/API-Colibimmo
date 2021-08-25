@@ -17,7 +17,9 @@ class AppointmentController extends Controller
             'subject' => 'string|nullable',
             'start_datetime' => 'date_format:Y-m-d H:i:s|required',
             'end_datetime' => 'date_format:Y-m-d H:i:s|required',
-            'id_Type_appointment' => 'integer|required',
+            'id_Type_appointment' => 'integer|required|exists:type_appointment,id',
+            'id_Project1' => 'integer|required|exists:project,id',
+            'id_Project2' => 'integer|nullable|exists:project,id',
             
         ]);
 
@@ -29,10 +31,18 @@ class AppointmentController extends Controller
             $appointment->id_Type_appointment = $request->input('id_Type_appointment');
             $appointment->save();
             
-            // $personAppointment = new Person_appointment();
-            // $personAppointment->id_Appointment = $appointment->id;
+            $personAppointment1 = new Person_appointment();
+            $personAppointment1->id_Appointment = $appointment->id;
+            $personAppointment1->id_Project = $request->input('id_Project1');
+            // $personAppointment1->id_Project = Project::findOrFail($request->input('id_Project1'))->id;
+            $personAppointment1->save();
 
-
+            if($request->input('id_Project2') != null && !empty($request->input('id_Project2'))) {
+                $personAppointment2 = new Person_appointment();
+                $personAppointment2->id_Appointment = $appointment->id;
+                $personAppointment2->id_Project = $request->input('id_Project2');
+                $personAppointment2->save();
+            }
 
             return response()->json(['message' => 'APPOINTMENT CREATED'], 200);
         } catch (\Exception $ex) {
@@ -73,8 +83,12 @@ class AppointmentController extends Controller
     public function delete($id)
     {
         try {
-            $agency = Appointment::findOrFail($id);
-            $agency->delete();
+            $appointment = Appointment::findOrFail($id);
+            $personAppointments = Person_appointment::where('id_Appointment', $id)->get();
+            foreach ($personAppointments as $personAppointment) {
+                $personAppointment->delete();
+            }
+            $appointment->delete();
     
             return response()->json(['message' => 'APPOINTMENT DELETED'], 200);
         } catch (\Exception $ex) {
