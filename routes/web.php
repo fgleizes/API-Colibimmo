@@ -135,6 +135,7 @@ $router->group([
 ], function () use ($router) {
     $router->post('/', 'RoomController@createType');
     $router->put('{id}', 'RoomController@updateType');
+    $router->delete('{id}', 'RoomController@deleteType');
     $router->get('{id}', 'RoomController@showOneType');
     $router->get('/', 'RoomController@showType');
     

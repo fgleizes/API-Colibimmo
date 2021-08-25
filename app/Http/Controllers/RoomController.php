@@ -127,8 +127,11 @@ class RoomController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function deleteType($id)
     {
-        //
+        $type = Type_room::findOrFail($id);
+        $type->delete();
+
+        return response()->json(['message' => 'TYPE OF ROOM DELETED'], 200);
     }
 }
