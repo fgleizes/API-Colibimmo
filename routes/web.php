@@ -152,4 +152,31 @@ $router->group([
     
 });
 
+$router->group([
+    'prefix' => 'option'
+
+], function () use ($router) {
+    $router->post('/', 'OptionController@create');
+    $router->put('{id}', 'OptionController@update');
+    $router->get('/', 'OptionController@show');
+    $router->get('{id}', 'OptionController@showOne');
+    $router->delete('{id}', 'OptionController@delete');
+   
+    
+});
+
+$router->group([
+    'prefix' => 'typeProperty'
+
+], function () use ($router) {
+    $router->post('/', 'TypePropertyController@create');
+    $router->put('{id}', 'TypePropertyController@update');
+    $router->get('/', 'TypePropertyController@show');
+    $router->get('{id}', 'TypePropertyController@showOne');
+    $router->delete('{id}', 'TypePropertyController@delete');
+   
+    
+});
+
+
 
