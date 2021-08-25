@@ -130,13 +130,26 @@ $router->group([
  * Routes Room
  */
 $router->group([
-    'prefix' => 'room'
+    'prefix' => 'typeRoom'
 
 ], function () use ($router) {
     $router->post('/', 'RoomController@createType');
     $router->put('{id}', 'RoomController@updateType');
     $router->delete('{id}', 'RoomController@deleteType');
-    $router->get('{id}', 'RoomController@showOneType');
-    $router->get('/', 'RoomController@showType');
+    $router->get('{id}', 'RoomController@showOneType');    
+    $router->get('/', 'RoomController@showType');   
+});
+
+$router->group([
+    'prefix' => 'room'
+
+], function () use ($router) {
+    $router->post('/', 'RoomController@createRoom');
+    $router->put('{id}', 'RoomController@updateRoom');
+    $router->delete('{id}', 'RoomController@deleteRoom');  
+    $router->get('{id}', 'RoomController@showOneRoom');
+    $router->get('/', 'RoomController@showRoom');
     
 });
+
+

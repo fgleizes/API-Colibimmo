@@ -24,7 +24,7 @@ class RoomController extends Controller
     {
         //
     }
-
+    // GESTION TYPE OF ROOM
     /**
      * Show the form for creating a new resource.compose
      *
@@ -99,7 +99,7 @@ class RoomController extends Controller
     public function updateType(Request $request, $id)
     {
         $this->validate($request, [
-            'name' => 'nullable|string',
+            'name' => 'nullable|string'
             
         ]);
         try {
@@ -133,5 +133,102 @@ class RoomController extends Controller
         $type->delete();
 
         return response()->json(['message' => 'TYPE OF ROOM DELETED'], 200);
+    }
+
+    // GESTION ROOM
+
+    /**
+     * Show the form for creating a new resource.compose
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function createRoom(Request $request)
+    {
+        $this->validate($request, [
+            'area' => 'string|required',
+            'type'=>'string|required'
+        ]);
+
+        try {
+            $room = new Room();
+            $userInput = $request->all();
+
+            foreach ($userInput as $key => $value) {
+                if(!empty($value) && $key != 'type'){
+                    $room->$key = $value;
+                } else if($key == 'type') {
+                    $room->id_Type_room = Type_room::where('name', $value)->firstOrFail()->id;
+                }
+            }
+
+            $room->save();
+
+            return response()->json(['message' => 'ROOM CREATED'], 201);
+        } catch (\Exception $ex) {
+            return response()->json(['message' => $ex->getMessage()], 409);
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function showRoom()
+    {
+        return response()->json(Room::all(), 200);
+    }
+
+    public function showOneRoom($id)
+    {
+        try{
+            return response()->json(Room::findOrFail($id), 200);
+        }catch (\Exception $ex){
+            return response()->json(['message' => $ex->getMessage()], 404);
+        }   
+    }
+
+    public function updateRoom(Request $request, $id)
+    {
+        $this->validate($request, [
+            'area' => 'integer|nullable',
+            'type' => 'string|nullable',
+            
+           
+        ]);
+
+        try {
+            $Room = Room::findOrFail($id);
+            $userInput = $request->all();
+
+            foreach ($userInput as $key => $value) {
+                if (!empty($value) && $key != 'type') {
+                    $Room->$key = $value;
+                } else if ($key == 'type') {
+                    $Room->id_Type_room = Type_room::where('name', $value)->firstOrFail()->id;
+                } else {
+                    $Room->$key = null;
+                }
+            }
+
+            $Room->save();
+
+            return response()->json(['message' => 'ROOM UPDATED'], 201);
+        } catch (\Exception $ex) {
+            return response()->json(['message' => $ex->getMessage()], 409);
+        }
+    }
+
+    public function deleteRoom($id)
+    {
+        try {
+            $Room = Room::findOrFail($id);
+            $Room->delete();
+          
+            return response()->json(['message' => 'ROOM DELETED'], 201);
+        } catch (\Exception $ex) {
+            return response()->json(['message' => $ex->getMessage()], 409);
+        }
     }
 }
