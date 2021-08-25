@@ -34,7 +34,6 @@ class AppointmentController extends Controller
             $personAppointment1 = new Person_appointment();
             $personAppointment1->id_Appointment = $appointment->id;
             $personAppointment1->id_Project = $request->input('id_Project1');
-            // $personAppointment1->id_Project = Project::findOrFail($request->input('id_Project1'))->id;
             $personAppointment1->save();
 
             if($request->input('id_Project2') != null && !empty($request->input('id_Project2'))) {
@@ -55,10 +54,12 @@ class AppointmentController extends Controller
     {
         $this->validate($request, [
             'subject' => 'string',
-            'start_datetime' => 'required|date_format:Y-m-d H:i:s',
-            'end_datetime' => 'required|date_format:Y-m-d H:i:s',
+            'start_datetime' => 'nullable|date_format:Y-m-d H:i:s',
+            'end_datetime' => 'nullable|date_format:Y-m-d H:i:s',
             'is_canceled' => 'nullable|integer',
-            'id_Type_appointment' => 'required|integer',
+            'id_Type_appointment' => 'nullable|integer',
+            'id_Project1' => 'integer|nullable|exists:project,id',
+            'id_Project2' => 'integer|nullable|exists:project,id',
         ]);
 
         try {
@@ -66,9 +67,22 @@ class AppointmentController extends Controller
             $userInput = $request->all();
 
             foreach ($userInput as $key => $value) {
-                if (!empty($value)) {
+                if (!empty($value) && $key != 'id_Project1' && $key != 'id_Project2') {
                     $appointment->$key = $value;
-                }else {
+                } 
+                // else if ($key == 'id_Project1' || $key == 'id_Project2') {
+                //     // $personAppointment->id_Project1 = Person_appointment::where('id_Appointment', $value)->firstOrFail()->id;
+                //     $personAppointments = Person_appointment::where('id_Appointment', $id)->get();
+                //     foreach ($personAppointments as $personAppointment) {
+                //         if ($personAppointment != $key) {
+                //             # code...
+                //         }
+                //         $personAppointment->delete();
+                //     }
+                // } else if ($key == 'id_Project2') {
+                //     // $personAppointment->id_Project2 = Person_appointment::where($appointment->id, $value)->firstOrFail()->id;
+                // } 
+                else {
                     $appointment->$key = null;
                 }
             }
@@ -98,13 +112,13 @@ class AppointmentController extends Controller
 
     public function show()
     {
-        return response()->json(Appointment::all(), 200);
+        return response()->json(Appointment::with('person_appointment')->get());
     }
 
     public function showOne($id)
     {
         try{
-            return response()->json(Appointment::findOrFail($id), 200);
+            return response()->json(Appointment::with('person_appointment')->findOrFail($id), 200);
         }catch (\Exception $ex){
             return response()->json(['message' => $ex->getMessage()], 404);
         }   
