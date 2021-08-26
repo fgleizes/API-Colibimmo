@@ -125,3 +125,58 @@ $router->group([
     $router->get('{id}','AppointmentController@showOne');
     $router->get('/','AppointmentController@show');
 });
+
+/**
+ * Routes Room
+ */
+$router->group([
+    'prefix' => 'typeRoom'
+
+], function () use ($router) {
+    $router->post('/', 'RoomController@createType');
+    $router->put('{id}', 'RoomController@updateType');
+    $router->delete('{id}', 'RoomController@deleteType');
+    $router->get('{id}', 'RoomController@showOneType');    
+    $router->get('/', 'RoomController@showType');   
+});
+
+$router->group([
+    'prefix' => 'room'
+
+], function () use ($router) {
+    $router->post('/', 'RoomController@createRoom');
+    $router->put('{id}', 'RoomController@updateRoom');
+    $router->delete('{id}', 'RoomController@deleteRoom');  
+    $router->get('{id}', 'RoomController@showOneRoom');
+    $router->get('/', 'RoomController@showRoom');
+    
+});
+
+$router->group([
+    'prefix' => 'option'
+
+], function () use ($router) {
+    $router->post('/', 'OptionController@create');
+    $router->put('{id}', 'OptionController@update');
+    $router->get('/', 'OptionController@show');
+    $router->get('{id}', 'OptionController@showOne');
+    $router->delete('{id}', 'OptionController@delete');
+   
+    
+});
+
+$router->group([
+    'prefix' => 'typeProperty'
+
+], function () use ($router) {
+    $router->post('/', 'TypePropertyController@create');
+    $router->put('{id}', 'TypePropertyController@update');
+    $router->get('/', 'TypePropertyController@show');
+    $router->get('{id}', 'TypePropertyController@showOne');
+    $router->delete('{id}', 'TypePropertyController@delete');
+   
+    
+});
+
+
+
