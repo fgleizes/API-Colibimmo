@@ -33,35 +33,41 @@ class PersonController extends Controller
             'floor' => 'integer|nullable',
             'residence' => 'string|nullable',
             'staircase' => 'string|nullable',
-            'name' => 'string|required',
-            // 'id_City' => 'exist:city,id',
+            'name' => 'string|nullable',
+            'id_City' => 'exist:city,id',
             'id_Agency' => 'nullable|exists:agency,id',
             'id_Role' => 'required|exists:role,id'
         ]);
 
         try {
-            $address = new Address;
-            $userInput = $request->all();
-            foreach ($userInput as $key => $value) {
-                if (!empty($value) && $key != 'name') {
-                    $address->$key = $value;
-                } else if ($key == 'name') {
-                    $address->id_City = City::where('name', $value)->firstOrFail()->id;
-                }
+            if (!empty($request->input('street'))&& !empty($request->input('name'))) {
+                $address = new Address;
+                $address->number = $request->input('number');
+                $address->street = $request->input('street');
+                $address->additional_address = $request->input('additional_address');
+                $address->building = $request->input('building');
+                $address->floor = $request->input('floor');
+                $address->residence = $request->input('residence');
+                $address->staircase = $request->input('staircase');
+                $address->id_City = City::where('name', $request->input('name'))->firstOrFail()->id;
+                $address->save();
             }
-            $address->save();
 
             $user = new Person;
             $user->lastname = $request->input('lastname');
             $user->firstname = $request->input('firstname');
             $user->mail = $request->input('mail');
             $user->phone = $request->input('phone');
-            $plainPassword = $request->input('password');
+            $plainPassword = "toto";
+            // $bytes = random_bytes(10);
+            // $plainPassword = bin2hex($bytes);
+            // dd(bin2hex($bytes));
             $user->password = app('hash')->make($plainPassword);
-            $user->id_Agency = null;
-            $user->id_Address = 1;
-            $user->id_Role = 1;
-
+            $user->id_Agency = $request->input('id_Agency');;
+            $user->id_Role = $request->input('id_Role');
+            if (isset($address)) {
+                $user->id_Address = $address->id;
+            }
             $user->save();
 
             return response()->json(['message' => 'CREATED'], 201);
