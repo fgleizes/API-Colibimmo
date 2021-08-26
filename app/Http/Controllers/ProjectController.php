@@ -83,7 +83,7 @@ class ProjectController extends Controller
             $project->id_Energy_index = $request->input('id_Energy_index');
             $project->id_Address = $request->input('id_Address');
             // $project->id_Manage_project = $request->input('id_Manage_project');
-            if (Person::where('id_Role', 3)->findOrFail($request->input('id_PersonAgent'))) {
+            if (Person::where('id_Role', 4)->findOrFail($request->input('id_PersonAgent'))) {
                 $project->id_PersonAgent = $request->input('id_PersonAgent');
             }
 
