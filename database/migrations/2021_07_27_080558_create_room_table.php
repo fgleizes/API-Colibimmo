@@ -17,6 +17,7 @@ class CreateRoomTable extends Migration
             $table->id();
             $table->unsignedFloat('area');
             $table->foreignId('id_Type_room')->constrained('type_room');
+            $table->foreignId('id_Project')->constrained('project');
         });
     }
 

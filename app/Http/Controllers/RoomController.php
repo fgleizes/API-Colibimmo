@@ -146,7 +146,9 @@ class RoomController extends Controller
     {
         $this->validate($request, [
             'area' => 'string|required',
-            'type'=>'string|required'
+            'type'=>'string|required',
+            // 'id_Type'=>'exists:type_room,id|required',
+            'id_Project'=>'exists:project,id|required',
         ]);
 
         try {
