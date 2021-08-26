@@ -166,6 +166,18 @@ $router->group([
 });
 
 $router->group([
+    'prefix' => 'optionProject'
+
+], function () use ($router) {
+    $router->post('/', 'OptionController@createOptionProject');
+    $router->get('/', 'TypePropertyController@showOptionProject');
+    $router->get('{id}', 'TypePropertyController@showOneOptionProject');
+    
+   
+    
+});
+
+$router->group([
     'prefix' => 'typeProperty'
 
 ], function () use ($router) {

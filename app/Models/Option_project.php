@@ -8,5 +8,6 @@ class Option_project extends Model
 {
     protected $table = 'option_project';
     protected $primaryKey = "id";
-    protected $fillable = ['id_Option','id_Project'];    
+    protected $fillable = ['id_Option','id_Project'];  
+    public $timestamps = false;  
 }
