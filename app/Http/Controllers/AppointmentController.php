@@ -17,7 +17,9 @@ class AppointmentController extends Controller
             'subject' => 'string|nullable',
             'start_datetime' => 'date_format:Y-m-d H:i:s|required',
             'end_datetime' => 'date_format:Y-m-d H:i:s|required',
-            'id_Type_appointment' => 'integer|required',
+            'id_Type_appointment' => 'integer|required|exists:type_appointment,id',
+            'id_Project1' => 'integer|required|exists:project,id',
+            'id_Project2' => 'integer|nullable|exists:project,id',
             
         ]);
 
@@ -29,10 +31,17 @@ class AppointmentController extends Controller
             $appointment->id_Type_appointment = $request->input('id_Type_appointment');
             $appointment->save();
             
-            // $personAppointment = new Person_appointment();
-            // $personAppointment->id_Appointment = $appointment->id;
+            $personAppointment1 = new Person_appointment();
+            $personAppointment1->id_Appointment = $appointment->id;
+            $personAppointment1->id_Project = $request->input('id_Project1');
+            $personAppointment1->save();
 
-
+            if($request->input('id_Project2') != null && !empty($request->input('id_Project2'))) {
+                $personAppointment2 = new Person_appointment();
+                $personAppointment2->id_Appointment = $appointment->id;
+                $personAppointment2->id_Project = $request->input('id_Project2');
+                $personAppointment2->save();
+            }
 
             return response()->json(['message' => 'APPOINTMENT CREATED'], 200);
         } catch (\Exception $ex) {
@@ -45,10 +54,12 @@ class AppointmentController extends Controller
     {
         $this->validate($request, [
             'subject' => 'string',
-            'start_datetime' => 'required|date_format:Y-m-d H:i:s',
-            'end_datetime' => 'required|date_format:Y-m-d H:i:s',
+            'start_datetime' => 'nullable|date_format:Y-m-d H:i:s',
+            'end_datetime' => 'nullable|date_format:Y-m-d H:i:s',
             'is_canceled' => 'nullable|integer',
-            'id_Type_appointment' => 'required|integer',
+            'id_Type_appointment' => 'nullable|integer',
+            'id_Project1' => 'integer|nullable|exists:project,id',
+            'id_Project2' => 'integer|nullable|exists:project,id',
         ]);
 
         try {
@@ -56,9 +67,22 @@ class AppointmentController extends Controller
             $userInput = $request->all();
 
             foreach ($userInput as $key => $value) {
-                if (!empty($value)) {
+                if (!empty($value) && $key != 'id_Project1' && $key != 'id_Project2') {
                     $appointment->$key = $value;
-                }else {
+                } 
+                // else if ($key == 'id_Project1' || $key == 'id_Project2') {
+                //     // $personAppointment->id_Project1 = Person_appointment::where('id_Appointment', $value)->firstOrFail()->id;
+                //     $personAppointments = Person_appointment::where('id_Appointment', $id)->get();
+                //     foreach ($personAppointments as $personAppointment) {
+                //         if ($personAppointment != $key) {
+                //             # code...
+                //         }
+                //         $personAppointment->delete();
+                //     }
+                // } else if ($key == 'id_Project2') {
+                //     // $personAppointment->id_Project2 = Person_appointment::where($appointment->id, $value)->firstOrFail()->id;
+                // } 
+                else {
                     $appointment->$key = null;
                 }
             }
@@ -73,8 +97,12 @@ class AppointmentController extends Controller
     public function delete($id)
     {
         try {
-            $agency = Appointment::findOrFail($id);
-            $agency->delete();
+            $appointment = Appointment::findOrFail($id);
+            $personAppointments = Person_appointment::where('id_Appointment', $id)->get();
+            foreach ($personAppointments as $personAppointment) {
+                $personAppointment->delete();
+            }
+            $appointment->delete();
     
             return response()->json(['message' => 'APPOINTMENT DELETED'], 200);
         } catch (\Exception $ex) {
@@ -84,13 +112,13 @@ class AppointmentController extends Controller
 
     public function show()
     {
-        return response()->json(Appointment::all(), 200);
+        return response()->json(Appointment::with('person_appointment')->get());
     }
 
     public function showOne($id)
     {
         try{
-            return response()->json(Appointment::findOrFail($id), 200);
+            return response()->json(Appointment::with('person_appointment')->findOrFail($id), 200);
         }catch (\Exception $ex){
             return response()->json(['message' => $ex->getMessage()], 404);
         }   

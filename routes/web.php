@@ -42,7 +42,7 @@ $router->group([
     'prefix' => 'person'
 
 ], function () use ($router) {
-
+    $router->post('/', 'PersonController@create');
     $router->put('{id}', 'PersonController@update');
     $router->delete('{id}', 'PersonController@delete');
     $router->get('agency/{idAgency}', 'PersonController@showByAgency');

@@ -63,11 +63,15 @@ class ProjectController extends Controller
         try {
             $project = new Project();
             $project->reference = ('lou2408');
+
             $project->note = $request->input('note');
             $project->commission = $request->input('commission');
             $project->area = $request->input('area');
             $project->min_area = $request->input('min_area');
             $project->max_area = $request->input('max_area');
+            $project->price = $request->input('price');
+            $project->min_price = $request->input('min_price');
+            $project->max_price = $request->input('max_price');
             $project->short_description = $request->input('short_description');
             $project->description = $request->input('description');
             $project->visibility_priority = $request->input('visibility_priority');
@@ -106,7 +110,6 @@ class ProjectController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-
     public function show()
     {
         return response()->json(Project::all(), 200);
@@ -134,12 +137,12 @@ class ProjectController extends Controller
             'short_description' => 'string|nullable',
             'description' => 'string|nullable',
             'visibility_priority' => 'integer|nullable',
-            'id_Person' => 'exists:person,id|required',
-            'id_Type_project' => 'exists:type_project,id|required',
-            'id_Statut_project' => 'exists:status_project,id|required',
+            'id_Person' => 'exists:person,id|nullable',
+            'id_Type_project' => 'exists:type_project,id|nullable',
+            'id_Statut_project' => 'exists:status_project,id|nullable',
             'id_Energy_index' => 'exists:energy_index,id|nullable',
             'id_Address' => 'exists:address,id|nullable',
-            'id_Manage_project' => 'exists:manage_project,id|required'
+            'id_Manage_project' => 'exists:manage_project,id|nullable'
         ]);
 
         try {
