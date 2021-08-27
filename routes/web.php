@@ -186,8 +186,17 @@ $router->group([
     $router->get('/', 'TypePropertyController@show');
     $router->get('{id}', 'TypePropertyController@showOne');
     $router->delete('{id}', 'TypePropertyController@delete');
-   
-    
+});
+
+$router->group([
+    'prefix' => 'note'
+
+], function () use ($router) {
+    $router->post('/', 'NoteController@create');
+    $router->put('{id}', 'NoteController@update');
+    $router->delete('{id}', 'NoteController@delete');
+    $router->get('/', 'NoteController@show');
+    $router->get('{id}', 'NoteController@showOne');
 });
 
 
