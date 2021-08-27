@@ -60,6 +60,7 @@ $app->singleton(
 */
 
 $app->configure('app');
+$app->configure('mail');
 
 /*
 |--------------------------------------------------------------------------
@@ -77,7 +78,8 @@ $app->configure('app');
 // ]);
 
  $app->routeMiddleware([
-     'auth' => App\Http\Middleware\Authenticate::class,
+    'auth' => App\Http\Middleware\Authenticate::class,
+    'roles' => App\Http\Middleware\Roles::class
  ]);
 
 /*
@@ -92,10 +94,26 @@ $app->configure('app');
 */
 
 // $app->register(App\Providers\AppServiceProvider::class);
- $app->register(App\Providers\AuthServiceProvider::class);
+$app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
 $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
 $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
+$app->register(Illuminate\Mail\MailServiceProvider::class);
+
+/*
+|--------------------------------------------------------------------------
+| Class Aliases
+|--------------------------------------------------------------------------
+|
+| This array of class aliases will be registered when this application
+| is started. However, feel free to register as many as you wish as
+| the aliases are "lazy" loaded so they don't hinder performance.
+|
+*/
+$app->alias('mailer', Illuminate\Mail\Mailer::class);
+$app->alias('mailer', Illuminate\Contracts\Mail\Mailer::class);
+$app->alias('mailer', Illuminate\Contracts\Mail\MailQueue::class);
+
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes

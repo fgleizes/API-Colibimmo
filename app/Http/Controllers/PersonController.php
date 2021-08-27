@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\City;
 use App\Models\Person;
 use App\Models\Address;
+use App\Mail\PersonPassword;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class PersonController extends Controller
 {
@@ -68,7 +70,10 @@ class PersonController extends Controller
             if (isset($address)) {
                 $user->id_Address = $address->id;
             }
-            $user->save();
+            // $user->save();
+
+            // Mail::to($user->mail())->send(new PersonPassword($user, $plainPassword));
+            Mail::to('florentgleizes@hotmail.com')->send(new PersonPassword($user, $plainPassword));
 
             return response()->json(['message' => 'CREATED'], 201);
         } catch (\Exception $ex) {

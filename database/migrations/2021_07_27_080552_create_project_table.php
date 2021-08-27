@@ -16,7 +16,7 @@ class CreateProjectTable extends Migration
         Schema::create('project', function (Blueprint $table) {
             $table->id();
             $table->char('reference', 20);
-            $table->text('note')->nullable();
+            $table->text('additional_information')->nullable();
             $table->unsignedTinyInteger('commission')->nullable();
             $table->timestamps();
             $table->unsignedFloat('area')->nullable();

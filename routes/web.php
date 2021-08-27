@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-
 /** @var \Laravel\Lumen\Routing\Router $router */
 
 /*
@@ -48,8 +46,12 @@ $router->group([
     $router->get('agency/{idAgency}', 'PersonController@showByAgency');
     $router->get('role/{idRole}', 'PersonController@showByRole');
     $router->get('{id}', 'PersonController@showOne');
-    $router->get('/', 'PersonController@show');
+    $router->get('/', ['middleware' => 'roles:2', 'uses' => 'PersonController@show']);
 });
+
+$router->put('post/{id}', ['middleware' => 'role:editor', function ($id) {
+    //
+}]);
 
 /**
  * Routes agency

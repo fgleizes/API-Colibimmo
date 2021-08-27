@@ -40,7 +40,7 @@ class ProjectController extends Controller
     {
         $this->validate($request, [
 
-            'note' => 'string|nullable',
+            'additional_information' => 'string|nullable',
             'commission' => 'integer|nullable',
             // 'area' => 'nullable|regex:/^\d{1,6}(\.\d{1,2})?$/',
             'area' => 'numeric|nullable',
@@ -64,9 +64,13 @@ class ProjectController extends Controller
 
         try {
             $project = new Project();
-            $project->reference = ('lou2408');
+            // $project->reference = ('lou2408');
+            $startRef = substr(Type_project::findOrFail($request->input('id_Type_project'))->name, 0, 3);
+            $endRef = substr(Person::findOrFail($request->input('id_Person'))->firstname, 0, 2) . substr(Person::findOrFail($request->input('id_Person'))->lastname, 0, 3);
+            // dd(strtoupper($startRef . bin2hex(random_bytes((20-strlen($startRef)-strlen($endRef))/2)) . $endRef));
+            $project->reference = strtoupper($startRef . bin2hex(random_bytes((20 - strlen($startRef) - strlen($endRef)) / 2)) . $endRef);
 
-            $project->note = $request->input('note');
+            $project->additional_information = $request->input('additional_information');
             $project->commission = $request->input('commission');
             $project->area = $request->input('area');
             $project->min_area = $request->input('min_area');
@@ -130,7 +134,7 @@ class ProjectController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'note' => 'string|nullable',
+            'additional_information' => 'string|nullable',
             'commission' => 'integer|nullable',
             // 'area' => 'nullable|regex:/^\d{1,6}(\.\d{1,2})?$/',
             'area' => 'numeric|nullable',
