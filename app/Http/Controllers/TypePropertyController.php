@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Type_property;
 use App\Models\Type_property_project;
-
+use App\Models\Project;
 class TypePropertyController extends Controller
 {
     /**
@@ -91,7 +91,7 @@ class TypePropertyController extends Controller
             }
             $Type_property->save();
 
-            return response()->json(['message' => 'OPTION UPDATED'], 200);
+            return response()->json(['message' => 'TYPE UPDATED'], 200);
         } catch (\Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 404);
         }
@@ -108,6 +108,70 @@ class TypePropertyController extends Controller
         $Type_property = Type_property::findOrFail($id);
         $Type_property->delete();
 
-        return response()->json(['message' => 'OPTION DELETED'], 200);
+        return response()->json(['message' => 'TYPE DELETED'], 200);
     }
+
+    // PROPERTY PROJECT
+
+    
+    public function createPropertyProject(Request $request)
+    {
+        $this->validate($request, [
+           
+            'type' => 'exists:Type_property,id',
+            'project' => 'exists:Project,id'
+            
+        ]);
+
+            try {
+                $propertyProject = new Type_property_project();
+               
+
+                $propertyProject->id_Type_property = $request->input('type');
+                $propertyProject->id_Project = $request->input('project');
+
+                $propertyProject->save();
+
+                return response()->json(['message' => 'TYPE PROJECT CREATED'], 201);
+            } catch (\Exception $ex) {
+                return response()->json(['message' => $ex->getMessage()], 409);
+            }
+       
+    }
+
+    public function showPropertyProject()
+    {
+        return response()->json(type_property_project::all(), 200);
+    }
+
+    public function showOnePropertyProject($id)
+    {
+        try{
+            return response()->json(type_property_project::findOrFail($id), 200);
+        }catch (\Exception $ex){
+            return response()->json(['message' => $ex->getMessage()], 404);
+        }   
+    }
+
+    public function updatePropertyProject(Request $request, $id)
+    {
+        $this->validate($request, [
+            'type' => 'exists:Type_property,id',
+            'project' => 'exists:Project,id'
+            
+        ]);
+        try {
+            $propertyProject = Type_property_project::findOrFail($id);
+            $userInput = $request->all();
+
+            $propertyProject->id_Type_property = $request->input('type');
+            $propertyProject->id_Project = $request->input('project');
+            $propertyProject->save();
+
+            return response()->json(['message' => 'PROPERTY PROJECT UPDATED'], 200);
+        } catch (\Exception $ex) {
+            return response()->json(['message' => $ex->getMessage()], 404);
+        }
+    }
+
 }

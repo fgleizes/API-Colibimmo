@@ -190,5 +190,18 @@ $router->group([
     
 });
 
+$router->group([
+    'prefix' => 'typePropertyProject'
+
+], function () use ($router) {
+    $router->post('/', 'TypePropertyController@createPropertyProject');
+    $router->put('{id}', 'TypePropertyController@updatePropertyProject');
+    $router->get('/', 'TypePropertyController@showPropertyProject');
+    $router->get('{id}', 'TypePropertyController@showOnePropertyProject');
+    $router->delete('{id}', 'TypePropertyController@deletePropertyProject');
+   
+    
+});
+
 
 
