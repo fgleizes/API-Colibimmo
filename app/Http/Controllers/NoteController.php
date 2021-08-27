@@ -8,6 +8,16 @@ use Illuminate\Http\Request;
 
 class NoteController extends Controller
 {
+     /**
+     * Create a new AuthController instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth:api');
+    }
+    
     public function create(Request $request){
         $this->validate($request, [
             'title' => 'string|nullable',
