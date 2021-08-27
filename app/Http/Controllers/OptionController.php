@@ -136,6 +136,7 @@ class OptionController extends Controller
         $this->validate($request, [
             'option' => 'string|required',
             'project' => 'integer|required'
+            
         ]);
 
             try {

@@ -17,6 +17,9 @@ use App\Models\Option_project;
 use App\Models\Status_project;
 use App\Models\Location_project;
 use App\Models\Type_property_project;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Lang;
+use App\Models\Room;
 
 class ProjectController extends Controller
 {
@@ -52,6 +55,9 @@ class ProjectController extends Controller
             'short_description' => 'string|nullable',
             'description' => 'string|nullable',
             'visibility_priority' => 'integer|nullable',
+            'options'=>'string|nullable',
+            'rooms'=>'string|nullable',
+            'type'=>'exists:type_property,id|required',
             'id_Person' => 'exists:person,id|required',
             'id_Type_project' => 'exists:type_project,id|required',
             // 'id_Statut_project' => 'exists:status_project,id|required',
@@ -61,6 +67,8 @@ class ProjectController extends Controller
             'id_PersonAgent' => 'exists:person,id|required'
             
         ]);
+
+
 
         try {
             $project = new Project();
@@ -87,11 +95,41 @@ class ProjectController extends Controller
             $project->id_Energy_index = $request->input('id_Energy_index');
             $project->id_Address = $request->input('id_Address');
             // $project->id_Manage_project = $request->input('id_Manage_project');
-            if (Person::where('id_Role', 4)->findOrFail($request->input('id_PersonAgent'))) {
+            // if (Person::where('id_Role', 4)->findOrFail($request->input('id_PersonAgent'))) {
                 $project->id_PersonAgent = $request->input('id_PersonAgent');
+            // }
+
+            //recuperation des entrées pour type_property_project et ajouts.
+            $project->save();
+            $type = $request->input('type');
+            $typeProject= new Type_property_project();
+            $typeProject->id_Type_property=$type;
+            $typeProject->id_Project=$project->id;
+            $typeProject->save();
+
+            //recuperation des entrées pour room et ajouts.
+            $inputRooms = $request->input('rooms');
+            $rooms=unserialize($inputRooms);
+           
+            foreach($rooms as $room){
+                $roomProject = new Room();
+                $roomProject->id_Type_room = $room['id_Type_room'];
+                $roomProject->area = $room['area'];
+                $roomProject->id_Project = $project->id;
+                $roomProject->save();
             }
 
-            $project->save();
+            //recuperation des entrées pour options_project et ajouts.
+            $inputOptions = $request->input('options');
+            $options=unserialize($inputOptions);
+            
+            foreach($options as $option){
+                $optionProject = new Option_project();
+                $optionProject->id_Option = $option;
+                $optionProject->id_Project = $project->id;
+                $optionProject->save();
+            }
+
 
             return response()->json(['message' => 'CREATED'], 201);
         } catch (\Exception $ex) {
@@ -108,7 +146,7 @@ class ProjectController extends Controller
     public function showOne($id)
     {
         try {
-            return response()->json(Project::findOrFail($id), 200);
+            return response()->json(Project::with('project_option')->findOrFail($id), 200);
         } catch (\Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 404);
         }
@@ -121,7 +159,7 @@ class ProjectController extends Controller
      */
     public function show()
     {
-        return response()->json(Project::all(), 200);
+        return response()->json(Project::with('project_option')->get(), 200);
     }
 
     /**
@@ -146,6 +184,8 @@ class ProjectController extends Controller
             'short_description' => 'string|nullable',
             'description' => 'string|nullable',
             'visibility_priority' => 'integer|nullable',
+            'options'=>'string|nullable',
+            'type'=>'string|nullable',
             'id_Person' => 'exists:person,id|nullable',
             'id_Type_project' => 'exists:type_project,id|nullable',
             'id_Statut_project' => 'exists:status_project,id|nullable',
@@ -157,14 +197,39 @@ class ProjectController extends Controller
         try {
             $project = Project::findOrFail($id);
             $userInput = $request->all();
-
             foreach ($userInput as $key => $value) {
-                if (!empty($value)) {
+                if(!empty($value) && $key != 'options'){
                     $project->$key = $value;
+                } else if($key == 'options') {
+                    $newOptions=unserialize($value);
+                    
+                    $oldOptions=Option_project::where('id_Project',$project->id)->get()->pluck('id_Option')->toArray();
+                    
+                    // dd($oldOptions->toArray());
+                    $optionsToDelete=array_diff($oldOptions,$newOptions);
+                    // dd($optionsToDelete);
+                    foreach($optionsToDelete as $optionToDelete){
+                        Option_project::where('id_Option',$optionToDelete)->where('id_Project',$project->id)->delete();
+                    }
+                    foreach($newOptions as $option){
+                        
+                        
+                        if(!sizeof(Option_project::where('id_Option',$option)->where('id_Project',$project->id)->get())){
+                            $optionProject = new Option_project();
+                            $optionProject->id_Option = $option;
+                            $optionProject->id_Project = $project->id;
+                            $optionProject->save();
+                            // dd($option);
+                        } 
+                        
+                    }
                 } else {
                     $project->$key = null;
                 }
-            };
+            }
+
+            
+            
             // $project->reference;
             // $project->note = $request->input('note');
             // $project->commission = $request->input('commission');
@@ -186,6 +251,8 @@ class ProjectController extends Controller
 
             $project->save();
 
+            
+
             return response()->json(['message' => 'UPDATED'], 201);
         } catch (\Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 409);
@@ -201,10 +268,14 @@ class ProjectController extends Controller
     public function delete($id)
     {
         try {
-            $agency = Project::findOrFail($id);
-            $agency->delete();
-          
-            return response()->json(['message' => 'PROJECT DELETED'], 201);
+            $project = Project::findOrFail($id);
+            $optionProjects = Option_project::where('id_project', $id)->get();
+            foreach ($optionProjects as $optionProject) {
+                $optionProject->delete(); 
+            }
+            $project->delete();
+    
+            return response()->json(['message' => 'PROJECT DELETED'], 200);
         } catch (\Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 409);
         }
