@@ -147,6 +147,7 @@ class ProjectController extends Controller
     {
         try {
             return response()->json(Project::with('project_option')->findOrFail($id), 200);
+            // return response()->json(Project::with('note')->where('id',$id)->get(), 200);
         } catch (\Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 404);
         }
@@ -160,6 +161,7 @@ class ProjectController extends Controller
     public function show()
     {
         return response()->json(Project::with('project_option')->get(), 200);
+        // return response()->json(Project::with('note')->get(), 200);
     }
 
     /**

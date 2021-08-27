@@ -20,6 +20,9 @@ class Project extends Model
     public function project_option() {
         return $this->hasMany('App\Models\Option_project', 'id_Project','id');
     }
+    public function note() {
+        return $this->hasMany('App\Models\Note', 'id_Project','id');
+    }
     // // Rest omitted for brevity
 
     // /**
