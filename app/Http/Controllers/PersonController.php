@@ -23,37 +23,37 @@ class PersonController extends Controller
 
     public function create(Request $request)
     {
-        $this->validate($request, [
-            'lastname' => 'required|string',
-            'firstname' => 'required|string',
-            'mail' => 'required|string|email|unique:person',
-            'phone' => 'nullable|string',
-            'number' => 'integer|nullable',
-            'street' => 'string|nullable',
-            'additional_address' => 'string|nullable',
-            'building' => 'string|nullable',
-            'floor' => 'integer|nullable',
-            'residence' => 'string|nullable',
-            'staircase' => 'string|nullable',
-            'name' => 'string|nullable',
-            'id_City' => 'exist:city,id',
-            'id_Agency' => 'nullable|exists:agency,id',
-            'id_Role' => 'required|exists:role,id'
-        ]);
+        // $this->validate($request, [
+        //     'lastname' => 'required|string',
+        //     'firstname' => 'required|string',
+        //     'mail' => 'required|string|email|unique:person',
+        //     'phone' => 'nullable|string',
+        //     'number' => 'integer|nullable',
+        //     'street' => 'string|nullable',
+        //     'additional_address' => 'string|nullable',
+        //     'building' => 'string|nullable',
+        //     'floor' => 'integer|nullable',
+        //     'residence' => 'string|nullable',
+        //     'staircase' => 'string|nullable',
+        //     'name' => 'string|nullable',
+        //     'id_City' => 'exist:city,id',
+        //     'id_Agency' => 'nullable|exists:agency,id',
+        //     'id_Role' => 'required|exists:role,id'
+        // ]);
 
         try {
-            if (!empty($request->input('street'))&& !empty($request->input('name'))) {
-                $address = new Address;
-                $address->number = $request->input('number');
-                $address->street = $request->input('street');
-                $address->additional_address = $request->input('additional_address');
-                $address->building = $request->input('building');
-                $address->floor = $request->input('floor');
-                $address->residence = $request->input('residence');
-                $address->staircase = $request->input('staircase');
-                $address->id_City = City::where('name', $request->input('name'))->firstOrFail()->id;
-                $address->save();
-            }
+            // if (!empty($request->input('street'))&& !empty($request->input('name'))) {
+            //     $address = new Address;
+            //     $address->number = $request->input('number');
+            //     $address->street = $request->input('street');
+            //     $address->additional_address = $request->input('additional_address');
+            //     $address->building = $request->input('building');
+            //     $address->floor = $request->input('floor');
+            //     $address->residence = $request->input('residence');
+            //     $address->staircase = $request->input('staircase');
+            //     $address->id_City = City::where('name', $request->input('name'))->firstOrFail()->id;
+            //     $address->save();
+            // }
 
             $user = new Person;
             $user->lastname = $request->input('lastname');
