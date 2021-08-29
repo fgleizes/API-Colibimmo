@@ -56,8 +56,11 @@ class ProjectController extends Controller
             'description' => 'string|nullable',
             'visibility_priority' => 'integer|nullable',
             'options'=>'string|nullable',
+            // 'options' => 'exists:option,id|required',
             'rooms'=>'string|nullable',
-            'type'=>'exists:type_property,id|required',
+            // 'rooms' => 'exists:type_room,id|required',
+            'types'=>'string|nullable',
+            // 'types' => 'exists:type_property,id|required',
             'id_Person' => 'exists:person,id|required',
             'id_Type_project' => 'exists:type_project,id|required',
             // 'id_Statut_project' => 'exists:status_project,id|required',
@@ -96,17 +99,29 @@ class ProjectController extends Controller
             // }
 
             //recuperation des entrées pour type_property_project et ajouts.
+            $inputPropertyTypes = $request->input('types');
+            $propertyTypes=unserialize($inputPropertyTypes);
+
             $project->save();
-            $type = $request->input('type');
-            $typeProject= new Type_property_project();
-            $typeProject->id_Type_property=$type;
-            $typeProject->id_Project=$project->id;
-            $typeProject->save();
+            foreach($propertyTypes as $propertyType){
+                $propertyProject = new Type_property_project();
+                $propertyProject->id_Type_property = $propertyType;
+                $propertyProject->id_Project = $project->id;
+                $propertyProject->save();
+            }
+
+            // $type = $request->input('type');
+            // $typeProject= new Type_property_project();
+            // $typeProject->id_Type_property=$type;
+            // $typeProject->id_Project=$project->id;
+            // $typeProject->save();
 
             //recuperation des entrées pour room et ajouts.
+            //deserialisation de la chaine de caractère types -> tableaux de données
             $inputRooms = $request->input('rooms');
             $rooms=unserialize($inputRooms);
            
+            //tableaux à deux niveaux, cibler les keys de chaque colonnes type_room et area
             foreach($rooms as $room){
                 $roomProject = new Room();
                 $roomProject->id_Type_room = $room['id_Type_room'];
@@ -116,6 +131,8 @@ class ProjectController extends Controller
             }
 
             //recuperation des entrées pour options_project et ajouts.
+            //deserialisation de la chaine de caractère options -> tableaux de données
+
             $inputOptions = $request->input('options');
             $options=unserialize($inputOptions);
             
@@ -257,7 +274,7 @@ class ProjectController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     *
+     * DELETE ROOM/OPTION/PROPERTY_TYPE LINK TO PROJECT->id
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
@@ -266,8 +283,16 @@ class ProjectController extends Controller
         try {
             $project = Project::findOrFail($id);
             $optionProjects = Option_project::where('id_project', $id)->get();
+            $roomProjects = Room::where('id_project', $id)->get();
+            $propertyProjects = Type_property_project::where('id_project', $id)->get();
             foreach ($optionProjects as $optionProject) {
                 $optionProject->delete(); 
+            }
+            foreach ($roomProjects as $roomProject) {
+                $roomProject->delete(); 
+            }
+            foreach ($propertyProjects as $propertyProject) {
+                $propertyProject->delete(); 
             }
             $project->delete();
     
@@ -276,4 +301,6 @@ class ProjectController extends Controller
             return response()->json(['message' => $ex->getMessage()], 409);
         }
     }
+    
+    
 }
