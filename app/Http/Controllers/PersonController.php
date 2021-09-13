@@ -72,8 +72,8 @@ class PersonController extends Controller
             }
             // $user->save();
 
-            // Mail::to($user->mail())->send(new PersonPassword($user, $plainPassword));
-            Mail::to('florentgleizes@hotmail.com')->send(new PersonPassword($user, $plainPassword));
+            Mail::to($user->mail())->send(new PersonPassword($user, $plainPassword));
+            // Mail::to('florentgleizes@hotmail.com')->send(new PersonPassword($user, $plainPassword));
 
             return response()->json(['message' => 'CREATED'], 201);
         } catch (\Exception $ex) {
