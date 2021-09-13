@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\City;
 use App\Models\Person;
 use App\Models\Address;
+use App\Models\Favorite;
 use App\Mail\PersonPassword;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
 class PersonController extends Controller
@@ -140,5 +142,28 @@ class PersonController extends Controller
     public function showByAgency($idAgency)
     {
         return response()->json(Person::where('id_Role', 1)->where('id_Agency', $idAgency)->get(), 200);
+    }
+
+    public function FavoriteCreate(Request $request)
+    {
+        $this->validate($request, [
+            'id_Project' => 'exists:project,id',
+        ]);
+
+        $favorite = new Favorite();
+        $favorite->id_Person = Auth::user()->id;
+        $favorite->id_Project = $request->input('id_Project');
+        $favorite->save();
+        return response()->json(['message' => 'FAVORITE ADDED'], 200);
+    }
+
+    public function DeleteFavorite($id)
+    {
+        try {
+            Favorite::findOrFail($id)->delete();
+            return response()->json(['message' => 'FAVORITE DELETED'], 200);
+        } catch (\Exception $ex) {
+            return response()->json(['message' => $ex->getMessage()], 409);
+        }
     }
 }
