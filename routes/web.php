@@ -49,6 +49,8 @@ $router->group([
     $router->get('role/{idRole}', 'PersonController@showByRole');
     $router->get('{id}', 'PersonController@showOne');
     $router->get('/', 'PersonController@show');
+    $router->post('favorite', 'PersonController@FavoriteCreate');
+    $router->delete('delete_favorite/{id}', 'PersonController@DeleteFavorite');
 });
 
 /**
@@ -199,5 +201,11 @@ $router->group([
     $router->get('{id}', 'NoteController@showOne');
 });
 
+$router->group([
+    'prefix' => 'favorite'
+
+], function () use ($router) {
+    $router->get('/', 'FavoriteController@ListFavorite');
+});
 
 
