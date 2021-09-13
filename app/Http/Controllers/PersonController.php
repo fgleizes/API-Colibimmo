@@ -72,7 +72,7 @@ class PersonController extends Controller
             if (isset($address)) {
                 $user->id_Address = $address->id;
             }
-            // $user->save();
+            $user->save();
 
             Mail::to($user->mail())->send(new PersonPassword($user, $plainPassword));
             // Mail::to('florentgleizes@hotmail.com')->send(new PersonPassword($user, $plainPassword));
