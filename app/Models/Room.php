@@ -8,6 +8,6 @@ class Room extends Model
 {
     protected $table = 'room';
     protected $primaryKey = "id";
-    protected $fillable = ['area','id_Type_room'];    
+    protected $fillable = ['area','id_Type_room','id_Project'];    
     public $timestamps = false;
 }
