@@ -15,9 +15,14 @@ class Project extends Model
 
     protected $table = "project";
     protected $primaryKey = "id";
-    protected $fillable = ['reference','note','commission','area','min_area','max_area','price','min_price','max_price','short_description','description','visibility_priority','id_Person','id_Type_project','id_Statut_project','id_Energy_index','id_Address','id_Manage_project', 'id_PersonAgent'];
+    protected $fillable = ['reference', 'additional_information','commission','area','min_area','max_area','price','min_price','max_price','short_description','description','visibility_priority','id_Person','id_Type_project','id_Statut_project','id_Energy_index','id_Address','id_Manage_project', 'id_PersonAgent'];
 
-    
+    public function project_option() {
+        return $this->hasMany('App\Models\Option_project', 'id_Project','id');
+    }
+    public function note() {
+        return $this->hasMany('App\Models\Note', 'id_Project','id');
+    }
     // // Rest omitted for brevity
 
     // /**

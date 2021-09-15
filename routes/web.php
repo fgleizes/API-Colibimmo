@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-
 /** @var \Laravel\Lumen\Routing\Router $router */
 
 /*
@@ -48,8 +46,14 @@ $router->group([
     $router->get('agency/{idAgency}', 'PersonController@showByAgency');
     $router->get('role/{idRole}', 'PersonController@showByRole');
     $router->get('{id}', 'PersonController@showOne');
-    $router->get('/', 'PersonController@show');
+    $router->get('/', ['middleware' => 'roles:2', 'uses' => 'PersonController@show']);
+    $router->post('favorite', 'PersonController@FavoriteCreate');
+    $router->delete('delete_favorite/{id}', 'PersonController@DeleteFavorite');
 });
+
+$router->put('post/{id}', ['middleware' => 'role:editor', function ($id) {
+    //
+}]);
 
 /**
  * Routes agency
@@ -186,9 +190,37 @@ $router->group([
     $router->get('/', 'TypePropertyController@show');
     $router->get('{id}', 'TypePropertyController@showOne');
     $router->delete('{id}', 'TypePropertyController@delete');
+});
+
+$router->group([
+    'prefix' => 'note'
+
+], function () use ($router) {
+    $router->post('/', 'NoteController@create');
+    $router->put('{id}', 'NoteController@update');
+    $router->delete('{id}', 'NoteController@delete');
+    $router->get('/', 'NoteController@show');
+    $router->get('{id}', 'NoteController@showOne');
+});
+
+$router->group([
+    'prefix' => 'typePropertyProject'
+
+], function () use ($router) {
+    $router->post('/', 'TypePropertyController@createPropertyProject');
+    $router->put('{id}', 'TypePropertyController@updatePropertyProject');
+    $router->get('/', 'TypePropertyController@showPropertyProject');
+    $router->get('{id}', 'TypePropertyController@showOnePropertyProject');
+    $router->delete('{id}', 'TypePropertyController@deletePropertyProject');
    
     
 });
 
+$router->group([
+    'prefix' => 'favorite'
+
+], function () use ($router) {
+    $router->get('/', 'FavoriteController@ListFavorite');
+});
 
 
