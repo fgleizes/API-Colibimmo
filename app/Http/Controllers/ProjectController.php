@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use App\Models\Option_project;
 use App\Models\Status_project;
 use App\Models\Location_project;
+use App\Models\Manage_project;
 use App\Models\Type_property_project;
 
 class ProjectController extends Controller
@@ -105,6 +106,22 @@ class ProjectController extends Controller
     {
         try {
             return response()->json(Project::with('note')->where('id',$id)->get(), 200);
+        } catch (\Exception $ex) {
+            return response()->json(['message' => $ex->getMessage()], 404);
+        }
+    }
+    
+    
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function showByPerson($id_Person)
+    {
+        try {
+            return response()->json(Project::with('note')->where('id_Person',$id_Person)->get(), 200);
         } catch (\Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 404);
         }
@@ -204,5 +221,40 @@ class ProjectController extends Controller
         } catch (\Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 409);
         }
+    }
+
+    public function showhTypeProject($id)
+    {
+        try{
+            return response()->json(Type_project::where('id',$id)->get(),200);
+        }catch (\Exception $ex){
+            return response()->json(['message' => $ex->getMessage()], 404);
+        } 
+    }
+
+    public function showhStatutProject($id)
+    {
+        try{
+            return response()->json(Status_project::where('id',$id)->get(),200);
+        }catch (\Exception $ex){
+            return response()->json(['message' => $ex->getMessage()], 404);
+        } 
+    }
+
+    public function showhManageProject($id)
+    {
+        try{
+            return response()->json(Manage_project::where('id',$id)->get(),200);
+        }catch (\Exception $ex){
+            return response()->json(['message' => $ex->getMessage()], 404);
+        } 
+    }
+    public function showEnergyIndex($id)
+    {
+        try{
+            return response()->json(Energy_index::where('id',$id)->get(),200);
+        }catch (\Exception $ex){
+            return response()->json(['message' => $ex->getMessage()], 404);
+        } 
     }
 }

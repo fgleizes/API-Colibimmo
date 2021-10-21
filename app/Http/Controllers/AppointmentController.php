@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Appointment;
 use Illuminate\Http\Request;
 use App\Models\Person_appointment;
+use App\Models\Type_appointment;
 
 class AppointmentController extends Controller
 {
@@ -123,4 +124,23 @@ class AppointmentController extends Controller
             return response()->json(['message' => $ex->getMessage()], 404);
         }   
     }
+    
+    
+     public function showByProject($id_Project)
+    {
+        try{
+            return response()->json(Person_appointment::with('appointment')->where('id_Project', $id_Project)->get(), 200);
+        }catch (\Exception $ex){
+            return response()->json(['message' => $ex->getMessage()], 404);
+        }   
+    }
+
+    public function showTypeAppointment($id){
+        try{
+            return response()->json(Type_appointment::where('id',$id)->get(),200);
+        }catch (\Exception $ex){
+            return response()->json(['message' => $ex->getMessage()], 404);
+        } 
+    }
+    
 }

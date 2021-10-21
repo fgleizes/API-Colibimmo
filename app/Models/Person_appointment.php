@@ -11,4 +11,9 @@ class Person_appointment extends Model
     protected $fillable = ['id_Project'];
     protected $hidden = ['id_Appointment'];
     public $timestamps = false;
+    
+    public function appointment() {
+        return $this->hasMany('App\Models\Appointment', 'id','id_Appointment');
+    }
 }
+
