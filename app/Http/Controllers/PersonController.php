@@ -122,16 +122,23 @@ class PersonController extends Controller
             return response()->json(['message' => $ex->getMessage()], 409);
         }
     }
-
+    
     public function show()
     {
-        return response()->json(Person::all(), 200);
+        $persons = Person::with('role')->get();
+        foreach ($persons as $person) {
+            personAddress($person);
+        }
+        return response()->json($persons, 200);
     }
 
     public function showOne($idPerson)
     {
         try {
-            return response()->json(Person::with('role')->findOrFail($idPerson), 200);
+            $person = Person::with('role')->findOrFail($idPerson);
+            personAddress($person);
+
+            return response()->json($person, 200);
         } catch (\Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 409);
         }
@@ -168,5 +175,22 @@ class PersonController extends Controller
         } catch (\Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 409);
         }
+    }
+}
+
+function personAddress($person) {
+    if ($person->id_Address !== null) {
+        $address = Address::findOrFail($person->id_Address);
+        $city = City::findOrFail($address->id_City);
+        $department = department::findOrFail($city->id_Department);
+        $region = Region::findOrFail($department->id_Region);
+
+        $person->address = $address;
+        $person->address->zip_code = $city->zip_code;
+        $person->address->city = $city->name;
+        $person->address->department = $department->name;
+        $person->address->region = $region->name;
+    } else {
+        $person->address = null;
     }
 }

@@ -16,22 +16,10 @@ class RoleController extends Controller
         $this->middleware('auth:api');
     }
 
-
     public function show()
     {
         return response()->json(Role::all(), 200);
     }
-
-    public function oneShow($id)
-    {
-        try{
-            return response()->json(Role::findOrFail($id), 200);
-        }catch (\Exception $ex){
-            return response()->json(['message' => $ex->getMessage()], 404);
-        }
-        
-    }
-
 
     public function update(Request $request, $id)
     {

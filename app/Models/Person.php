@@ -15,8 +15,8 @@ class Person extends Model implements AuthenticatableContract, AuthorizableContr
 
     protected $table = 'person';
     protected $primaryKey = 'id';
-    protected $fillable = ['lastname','firstname','mail','phone','id_Address','id_Agency'];
-    protected $hidden = ['password','id_Role'];
+    protected $fillable = ['lastname','firstname','mail','phone','id_Agency'];
+    protected $hidden = ['password','id_Address','id_Role'];
 
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.

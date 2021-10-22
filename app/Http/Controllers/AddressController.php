@@ -112,13 +112,13 @@ class AddressController extends Controller
         $department = Department::findOrFail($city->id_Department);
         $region = Region::findOrFail($department->id_Region);
 
+        $address->city = $city->name;
+        $address->zip_code = $city->zip_code;
+        $address->department = $department->name;
+        $address->region = $region->name;
+
         try {
-            return response()->json([
-                'Address' => $address,
-                'City' => $city,
-                'Department' => $department,
-                'Region' => $region,
-            ], 200);
+            return response()->json($address, 200);
         } catch (\Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 404);
         }
