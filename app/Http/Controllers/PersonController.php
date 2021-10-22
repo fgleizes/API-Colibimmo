@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\City;
+use App\Models\Agency;
 use App\Models\Person;
+use App\Models\Region;
 use App\Models\Address;
 use App\Models\Favorite;
+use App\Models\Department;
 use App\Mail\PersonPassword;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -83,7 +86,7 @@ class PersonController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $idPerson)
     {
         $this->validate($request, [
             'lastname' => 'string',
@@ -97,7 +100,7 @@ class PersonController extends Controller
         ]);
 
         try {
-            $user = Person::findOrFail($id);
+            $user = Person::findOrFail($idPerson);
 
             if ($request->input('mail') && $request->input('mail') != $user->mail && Person::where('mail', $request->input('mail'))->first()) {
                 return response()->json(['mail' => ['The mail has already been taken.']], 409);
@@ -110,25 +113,32 @@ class PersonController extends Controller
         }
     }
 
-    public function delete($id)
+    public function delete($idPerson)
     {
         try {
-            Person::findOrFail($id)->delete();
+            Person::findOrFail($idPerson)->delete();
             return response()->json(['message' => 'USER DELETED'], 200);
         } catch (\Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 409);
         }
     }
-
+    
     public function show()
     {
-        return response()->json(Person::all(), 200);
+        $persons = Person::with('role')->get();
+        foreach ($persons as $person) {
+            personAddress($person);
+        }
+        return response()->json($persons, 200);
     }
 
-    public function showOne($id) 
+    public function showOne($idPerson)
     {
         try {
-            return response()->json(Person::findOrFail($id), 200);
+            $person = Person::with('role')->findOrFail($idPerson);
+            personAddress($person);
+
+            return response()->json($person, 200);
         } catch (\Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 409);
         }
@@ -165,5 +175,22 @@ class PersonController extends Controller
         } catch (\Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 409);
         }
+    }
+}
+
+function personAddress($person) {
+    if ($person->id_Address !== null) {
+        $address = Address::findOrFail($person->id_Address);
+        $city = City::findOrFail($address->id_City);
+        $department = department::findOrFail($city->id_Department);
+        $region = Region::findOrFail($department->id_Region);
+
+        $person->address = $address;
+        $person->address->zip_code = $city->zip_code;
+        $person->address->city = $city->name;
+        $person->address->department = $department->name;
+        $person->address->region = $region->name;
+    } else {
+        $person->address = null;
     }
 }

@@ -7,14 +7,15 @@ use App\Models\Person;
 use App\Models\Address;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-
+use App\Models\Department;
+use App\Models\Region;
 
 class AddressController extends Controller
 {
 
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['showCities']]);
+        $this->middleware('auth:api', ['except' => ['showCities','showCity','showDepartments','showDepartment','showRegions','showRegion']]);
     }
 
     public function create(Request $request)
@@ -51,7 +52,7 @@ class AddressController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $idAddress)
     {
         $this->validate($request, [
             'number' => 'integer|nullable',
@@ -66,7 +67,7 @@ class AddressController extends Controller
         ]);
 
         try {
-            $address = Address::findOrFail($id);
+            $address = Address::findOrFail($idAddress);
             $userInput = $request->all();
 
             foreach ($userInput as $key => $value) {
@@ -87,10 +88,10 @@ class AddressController extends Controller
         }
     }
 
-    public function delete($id)
+    public function delete($idAddress)
     {
         try {
-            $agency = Address::findOrFail($id);
+            $agency = Address::findOrFail($idAddress);
             $agency->delete();
           
             return response()->json(['message' => 'ADDRESS DELETED'], 201);
@@ -104,10 +105,20 @@ class AddressController extends Controller
         return response()->json(Address::all(), 200);
     }
 
-    public function showAdress($id)
+    public function showAdress($idAddress)
     {
+        $address = Address::findOrFail($idAddress);
+        $city = City::findOrFail($address->id_City);
+        $department = Department::findOrFail($city->id_Department);
+        $region = Region::findOrFail($department->id_Region);
+
+        $address->city = $city->name;
+        $address->zip_code = $city->zip_code;
+        $address->department = $department->name;
+        $address->region = $region->name;
+
         try {
-            return response()->json(Address::findOrFail($id), 200);
+            return response()->json($address, 200);
         } catch (\Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 404);
         }
@@ -123,19 +134,19 @@ class AddressController extends Controller
         }
     }
 
-    public function showAddressByPerson($id)
-    {
-        try{
-            $idAddress = Person::findOrfail($id)->id_Address ;
-            return response()->json(Address::findOrFail($idAddress), 200);
-        } catch (\Exception $ex){
-            return response()->json(['message'=>$ex->getMessage()],404);
-        }
-    }
+    // public function showAddressByPerson($idPerson)
+    // {
+    //     try{
+    //         $idAddress = Person::findOrfail($idPerson)->id_Address ;
+    //         return response()->json(Address::findOrFail($idAddress), 200);
+    //     } catch (\Exception $ex){
+    //         return response()->json(['message'=>$ex->getMessage()],404);
+    //     }
+    // }
 
     public function showCities(Request $request)
     {
-        $this->validate($request, ['search' => 'alpha_num|required']);
+        $this->validate($request, ['search' => 'alpha_num']);
 
         $cities = City::Where('name', 'like', '%' . $request->input('search') . '%')
             ->orWhere('zip_code', 'like', '%' . $request->input('search') . '%')
@@ -149,44 +160,42 @@ class AddressController extends Controller
         }
     }
 
-    // public function showCity($id)
-    // {
-    //     try {
-    //         return response()->json(City::findOrFail($id), 200);
-    //     } catch (\Exception $ex) {
-    //         return response()->json(['message' => $ex->getMessage()], 404);
-    //     }
-    // }
+    public function showCity($id)
+    {
+        try {
+            return response()->json(City::findOrFail($id), 200);
+        } catch (\Exception $ex) {
+            return response()->json(['message' => $ex->getMessage()], 404);
+        }
+    }
 
+    public function showDepartments()
+    {
+        return response()->json(Department::all(), 200);
+    }
 
+    public function showDepartment($id)
+    {
+        try {
+            return response()->json(Department::findOrFail($id), 200);
+        } catch (\Exception $ex) {
+            return response()->json(['message' => $ex->getMessage()], 404);
+        }
+    }
 
-    // public function showDepartments()
-    // {
-    //     return response()->json(Address::all(), 200);
-    // }
+    public function showRegions()
+    {
+        return response()->json(Region::all(), 200);
+    }
 
-    // public function showDepartment($id)
-    // {
-    //     try {
-    //         return response()->json(Department::findOrFail($id), 200);
-    //     } catch (\Exception $ex) {
-    //         return response()->json(['message' => $ex->getMessage()], 404);
-    //     }
-    // }
-
-    // public function showRegions()
-    // {
-    //     return response()->json(Address::all(), 200);
-    // }
-
-    // public function showRegion($id)
-    // {
-    //     try {
-    //         return response()->json(Region::findOrFail($id), 200);
-    //     } catch (\Exception $ex) {
-    //         return response()->json(['message' => $ex->getMessage()], 404);
-    //     }
-    // }
+    public function showRegion($id)
+    {
+        try {
+            return response()->json(Region::findOrFail($id), 200);
+        } catch (\Exception $ex) {
+            return response()->json(['message' => $ex->getMessage()], 404);
+        }
+    }
 }
 
 

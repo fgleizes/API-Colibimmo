@@ -1,7 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\City;
 use App\Models\Agency;
+use App\Models\Region;
+use App\Models\Address;
+use App\Models\Department;
 use Illuminate\Http\Request;
 
 class AgencyController extends Controller
@@ -81,7 +85,19 @@ class AgencyController extends Controller
     public function showOne($id)
     {
         try{
-            return response()->json(Agency::findOrFail($id), 200);
+            $agency = Agency::findOrFail($id);
+            $agencyAddress = Address::findOrFail($agency->id_Address);
+            $agencyCity = City::findOrFail($agencyAddress->id_City);
+            $agencyDepartment = Department::findOrFail($agencyCity->id_Department);
+            $agencyRegion = Region::findOrFail($agencyDepartment->id_Region);
+            
+            return response()->json([
+                'Agency' => $agency,
+                'Address' => $agencyAddress,
+                'City' => $agencyCity,
+                'Department' => $agencyDepartment,
+                'Region' => $agencyRegion
+            ], 200);
         }catch (\Exception $ex){
             return response()->json(['message' => $ex->getMessage()], 404);
         }   

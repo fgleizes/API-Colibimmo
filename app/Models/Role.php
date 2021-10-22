@@ -8,5 +8,10 @@ class Role extends Model
 {
     protected $table = 'role';
     protected $primaryKey = 'id';
-    protected $fillable = ['name', 'priority']; 
+    protected $fillable = ['name', 'priority'];
+
+    public function person()
+    {
+        return $this->belongsTo(Person::class);
+    }
 }
