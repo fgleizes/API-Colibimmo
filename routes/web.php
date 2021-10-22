@@ -119,7 +119,13 @@ $router->group([
     $router->delete('{id}','ProjectController@delete');
     $router->get('{id}', 'ProjectController@showOne');
     $router->get('/','ProjectController@show');
+    $router->get('person/{id_Person}','ProjectController@showByPerson');
+    $router->get('typeProject/{id}','ProjectController@showhTypeProject');
+    $router->get('statutProject/{id}','ProjectController@showhStatutProject');
+    $router->get('manageProject/{id}','ProjectController@showhManageProject');
+    $router->get('energieIndex/{id}','ProjectController@showEnergyIndex');
 });
+
 
 /**
  * Routes Appointment
@@ -133,6 +139,8 @@ $router->group([
     $router->delete('{id}', 'AppointmentController@delete');
     $router->get('{id}','AppointmentController@showOne');
     $router->get('/','AppointmentController@show');
+    $router->get('project/{id_Project}','AppointmentController@showByProject');
+    $router->get('typeAppointment/{id}','AppointmentController@showTypeAppointment');
 });
 
 /**
