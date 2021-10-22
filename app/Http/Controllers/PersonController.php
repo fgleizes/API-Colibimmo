@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\City;
+use App\Models\Agency;
 use App\Models\Person;
+use App\Models\Region;
 use App\Models\Address;
 use App\Models\Favorite;
+use App\Models\Department;
 use App\Mail\PersonPassword;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -83,7 +86,7 @@ class PersonController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $idPerson)
     {
         $this->validate($request, [
             'lastname' => 'string',
@@ -97,7 +100,7 @@ class PersonController extends Controller
         ]);
 
         try {
-            $user = Person::findOrFail($id);
+            $user = Person::findOrFail($idPerson);
 
             if ($request->input('mail') && $request->input('mail') != $user->mail && Person::where('mail', $request->input('mail'))->first()) {
                 return response()->json(['mail' => ['The mail has already been taken.']], 409);
@@ -110,10 +113,10 @@ class PersonController extends Controller
         }
     }
 
-    public function delete($id)
+    public function delete($idPerson)
     {
         try {
-            Person::findOrFail($id)->delete();
+            Person::findOrFail($idPerson)->delete();
             return response()->json(['message' => 'USER DELETED'], 200);
         } catch (\Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 409);
@@ -125,10 +128,10 @@ class PersonController extends Controller
         return response()->json(Person::all(), 200);
     }
 
-    public function showOne($id) 
+    public function showOne($idPerson)
     {
         try {
-            return response()->json(Person::findOrFail($id), 200);
+            return response()->json(Person::with('role')->findOrFail($idPerson), 200);
         } catch (\Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 409);
         }

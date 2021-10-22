@@ -41,11 +41,11 @@ $router->group([
 
 ], function () use ($router) {
     $router->post('/', 'PersonController@create');
-    $router->put('{id}', 'PersonController@update');
-    $router->delete('{id}', 'PersonController@delete');
+    $router->put('{idPerson}', 'PersonController@update');
+    $router->delete('{idPerson}', 'PersonController@delete');
     $router->get('agency/{idAgency}', 'PersonController@showByAgency');
     $router->get('role/{idRole}', 'PersonController@showByRole');
-    $router->get('{id}', 'PersonController@showOne');
+    $router->get('{idPerson}', 'PersonController@showOne');
     $router->get('/', ['middleware' => 'roles:2', 'uses' => 'PersonController@show']);
     $router->post('favorite', 'PersonController@FavoriteCreate');
     $router->delete('delete_favorite/{id}', 'PersonController@DeleteFavorite');
@@ -92,12 +92,17 @@ $router->group([
 ], function () use ($router) {
 
     $router->post('/', 'AddressController@create');
-    $router->put('{id}','AddressController@update');
-    $router->delete('{id}','AddressController@delete');
-    $router->get('showByCity/{name}','AddressController@showAddressesByCity');
-    $router->get('showByPerson/{id}','AddressController@showAddressByPerson');
+    $router->put('{idAddress}','AddressController@update');
+    $router->delete('{idAddress}','AddressController@delete');
+    $router->get('city/{name}','AddressController@showAddressesByCity');
+    $router->get('person/{idPerson}','AddressController@showAddressByPerson');
     $router->get('cities', 'AddressController@showCities');
-    $router->get('{id}', 'AddressController@showAdress');
+    $router->get('/cities/{idCity}','AddressController@showCity');
+    $router->get('/departments','AddressController@showDepartments');
+    $router->get('/departments/{idDepartment}','AddressController@showDepartment');
+    $router->get('/regions','AddressController@showRegions');
+    $router->get('/regions/{idRegion}','AddressController@showRegion');
+    $router->get('{idAddress}', 'AddressController@showAdress');
     $router->get('/','AddressController@showAdresses');
 });
 
