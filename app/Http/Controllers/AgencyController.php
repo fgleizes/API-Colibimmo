@@ -79,27 +79,40 @@ class AgencyController extends Controller
 
     public function show()
     {
-        return response()->json(Agency::all(), 200);
+        $agencies = Agency::get();
+        foreach ($agencies as $agency) {
+            mergeAddress($agency);
+        }
+        return response()->json($agencies, 200);
     }
 
     public function showOne($id)
     {
         try{
             $agency = Agency::findOrFail($id);
-            $agencyAddress = Address::findOrFail($agency->id_Address);
-            $agencyCity = City::findOrFail($agencyAddress->id_City);
-            $agencyDepartment = Department::findOrFail($agencyCity->id_Department);
-            $agencyRegion = Region::findOrFail($agencyDepartment->id_Region);
+            mergeAddress($agency);
             
-            return response()->json([
-                'Agency' => $agency,
-                'Address' => $agencyAddress,
-                'City' => $agencyCity,
-                'Department' => $agencyDepartment,
-                'Region' => $agencyRegion
-            ], 200);
+            return response()->json($agency, 200);
         }catch (\Exception $ex){
             return response()->json(['message' => $ex->getMessage()], 404);
         }   
+    }
+}
+
+function mergeAddress($object)
+{
+    if ($object->id_Address !== null) {
+        $address = Address::findOrFail($object->id_Address);
+        $city = City::findOrFail($address->id_City);
+        $department = Department::findOrFail($city->id_Department);
+        $region = Region::findOrFail($department->id_Region);
+
+        $object->address = $address;
+        $object->address->zip_code = $city->zip_code;
+        $object->address->city = $city->name;
+        $object->address->department = $department->name;
+        $object->address->region = $region->name;
+    } else {
+        $object->address = null;
     }
 }
