@@ -3,14 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\City;
+use App\Models\Role;
 use App\Models\Person;
 use App\Models\Region;
 use App\Models\Address;
 use App\Models\Department;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 
+use Illuminate\Support\Facades\Auth;
 use function App\Http\Controllers\mergeAddress as ControllersMergeAddress;
 
 class AuthController extends Controller
@@ -83,6 +84,8 @@ class AuthController extends Controller
     public function me()
     {
         $user = Auth::user();
+        $role = Role::findOrFail($user->id_Role);
+        $user->role = $role;
         ControllersMergeAddress(($user));
 
         return response()->json($user, 200);
