@@ -2,10 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Models\City;
 use App\Models\Person;
+use App\Models\Region;
+use App\Models\Address;
+use App\Models\Department;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+
+use function App\Http\Controllers\mergeAddress as ControllersMergeAddress;
 
 class AuthController extends Controller
 {
@@ -76,7 +82,10 @@ class AuthController extends Controller
      */
     public function me()
     {
-        return response()->json(Auth::user());
+        $user = Auth::user();
+        ControllersMergeAddress(($user));
+
+        return response()->json($user, 200);
     }
 
     /**
@@ -115,5 +124,23 @@ class AuthController extends Controller
             'token_type' => 'bearer',
             'expires_in' => Auth::factory()->getTTL() * 60
         ]);
+    }
+}
+
+function mergeAddress($object)
+{
+    if ($object->id_Address !== null) {
+        $address = Address::findOrFail($object->id_Address);
+        $city = City::findOrFail($address->id_City);
+        $department = Department::findOrFail($city->id_Department);
+        $region = Region::findOrFail($department->id_Region);
+
+        $object->address = $address;
+        $object->address->zip_code = $city->zip_code;
+        $object->address->city = $city->name;
+        $object->address->department = $department->name;
+        $object->address->region = $region->name;
+    } else {
+        $object->address = null;
     }
 }

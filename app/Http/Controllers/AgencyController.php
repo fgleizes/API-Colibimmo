@@ -104,7 +104,7 @@ function mergeAddress($object)
     if ($object->id_Address !== null) {
         $address = Address::findOrFail($object->id_Address);
         $city = City::findOrFail($address->id_City);
-        $department = department::findOrFail($city->id_Department);
+        $department = Department::findOrFail($city->id_Department);
         $region = Region::findOrFail($department->id_Region);
 
         $object->address = $address;
