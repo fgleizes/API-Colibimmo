@@ -8,5 +8,6 @@ class Agency extends Model
 {
     protected $table = 'agency';
     protected $primaryKey = 'id';
-    protected $fillable = ['name', 'mail','phone','id_Address'];    
+    protected $fillable = ['name', 'mail','phone','id_Address'];
+    protected $hidden = ['id_Address'];
 }

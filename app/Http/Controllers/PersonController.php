@@ -127,7 +127,7 @@ class PersonController extends Controller
     {
         $persons = Person::with('role')->get();
         foreach ($persons as $person) {
-            personAddress($person);
+            mergeAddress($person);
         }
         return response()->json($persons, 200);
     }
@@ -136,7 +136,7 @@ class PersonController extends Controller
     {
         try {
             $person = Person::with('role')->findOrFail($idPerson);
-            personAddress($person);
+            mergeAddress($person);
 
             return response()->json($person, 200);
         } catch (\Exception $ex) {
@@ -178,19 +178,19 @@ class PersonController extends Controller
     }
 }
 
-function personAddress($person) {
-    if ($person->id_Address !== null) {
-        $address = Address::findOrFail($person->id_Address);
+function mergeAddress($object) {
+    if ($object->id_Address !== null) {
+        $address = Address::findOrFail($object->id_Address);
         $city = City::findOrFail($address->id_City);
         $department = department::findOrFail($city->id_Department);
         $region = Region::findOrFail($department->id_Region);
 
-        $person->address = $address;
-        $person->address->zip_code = $city->zip_code;
-        $person->address->city = $city->name;
-        $person->address->department = $department->name;
-        $person->address->region = $region->name;
+        $object->address = $address;
+        $object->address->zip_code = $city->zip_code;
+        $object->address->city = $city->name;
+        $object->address->department = $department->name;
+        $object->address->region = $region->name;
     } else {
-        $person->address = null;
+        $object->address = null;
     }
 }
