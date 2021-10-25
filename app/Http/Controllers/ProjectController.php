@@ -328,4 +328,39 @@ class ProjectController extends Controller
         }
     }
 
+    public function showTypeProject($id)
+    {
+        try{
+            return response()->json(Type_project::where('id',$id)->get(),200);
+        }catch (\Exception $ex){
+            return response()->json(['message' => $ex->getMessage()], 404);
+        } 
+    }
+
+    public function showStatutProject($id)
+    {
+        try{
+            return response()->json(Status_project::where('id',$id)->get(),200);
+        }catch (\Exception $ex){
+            return response()->json(['message' => $ex->getMessage()], 404);
+        } 
+    }
+
+    public function showManageProject($id)
+    {
+        try{
+            return response()->json(Manage_project::where('id',$id)->get(),200);
+        }catch (\Exception $ex){
+            return response()->json(['message' => $ex->getMessage()], 404);
+        } 
+    }
+    public function showEnergyIndex($id)
+    {
+        try{
+            return response()->json(Energy_index::where('id',$id)->get(),200);
+        }catch (\Exception $ex){
+            return response()->json(['message' => $ex->getMessage()], 404);
+        } 
+    }
+
 }
