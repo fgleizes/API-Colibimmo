@@ -147,7 +147,20 @@ class ProjectController extends Controller
     public function showOne($id)
     {
         try {
-            return response()->json(Project::with('project_option')->findOrFail($id), 200);
+            $project = Project::findOrFail($id);
+            $typeProject = Type_project::findOrFail($project->id_Type_project);
+            $statutProject = Status_project::findOrFail($project->id_Statut_project);
+            $energieIndex = Energy_index::findOrFail($project->id_Energy_index);
+            $manageProject = Manage_project::findOrFail($project->id_Manage_project);
+            $personProject = Person::findOrFail($project->id_Person);
+            $project->type_project = $typeProject;
+            $project->status_project=$statutProject;
+            $project->energieIndex = $energieIndex;
+            $project->manageProject = Person::findOrFail($manageProject);
+            $project->personProject =$personProject;
+
+            
+            return response()->json($project, 200);
             // return response()->json(Project::with('note')->where('id',$id)->get(), 200);
         } catch (\Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 404);
@@ -164,7 +177,22 @@ class ProjectController extends Controller
     public function showByPerson($id_Person)
     {
         try {
-            return response()->json(Project::with('note')->where('id_Person',$id_Person)->get(), 200);
+
+            $projects = Project::where('id_Person',$id_Person)->get();
+            $projectPerson=[];
+            foreach ($projects as $key => $value) {
+                $projectPerson[$key] = Project::findOrFail($value->id);
+                $type_project = Type_project::findOrfail($projectPerson[$key]->id_Type_project);
+                $projectPerson[$key]->type_project = $type_project->name;
+                $manageProject = Manage_project::findOrfail($projectPerson[$key]->id_Manage_project);
+                $projectPerson[$key]->manageProject = $manageProject->name;
+                $energyIndex = Energy_index::findOrfail($projectPerson[$key]->id_Energy_index);
+                $projectPerson[$key]->energyIndex = $energyIndex->index;
+                $statutProject = Status_project::findOrfail($projectPerson[$key]->id_Statut_project);
+                $projectPerson[$key]->statutProject = $statutProject->name;
+            }
+            return response()->json($projectPerson, 200);
+            
         } catch (\Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 404);
         }
@@ -300,38 +328,4 @@ class ProjectController extends Controller
         }
     }
 
-    public function showhTypeProject($id)
-    {
-        try{
-            return response()->json(Type_project::where('id',$id)->get(),200);
-        }catch (\Exception $ex){
-            return response()->json(['message' => $ex->getMessage()], 404);
-        } 
-    }
-
-    public function showhStatutProject($id)
-    {
-        try{
-            return response()->json(Status_project::where('id',$id)->get(),200);
-        }catch (\Exception $ex){
-            return response()->json(['message' => $ex->getMessage()], 404);
-        } 
-    }
-
-    public function showhManageProject($id)
-    {
-        try{
-            return response()->json(Manage_project::where('id',$id)->get(),200);
-        }catch (\Exception $ex){
-            return response()->json(['message' => $ex->getMessage()], 404);
-        } 
-    }
-    public function showEnergyIndex($id)
-    {
-        try{
-            return response()->json(Energy_index::where('id',$id)->get(),200);
-        }catch (\Exception $ex){
-            return response()->json(['message' => $ex->getMessage()], 404);
-        } 
-    }
 }

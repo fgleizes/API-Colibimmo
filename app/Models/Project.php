@@ -23,6 +23,9 @@ class Project extends Model
     public function note() {
         return $this->hasMany('App\Models\Note', 'id_Project','id');
     }
+    public function type_project(){
+        return $this->hasOne(Type_project::class,'id','id_Type_project');
+    }
     // // Rest omitted for brevity
 
     // /**
