@@ -7,6 +7,7 @@ use App\Models\Project;
 use App\Models\Note;
 use App\Models\Person;
 use App\Models\Address;
+use App\Models\Agency;
 use App\Models\Document;
 use App\Models\Appointment;
 use App\Models\Energy_index;
@@ -185,7 +186,9 @@ class ProjectController extends Controller
                 $type_project = Type_project::findOrfail($projectPerson[$key]->id_Type_project);
                 $projectPerson[$key]->type_project = $type_project->name;
                 $manageProject = Manage_project::findOrfail($projectPerson[$key]->id_Manage_project);
-                $projectPerson[$key]->manageProject = $manageProject->name;
+                $projectPerson[$key]->manageProject = Person::findOrfail($manageProject->id_Person);
+                $agency = $projectPerson[$key]->manageProject->id_Agency;
+                $projectPerson[$key]->agency = Agency::findOrfail($agency);
                 $energyIndex = Energy_index::findOrfail($projectPerson[$key]->id_Energy_index);
                 $projectPerson[$key]->energyIndex = $energyIndex->index;
                 $statutProject = Status_project::findOrfail($projectPerson[$key]->id_Statut_project);
