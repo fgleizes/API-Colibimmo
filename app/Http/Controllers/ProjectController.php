@@ -185,8 +185,12 @@ class ProjectController extends Controller
                 $projectPerson[$key] = Project::findOrFail($value->id);
                 $type_project = Type_project::findOrfail($projectPerson[$key]->id_Type_project);
                 $projectPerson[$key]->type_project = $type_project->name;
+                $customer = $projectPerson[$key]->id_Person;
+                $projectPerson[$key]->customer= Person::findOrfail($customer);
                 $manageProject = Manage_project::findOrfail($projectPerson[$key]->id_Manage_project);
                 $projectPerson[$key]->manageProject = Person::findOrfail($manageProject->id_Person);
+                $address = $projectPerson[$key]->id_Address;
+                $projectPerson[$key]->address= Address::findOrfail($address);
                 $agency = $projectPerson[$key]->manageProject->id_Agency;
                 $projectPerson[$key]->agency = Agency::findOrfail($agency);
                 $energyIndex = Energy_index::findOrfail($projectPerson[$key]->id_Energy_index);
