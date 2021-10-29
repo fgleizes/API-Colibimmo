@@ -159,7 +159,6 @@ class ProjectController extends Controller
             $project->energieIndex = $energieIndex;
             $project->manageProject = Person::findOrFail($manageProject);
             $project->personProject =$personProject;
-
             
             return response()->json($project, 200);
             // return response()->json(Project::with('note')->where('id',$id)->get(), 200);
