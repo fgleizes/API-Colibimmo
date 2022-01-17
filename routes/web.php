@@ -235,4 +235,11 @@ $router->group([
     $router->get('/', 'FavoriteController@ListFavorite');
 });
 
+$router->group([
+    'prefix' => 'personAppointment'
+
+], function () use ($router) {
+    $router->get('/', 'PersonAppointmentController@show');
+});
+
 
