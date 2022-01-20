@@ -177,8 +177,8 @@ class ProjectController extends Controller
             $project->id_Address->City->Departement=Department::findOrFail($project->id_Address->City->id_Department);
             $project->id_Address->City->Departement->Region=Region::findOrFail($project->id_Address->City->Departement->id_Region);
 
-            $manageProject = Manage_project::findOrFail($project->id_Manage_project);
-            $project->manageProject = Person::findOrFail($manageProject);
+            // $manageProject = Manage_project::findOrFail($project->id_Manage_project);
+            $project->personAgent = Person::findOrFail($project->id_PersonAgent);
             $project->personProject = Person::findOrFail($project->id_Person);
             $project->energieIndex = Energy_index::findOrFail($project->id_Energy_index);
             
