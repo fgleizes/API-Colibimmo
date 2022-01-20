@@ -196,11 +196,25 @@ class ProjectController extends Controller
      */
     public function show()
     {
-        $projects = Project::with('project_option','project_room',)->get();
+        $projects = Project::all();
         foreach ($projects as $project) {
             $mainImagePath =  Document::where('id_Type_document', '2')->where('id_Project', $project->id)->first();
             $project->mainImagePath = $mainImagePath ? $mainImagePath->pathname : '../IMG/imgAppart.jpg';
-            
+            $project->id_Person=Person::findOrFail($project->id_Person);
+            $project->id_PersonAgent=Person::findOrFail($project->id_PersonAgent);
+            $project->option_project=Option_project::where('id_Project', $project->id)->get();
+            foreach($project->option_project as $key => $value) {
+                $project->option_project[$key]->name = Option::findOrFail($value->id_Option)->name;
+            }
+            $project->room_project=Room::where('id_Project', $project->id)->get();
+            foreach($project->room_project as $key => $value) {
+                $project->room_project[$key]->name = Type_room::findOrFail($value->id_Type_room)->name;
+            }
+            $project->id_Type_project=Type_project::findOrFail($project->id_Type_project);
+            $project->id_Statut_project=Status_project::findOrFail($project->id_Statut_project);            $project->id_Address=Address::findOrFail($project->id_Address);
+            $project->id_Address->City=City::findOrFail($project->id_Address->id_City);
+            $project->id_Address->City->Departement=Department::findOrFail($project->id_Address->City->id_Department);
+            $project->id_Address->City->Departement->Region=Region::findOrFail($project->id_Address->City->Departement->id_Region);
         }
         return response()->json($projects, 200);
         
