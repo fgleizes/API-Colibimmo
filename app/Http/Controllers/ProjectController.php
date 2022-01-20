@@ -73,10 +73,8 @@ class ProjectController extends Controller
 
         try {
             $project = new Project();
-            // $project->reference = ('lou2408');
             $startRef = substr(Type_project::findOrFail($request->input('id_Type_project'))->name, 0, 3);
             $endRef = substr(Person::findOrFail($request->input('id_Person'))->firstname, 0, 2) . substr(Person::findOrFail($request->input('id_Person'))->lastname, 0, 3);
-            // dd(strtoupper($startRef . bin2hex(random_bytes((20-strlen($startRef)-strlen($endRef))/2)) . $endRef));
             $project->reference = strtoupper($startRef . bin2hex(random_bytes((20 - strlen($startRef) - strlen($endRef)) / 2)) . $endRef);
 
             $project->additional_information = $request->input('additional_information');
@@ -100,8 +98,16 @@ class ProjectController extends Controller
                 $project->id_PersonAgent = $request->input('id_PersonAgent');
             // }
 
+            // Création du dossier de stockage du projet
+            if (!mkdir(storage_path('projects/'.$project->reference), 0777, true)) {
+                die('Échec lors de la création du dossier projet...');
+            }
+            // Création des dossiers photos et documents
+            if (!mkdir(storage_path('projects/pictures'), 0777, true) && !mkdir(storage_path('projects/documents'), 0777, true)) {
+                die('Échec lors de la création des dossiers...');
+            }
+
             //recuperation des entrées pour type_property_project et ajouts.
-            $project->save();
             $type = $request->input('type');
             $typeProject= new Type_property_project();
             $typeProject->id_Type_property=$type;
@@ -131,6 +137,7 @@ class ProjectController extends Controller
                 $optionProject->save();
             }
 
+            $project->save();
 
             return response()->json(['message' => 'CREATED'], 201);
         } catch (\Exception $ex) {
@@ -148,7 +155,6 @@ class ProjectController extends Controller
     {
         try {
             return response()->json(Project::with('project_option')->findOrFail($id), 200);
-            // return response()->json(Project::with('note')->where('id',$id)->get(), 200);
         } catch (\Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 404);
         }
@@ -221,24 +227,19 @@ class ProjectController extends Controller
                     $project->$key = $value;
                 } else if($key == 'options') {
                     $newOptions=unserialize($value);
-                    
                     $oldOptions=Option_project::where('id_Project',$project->id)->get()->pluck('id_Option')->toArray();
-                    
-                    // dd($oldOptions->toArray());
                     $optionsToDelete=array_diff($oldOptions,$newOptions);
-                    // dd($optionsToDelete);
+                    
                     foreach($optionsToDelete as $optionToDelete){
                         Option_project::where('id_Option',$optionToDelete)->where('id_Project',$project->id)->delete();
                     }
                     foreach($newOptions as $option){
-                        
                         
                         if(!sizeof(Option_project::where('id_Option',$option)->where('id_Project',$project->id)->get())){
                             $optionProject = new Option_project();
                             $optionProject->id_Option = $option;
                             $optionProject->id_Project = $project->id;
                             $optionProject->save();
-                            // dd($option);
                         } 
                         
                     }
@@ -247,30 +248,7 @@ class ProjectController extends Controller
                 }
             }
 
-            
-            
-            // $project->reference;
-            // $project->note = $request->input('note');
-            // $project->commission = $request->input('commission');
-            // $project->area = $request->input('area');
-            // $project->min_area = $request->input('min_area');
-            // $project->max_area = $request->input('max_area');
-            // $project->price = $request->input('price');
-            // $project->min_price = $request->input('min_price');
-            // $project->max_price = $request->input('max_price');
-            // $project->short_description = $request->input('short_description');
-            // $project->description = $request->input('description');
-            // $project->visibility_priority = $request->input('visibility_priority');
-            // $project->id_Person = $request->input('id_Person');
-            // $project->id_Type_project = $request->input('id_Type_project');
-            // $project->id_Statut_project = $request->input('id_Statut_project');
-            // $project->id_Energy_index = $request->input('id_Energy_index');
-            // $project->id_Address = $request->input('id_Address');
-            // $project->id_Manage_project = $request->input('id_Manage_project');
-
             $project->save();
-
-            
 
             return response()->json(['message' => 'UPDATED'], 201);
         } catch (\Exception $ex) {
@@ -300,7 +278,7 @@ class ProjectController extends Controller
         }
     }
 
-    public function showhTypeProject($id)
+    public function showTypeProject($id)
     {
         try{
             return response()->json(Type_project::where('id',$id)->get(),200);
@@ -309,7 +287,7 @@ class ProjectController extends Controller
         } 
     }
 
-    public function showhStatutProject($id)
+    public function showStatutProject($id)
     {
         try{
             return response()->json(Status_project::where('id',$id)->get(),200);
@@ -318,7 +296,7 @@ class ProjectController extends Controller
         } 
     }
 
-    public function showhManageProject($id)
+    public function showManageProject($id)
     {
         try{
             return response()->json(Manage_project::where('id',$id)->get(),200);
@@ -333,5 +311,109 @@ class ProjectController extends Controller
         }catch (\Exception $ex){
             return response()->json(['message' => $ex->getMessage()], 404);
         } 
+    }
+
+
+
+    public function storeDocumentsToProject(Request $request, $id)
+    {
+        $this->validate($request, [
+            'document' => 'required|image:jpeg,png,jpg,gif,svg,pdf|max:2048',
+            'id_Type_document' => 'exists:type_document,id|required'
+        ]);
+        
+        try {
+            $projectFolder = Project::findOrFail($id)->reference;
+
+            if ($request->hasFile('document')) {
+                if ($request->file('document')->isValid()) {
+                    // Save image
+                    if($request->input('id_Type_document') == "1"
+                    || $request->input('id_Type_document') == "2") {
+                        // $path = storage_path('projects/' . $projectFolder . '/pictures');
+                        $path = '../storage/projects/' . $projectFolder . '/pictures';
+                    } else {
+                        // $path = storage_path('projects/' . $projectFolder . '/documents');
+                        $path = '../storage/projects/' . $projectFolder . '/documents';
+                    }
+                    $returnUpload = $this->uploadImage($path, $request->file('document'));
+
+                    // Save in base
+                    if(is_array($returnUpload) && $returnUpload['folder'] && $returnUpload['filename']) {
+                        $document = new Document();
+                        $document->pathname = $returnUpload['folder'] . '/' . $returnUpload['filename'];
+                        $document->id_Project = $id;
+                        $document->id_Type_document = $request->input('id_Type_document');
+                        $document->save();
+
+                        return response()->json(['message' => 'DOCUMENT STORED'], 200);
+                    } else {
+                        return $returnUpload;
+                    }
+                }
+            }
+
+        } catch (\Exception $ex) {
+            return response()->json(['message' => $ex->getMessage()], 404);
+        }
+    }
+
+    public function showMainImageProject($id) {
+        try {
+            $image = Document::where('id_Project', $id)->where('id_Type_document', '2')->firstOrFail();
+
+            $source_url_parts = pathinfo($image->pathname);
+
+            $folder = $source_url_parts['dirname'];
+            $fileName = $source_url_parts['filename'];
+            $fileExtension = $source_url_parts['extension'];
+            $fileName .= '-resized.' . $fileExtension;
+            $thumbPathname = $folder . '/' . $fileName;
+
+            // Read image path, convert to base64 encoding
+            $imageData = base64_encode(file_get_contents($image->pathname));
+            $thumbData = base64_encode(file_get_contents($thumbPathname));
+            // Format the image SRC:  data:{mime};base64,{data};
+            $src = 'data: ' . mime_content_type($image->pathname) . ';base64,' . $imageData;
+            $srcThumb = 'data: ' . mime_content_type($thumbPathname) . ';base64,' . $thumbData;
+            $image_base64["image"] = $src;
+            $image_base64["thumb"] = $srcThumb;
+
+            return response()->json($image_base64, 200);
+        } catch (\Exception $ex) {
+            return response()->json(['message' => $ex->getMessage()], 404);
+        }
+    }
+
+    public function showImagesProject($id)
+    {
+        try {
+            $images = Document::where('id_Project', $id)->whereIn('id_Type_Document', [1, 2])->get();
+
+            $images_base64 = [];
+
+            for ($i = 0; $i < sizeof($images); $i++) {
+                $source_url_parts = pathinfo($images[$i]->pathname);
+
+                $folder = $source_url_parts['dirname'];
+                $fileName = $source_url_parts['filename'];
+                $fileExtension = $source_url_parts['extension'];
+                $fileName .= '-resized.' . $fileExtension;
+                $thumbPathname = $folder . '/' . $fileName;
+
+                // Read image path, convert to base64 encoding
+                $imageData = base64_encode(file_get_contents($images[$i]->pathname));
+                $thumbData = base64_encode(file_get_contents($thumbPathname));
+                // Format the image SRC:  data:{mime};base64,{data};
+                $src = 'data: ' . mime_content_type($images[$i]->pathname) . ';base64,' . $imageData;
+                $srcThumb = 'data: ' . mime_content_type($thumbPathname) . ';base64,' . $thumbData;
+                $images_base64[$i]["image"] = $src;
+                $images_base64[$i]["thumb"] = $srcThumb;
+            }
+
+            return response()->json($images_base64, 200);
+        } catch (\Exception $ex) {
+            return response()->json(['message' => $ex->getMessage()], 404);
+        }
     }
 }

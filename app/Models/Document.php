@@ -8,5 +8,7 @@ class Document extends Model
 {
     protected $table = 'document';
     protected $primaryKey = "id";
-    protected $fillable = ['pathname'];    
+    protected $fillable = ['pathname'];
+    protected $hidden = [];
+    public $timestamps = false;  
 }

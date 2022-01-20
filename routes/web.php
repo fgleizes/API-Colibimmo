@@ -120,10 +120,13 @@ $router->group([
     $router->get('{id}', 'ProjectController@showOne');
     $router->get('/','ProjectController@show');
     $router->get('person/{id_Person}','ProjectController@showByPerson');
-    $router->get('typeProject/{id}','ProjectController@showhTypeProject');
-    $router->get('statutProject/{id}','ProjectController@showhStatutProject');
-    $router->get('manageProject/{id}','ProjectController@showhManageProject');
+    $router->get('typeProject/{id}','ProjectController@showTypeProject');
+    $router->get('statutProject/{id}','ProjectController@showStatutProject');
+    $router->get('manageProject/{id}','ProjectController@showManageProject');
     $router->get('energieIndex/{id}','ProjectController@showEnergyIndex');
+    $router->post('storeDocument/{id}','ProjectController@storeDocumentsToProject');
+    $router->get('mainImage/{id}','ProjectController@showMainImageProject');
+    $router->get('images/{id}','ProjectController@showImagesProject');
 });
 
 
@@ -236,4 +239,15 @@ $router->group([
     $router->get('/', 'FavoriteController@ListFavorite');
 });
 
+/**
+ * Routes Document
+ */
+$router->group([
+    'prefix' => 'document'
 
+], function () use ($router) {
+    $router->post('/', 'ProjectController@store');
+    $router->put('{id}', 'ProjectController@update');
+    $router->delete('{id}', 'ProjectController@delete');
+    $router->get('{id}', 'ProjectController@create');
+});
