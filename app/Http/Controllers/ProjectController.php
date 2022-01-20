@@ -3,24 +3,28 @@
 namespace App\Http\Controllers;
 
 use App\Models\City;
-use App\Models\Project;
 use App\Models\Note;
+use App\Models\Room;
+use App\Models\Option;
 use App\Models\Person;
 use App\Models\Address;
+use App\Models\Project;
 use App\Models\Document;
 use App\Models\Appointment;
 use App\Models\Energy_index;
 use App\Models\Room_project;
 use App\Models\Type_project;
 use Illuminate\Http\Request;
+use App\Models\Manage_project;
 use App\Models\Option_project;
 use App\Models\Status_project;
 use App\Models\Location_project;
-use App\Models\Manage_project;
-use App\Models\Type_property_project;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Lang;
-use App\Models\Room;
+use App\Models\Type_property_project;
+use App\Models\Type_room;
+use App\Models\Department;
+use App\Models\Region;
 
 class ProjectController extends Controller
 {
@@ -154,7 +158,23 @@ class ProjectController extends Controller
     public function showOne($id)
     {
         try {
-            return response()->json(Project::with('project_option')->findOrFail($id), 200);
+            $project = Project::findOrFail($id);
+            $project->option_project=Option_project::where('id_Project', $project->id)->get();
+            foreach($project->option_project as $key => $value) {
+                $project->option_project[$key]->name = Option::findOrFail($value->id_Option)->name;
+            }
+            $project->room_project=Room::where('id_Project', $project->id)->get();
+            foreach($project->room_project as $key => $value) {
+                $project->room_project[$key]->name = Type_room::findOrFail($value->id_Type_room)->name;
+            }
+            $project->id_Person=Person::findOrFail($project->id_Person);
+            $project->id_Type_project=Type_project::findOrFail($project->id_Type_project);
+            $project->id_Statut_project=Status_project::findOrFail($project->id_Statut_project);            $project->id_Address=Address::findOrFail($project->id_Address);
+            $project->id_Address->City=City::findOrFail($project->id_Address->id_City);
+            $project->id_Address->City->Departement=Department::findOrFail($project->id_Address->City->id_Department);
+            $project->id_Address->City->Departement->Region=Region::findOrFail($project->id_Address->City->Departement->id_Region);
+
+            return response()->json($project, 200);
         } catch (\Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 404);
         }
@@ -183,7 +203,15 @@ class ProjectController extends Controller
      */
     public function show()
     {
-        return response()->json(Project::with('project_option')->get(), 200);
+        $projects = Project::with('project_option','project_room',)->get();
+        foreach ($projects as $project) {
+            $mainImagePath =  Document::where('id_Type_document', '2')->where('id_Project', $project->id)->first();
+            $project->mainImagePath = $mainImagePath ? $mainImagePath->pathname : '../IMG/imgAppart.jpg';
+            
+        }
+        return response()->json($projects, 200);
+        
+        
         // return response()->json(Project::with('note')->get(), 200);
     }
 
