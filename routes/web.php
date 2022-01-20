@@ -79,7 +79,6 @@ $router->group([
 ], function () use ($router) {
 
     $router->put('{id}', 'RoleController@update');
-    $router->get('{id}', 'RoleController@oneShow');
     $router->get('/', 'RoleController@show');
 });
 

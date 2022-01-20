@@ -9,6 +9,7 @@ use App\Models\Option;
 use App\Models\Person;
 use App\Models\Address;
 use App\Models\Project;
+use App\Models\Agency;
 use App\Models\Document;
 use App\Models\Appointment;
 use App\Models\Energy_index;
@@ -159,6 +160,7 @@ class ProjectController extends Controller
     {
         try {
             $project = Project::findOrFail($id);
+
             $project->option_project=Option_project::where('id_Project', $project->id)->get();
             foreach($project->option_project as $key => $value) {
                 $project->option_project[$key]->name = Option::findOrFail($value->id_Option)->name;
@@ -167,13 +169,19 @@ class ProjectController extends Controller
             foreach($project->room_project as $key => $value) {
                 $project->room_project[$key]->name = Type_room::findOrFail($value->id_Type_room)->name;
             }
-            $project->id_Person=Person::findOrFail($project->id_Person);
+            
             $project->id_Type_project=Type_project::findOrFail($project->id_Type_project);
-            $project->id_Statut_project=Status_project::findOrFail($project->id_Statut_project);            $project->id_Address=Address::findOrFail($project->id_Address);
+            $project->id_Statut_project=Status_project::findOrFail($project->id_Statut_project);            
+            $project->id_Address=Address::findOrFail($project->id_Address);
             $project->id_Address->City=City::findOrFail($project->id_Address->id_City);
             $project->id_Address->City->Departement=Department::findOrFail($project->id_Address->City->id_Department);
             $project->id_Address->City->Departement->Region=Region::findOrFail($project->id_Address->City->Departement->id_Region);
 
+            $manageProject = Manage_project::findOrFail($project->id_Manage_project);
+            $project->manageProject = Person::findOrFail($manageProject);
+            $project->personProject = Person::findOrFail($project->id_Person);
+            $project->energieIndex = Energy_index::findOrFail($project->id_Energy_index);
+            
             return response()->json($project, 200);
         } catch (\Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 404);
@@ -190,7 +198,28 @@ class ProjectController extends Controller
     public function showByPerson($id_Person)
     {
         try {
-            return response()->json(Project::with('note')->where('id_Person',$id_Person)->get(), 200);
+
+            $projects = Project::where('id_Person',$id_Person)->get();
+            $projectPerson=[];
+            foreach ($projects as $key => $value) {
+                $projectPerson[$key] = Project::findOrFail($value->id);
+                $type_project = Type_project::findOrfail($projectPerson[$key]->id_Type_project);
+                $projectPerson[$key]->type_project = $type_project->name;
+                $customer = $projectPerson[$key]->id_Person;
+                $projectPerson[$key]->customer= Person::findOrfail($customer);
+                $manageProject = Manage_project::findOrfail($projectPerson[$key]->id_Manage_project);
+                $projectPerson[$key]->manageProject = Person::findOrfail($manageProject->id_Person);
+                $address = $projectPerson[$key]->id_Address;
+                $projectPerson[$key]->address= Address::findOrfail($address);
+                $agency = $projectPerson[$key]->manageProject->id_Agency;
+                $projectPerson[$key]->agency = Agency::findOrfail($agency);
+                $energyIndex = Energy_index::findOrfail($projectPerson[$key]->id_Energy_index);
+                $projectPerson[$key]->energyIndex = $energyIndex->index;
+                $statutProject = Status_project::findOrfail($projectPerson[$key]->id_Statut_project);
+                $projectPerson[$key]->statutProject = $statutProject->name;
+            }
+            return response()->json($projectPerson, 200);
+            
         } catch (\Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 404);
         }
@@ -355,8 +384,6 @@ class ProjectController extends Controller
             return response()->json(['message' => $ex->getMessage()], 404);
         } 
     }
-
-
 
     public function storeDocumentsToProject(Request $request, $id)
     {
