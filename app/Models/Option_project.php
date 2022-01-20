@@ -10,4 +10,8 @@ class Option_project extends Model
     protected $primaryKey = "id";
     protected $fillable = ['id_Option','id_Project'];  
     public $timestamps = false;  
+    
+    public function nameOption() {
+        return $this->hasMany('App\Models\Option', 'id_Option','id');
+    }
 }

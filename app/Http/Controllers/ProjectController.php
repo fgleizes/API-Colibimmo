@@ -23,7 +23,9 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Lang;
 use App\Models\Type_property_project;
 use App\Models\Type_room;
-use App\Models\Statusproject;
+use App\Models\Department;
+use App\Models\Region;
+
 class ProjectController extends Controller
 {
     /**
@@ -158,14 +160,14 @@ class ProjectController extends Controller
             foreach($project->room_project as $key => $value) {
                 $project->room_project[$key]->name = Type_room::findOrFail($value->id_Type_room)->name;
             }
-            $project->id_Person=Person::where('id',$project->id_Person)->get();
-            $project->id_Type_project=Type_project::where('id',$project->id_Type_project)->get();
-            $project->id_Statut_project=Status_project::where('id',$project->id_Statut_project)->get();
+            $project->id_Person=Person::findOrFail($project->id_Person);
+            $project->id_Type_project=Type_project::findOrFail($project->id_Type_project);
+            $project->id_Statut_project=Status_project::findOrFail($project->id_Statut_project);            $project->id_Address=Address::findOrFail($project->id_Address);
+            $project->id_Address->City=City::findOrFail($project->id_Address->id_City);
+            $project->id_Address->City->Departement=Department::findOrFail($project->id_Address->City->id_Department);
+            $project->id_Address->City->Departement->Region=Region::findOrFail($project->id_Address->City->Departement->id_Region);
 
             return response()->json($project, 200);
-            // return response()->json(Project::with(['project_option','project_room'])->findOrFail($id), 200);
-            
-            // return response()->json(Project::with('note')->where('id',$id)->get(), 200);
         } catch (\Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 404);
         }
@@ -194,7 +196,15 @@ class ProjectController extends Controller
      */
     public function show()
     {
-        return response()->json(Project::with('project_option')->get(), 200);
+        $projects = Project::with('project_option','project_room',)->get();
+        foreach ($projects as $project) {
+            $mainImagePath =  Document::where('id_Type_document', '2')->where('id_Project', $project->id)->first();
+            $project->mainImagePath = $mainImagePath ? $mainImagePath->pathname : '../IMG/imgAppart.jpg';
+            
+        }
+        return response()->json($projects, 200);
+        
+        
         // return response()->json(Project::with('note')->get(), 200);
     }
 
