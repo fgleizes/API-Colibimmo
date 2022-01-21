@@ -139,10 +139,10 @@ $router->group([
     $router->post('/', 'AppointmentController@create');
     $router->put('/{id}', 'AppointmentController@update');
     $router->delete('{id}', 'AppointmentController@delete');
+    $router->get('/myAppointments/','AppointmentController@showAppointmentsForAuthUser');
     $router->get('{id}','AppointmentController@showOne');
     $router->get('/','AppointmentController@show');
     $router->get('project/{id_Project}','AppointmentController@showByProject');
-    $router->get('myAppointments/','AppointmentController@showAppointmentsForAuthUser');
     $router->get('typeAppointment/{id}','AppointmentController@showTypeAppointment');
 });
 
