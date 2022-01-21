@@ -103,14 +103,14 @@ class ProjectController extends Controller
                 $project->id_PersonAgent = $request->input('id_PersonAgent');
             // }
 
-            // Création du dossier de stockage du projet
-            if (!mkdir(storage_path('projects/'.$project->reference), 0777, true)) {
-                die('Échec lors de la création du dossier projet...');
-            }
-            // Création des dossiers photos et documents
-            if (!mkdir(storage_path('projects/pictures'), 0777, true) && !mkdir(storage_path('projects/documents'), 0777, true)) {
-                die('Échec lors de la création des dossiers...');
-            }
+            // // Création du dossier de stockage du projet
+            // if (!mkdir(storage_path('projects/'.$project->reference), 0777, true)) {
+            //     die('Échec lors de la création du dossier projet...');
+            // }
+            // // Création des dossiers photos et documents
+            // if (!mkdir(storage_path('projects/pictures'), 0777, true) && !mkdir(storage_path('projects/documents'), 0777, true)) {
+            //     die('Échec lors de la création des dossiers...');
+            // }
 
             //recuperation des entrées pour type_property_project et ajouts.
             $type = $request->input('type');
