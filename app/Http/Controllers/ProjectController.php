@@ -103,6 +103,9 @@ class ProjectController extends Controller
                 $project->id_PersonAgent = $request->input('id_PersonAgent');
             // }
 
+            $project->save();
+
+
             // // Création du dossier de stockage du projet
             // if (!mkdir(storage_path('projects/'.$project->reference), 0777, true)) {
             //     die('Échec lors de la création du dossier projet...');
@@ -142,7 +145,7 @@ class ProjectController extends Controller
                 $optionProject->save();
             }
 
-            $project->save();
+            // $project->save();
 
             return response()->json(['message' => 'CREATED'], 201);
         } catch (\Exception $ex) {
