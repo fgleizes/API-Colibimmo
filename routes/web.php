@@ -139,6 +139,7 @@ $router->group([
     $router->get('{id}','AppointmentController@showOne');
     $router->get('/','AppointmentController@show');
     $router->get('project/{id_Project}','AppointmentController@showByProject');
+    $router->get('myAppointments/','AppointmentController@showAppointmentsForAuthUser');
     $router->get('typeAppointment/{id}','AppointmentController@showTypeAppointment');
 });
 
@@ -234,12 +235,3 @@ $router->group([
 ], function () use ($router) {
     $router->get('/', 'FavoriteController@ListFavorite');
 });
-
-$router->group([
-    'prefix' => 'personAppointment'
-
-], function () use ($router) {
-    $router->get('/', 'PersonAppointmentController@show');
-});
-
-
