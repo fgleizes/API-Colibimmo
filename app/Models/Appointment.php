@@ -14,4 +14,8 @@ class Appointment extends Model
     public function person_appointment() {
         return $this->hasMany('App\Models\Person_appointment', 'id_Appointment','id');
     }
+
+    public function person_appointmentProject() {
+        return $this->hasManyThrough(Project::class, Person_appointment::class, 'id_Appointment', 'id', 'id', 'id_Project');
+    }
 }

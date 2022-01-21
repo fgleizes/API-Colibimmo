@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Appointment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Person_appointment;
 use App\Models\Type_appointment;
 
@@ -124,9 +125,21 @@ class AppointmentController extends Controller
             return response()->json(['message' => $ex->getMessage()], 404);
         }   
     }
+
+    public function showAppointmentsForAuthUser()
+    {
+        try {
+            $appointments = Appointment::with('person_appointmentProject:id_PersonAgent,id_Person,reference')->whereHas('person_appointmentProject', function($q) {
+                $q->where('id_PersonAgent', Auth::user()->id);
+            })->get();
+            return response()->json($appointments, 200);
+        } catch (\Exception $ex) {
+            return response()->json(['message' => $ex->getMessage()], 404);
+        }
+    }
     
     
-     public function showByProject($id_Project)
+    public function showByProject($id_Project)
     {
         try{
             $person_appointment = Person_appointment::where('id_Project', $id_Project)->get();
