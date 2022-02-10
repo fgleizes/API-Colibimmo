@@ -126,6 +126,7 @@ $router->group([
     $router->post('storeDocument/{id}','ProjectController@storeDocumentsToProject');
     $router->get('mainImage/{id}','ProjectController@showMainImageProject');
     $router->get('images/{id}','ProjectController@showImagesProject');
+    $router->get('projectsByType/{id_Type}','ProjectController@showProjectsByType');
 });
 
 

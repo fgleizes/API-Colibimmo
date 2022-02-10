@@ -132,7 +132,7 @@ class AppointmentController extends Controller
             $appointments = Appointment::with('person_appointmentProject:id_PersonAgent,id_Person,reference')->whereHas('person_appointmentProject', function($q) {
                 $q->where('id_PersonAgent', Auth::user()->id);
             })->get();
-            return response()->json($appointments, 200);
+            return response()->json( $appointments, 200);
         } catch (\Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 404);
         }
