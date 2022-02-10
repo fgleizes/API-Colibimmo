@@ -380,6 +380,15 @@ class ProjectController extends Controller
         } 
     }
 
+    public function showAllTypeProject()
+    {
+        try{
+            return response()->json(Type_project::all(),200);
+        }catch (\Exception $ex){
+            return response()->json(['message' => $ex->getMessage()], 404);
+        } 
+    }
+
     public function showStatutProject($id)
     {
         try{

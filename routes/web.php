@@ -120,6 +120,7 @@ $router->group([
     $router->get('/','ProjectController@show');
     $router->get('person/{id_Person}','ProjectController@showByPerson');
     $router->get('typeProject/{id}','ProjectController@showTypeProject');
+    $router->get('typeProject/','ProjectController@showAllTypeProject');
     $router->get('statutProject/{id}','ProjectController@showStatutProject');
     $router->get('manageProject/{id}','ProjectController@showManageProject');
     $router->get('energieIndex/{id}','ProjectController@showEnergyIndex');
