@@ -2,11 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Address;
+use App\Models\City;
+use App\Models\Department;
+use App\Models\Region;
+use App\Models\Agency;
 use App\Models\Appointment;
+use App\Models\Energy_index;
+use App\Models\Person;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Person_appointment;
+use App\Models\Project;
+use App\Models\Status_project;
 use App\Models\Type_appointment;
+use App\Models\Type_project;
 
 class AppointmentController extends Controller
 {
@@ -114,7 +124,32 @@ class AppointmentController extends Controller
 
     public function show()
     {
-        return response()->json(Appointment::with('person_appointment')->get());
+        $appointments = Appointment::with('person_appointment')->get();
+        foreach ($appointments as $appointment) {
+            $appointment->type = Type_appointment::findOrFail($appointment->id_Type_appointment);
+            foreach( $appointment->person_appointment as $person_appointment) {
+                $person_appointment->project = Project::findOrfail($person_appointment->id_Project, ['id','reference', 'id_PersonAgent', 'id_Person', 'id_Type_project', 'id_Address']);
+                $person_appointment->project->type = Type_project::findOrFail($person_appointment->project->id_Type_project)->name;
+                if(isset($person_appointment->project->id_Address)) {
+                    $person_appointment->project->address = Address::findOrfail($person_appointment->project->id_Address);
+                    $person_appointment->project->address->city = City::findOrfail($person_appointment->project->address->id_City);
+                    $person_appointment->project->address->department = Department::findOrfail($person_appointment->project->address->city->id_Department);
+                    $person_appointment->project->address->region = Region::findOrfail($person_appointment->project->address->department->id_Region);
+                }
+
+                // $person_appointment->project->agent = Person::findOrfail($person_appointment->project->id_PersonAgent, ['id','lastname', 'firstname', 'phone']);
+                
+                // $person_appointment->project->person = Person::findOrfail($person_appointment->project->id_Person, ['id','lastname', 'firstname', 'phone', 'mail']);
+                // $person_appointment->project->person->address = Address::findOrfail($person_appointment->project->id_Address);
+                // $person_appointment->project->person->address->city = City::findOrfail($person_appointment->project->id_Address->id_City);
+                // $person_appointment->project->person->address->department = Department::findOrfail($person_appointment->project->id_Address->city->id_Department);
+                // $person_appointment->project->person->address->region = Region::findOrfail($person_appointment->project->id_Address->department->id_Region);
+
+            }
+        }
+            
+        return response()->json($appointments,200);
+        // return response()->json(Appointment::get(),200);
     }
 
     public function showOne($id)
@@ -132,6 +167,12 @@ class AppointmentController extends Controller
             $appointments = Appointment::with('person_appointmentProject:id_PersonAgent,id_Person,reference')->whereHas('person_appointmentProject', function($q) {
                 $q->where('id_PersonAgent', Auth::user()->id);
             })->get();
+
+            foreach($appointments as $personPerson){
+                //dd($personPerson->person_appointmentProject[0]->id_PersonAgent);
+                $personPerson->person_appointmentProject[0]->id_PersonAgent = Person::findOrfail($personPerson->person_appointmentProject[0]->id_PersonAgent);
+                $personPerson->person_appointmentProject[0]->id_Person = Person::findOrfail($personPerson->person_appointmentProject[0]->id_Person);
+            }
             return response()->json( $appointments, 200);
         } catch (\Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 404);
