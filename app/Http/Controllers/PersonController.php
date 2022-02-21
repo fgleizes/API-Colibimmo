@@ -75,7 +75,7 @@ class PersonController extends Controller
             if (isset($address)) {
                 $user->id_Address = $address->id;
             }
-            // $user->save();
+            $user->save();
 
             // Envoi par mail du mdp provisoire à modifier
             // Mail::to($user->mail())->send(new PersonPassword($user, $plainPassword));
@@ -94,7 +94,7 @@ class PersonController extends Controller
             'firstname' => 'string',
             'mail' => 'string|email',
             'phone' => 'string',
-            'password' => 'string',
+            // 'password' => 'string',
             'id_Agency' => 'exists:agency,id',
             'id_Address' => 'exists:address,id',
             'id_Role' => 'exists:role,id'
@@ -109,6 +109,30 @@ class PersonController extends Controller
 
             $user->update($request->all());
             return response()->json(['message' => 'USER UPDATED'], 201);
+        } catch (\Exception $ex) {
+            return response()->json(['message' => $ex->getMessage()], 409);
+        }
+    }
+
+    public function updatePassword(Request $request, $idPerson)
+    {
+        try {
+            $user = Person::findOrFail($idPerson);
+            
+            $this->validate($request, [
+                'old_password' => 'string|required',
+                'new_password' => 'string|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{6,}$/|confirmed|min:6|different:old_password'
+            ]);
+            
+    
+            if (app('hash')->check($request->old_password, $user->password)) {
+                $user->password = app('hash')->make($request->new_password);
+                $user->save();
+
+                return response()->json(['message' => 'USER PASSWORD UPDATED'], 201);
+            } else {
+                return response()->json(['message' => ['Password does not match.']], 409);
+            }
         } catch (\Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 409);
         }
