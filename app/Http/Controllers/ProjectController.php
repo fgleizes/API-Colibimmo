@@ -269,10 +269,12 @@ class ProjectController extends Controller
             }
             $project->id_Type_project=Type_project::findOrFail($project->id_Type_project);
             $project->id_Statut_project=Status_project::findOrFail($project->id_Statut_project);
-            $project->id_Address=Address::findOrFail($project->id_Address);
-            $project->id_Address->City=City::findOrFail($project->id_Address->id_City);
-            $project->id_Address->City->Departement=Department::findOrFail($project->id_Address->City->id_Department);
-            $project->id_Address->City->Departement->Region=Region::findOrFail($project->id_Address->City->Departement->id_Region);
+            $project->id_Address=Address::find($project->id_Address);
+            if (isset($project->id_Address)) {
+                $project->id_Address->City=City::findOrFail($project->id_Address->id_City);
+                $project->id_Address->City->Departement=Department::findOrFail($project->id_Address->City->id_Department);
+                $project->id_Address->City->Departement->Region=Region::findOrFail($project->id_Address->City->Departement->id_Region);
+            }
         }
         return response()->json($projects, 200);
         
