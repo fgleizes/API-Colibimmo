@@ -33,7 +33,6 @@ class PersonController extends Controller
             'firstname' => 'required|string',
             'mail' => 'required|string|email|unique:person',
             'phone' => 'nullable|string',
-            'password' => 'required|string',
             'number' => 'integer|nullable',
             'street' => 'string|nullable',
             'additional_address' => 'string|nullable',
@@ -67,18 +66,20 @@ class PersonController extends Controller
             $user->firstname = $request->input('firstname');
             $user->mail = $request->input('mail');
             $user->phone = $request->input('phone');
-            $plainPassword = $request->input('password');
+            $bytes = random_bytes(10);
+            $plainPassword = bin2hex($bytes);
+            // dd(bin2hex($bytes));
             $user->password = app('hash')->make($plainPassword);
             $user->id_Agency = $request->input('id_Agency');;
             $user->id_Role = $request->input('id_Role');
             if (isset($address)) {
                 $user->id_Address = $address->id;
             }
-            // dd($user);
             // $user->save();
 
+            // Envoi par mail du mdp provisoire à modifier
             // Mail::to($user->mail())->send(new PersonPassword($user, $plainPassword));
-            Mail::to('florentgleizes@hotmail.com')->send(new PersonPassword($user, $plainPassword));
+            Mail::to('colibimmo@gmail.com')->send(new PersonPassword($user, $plainPassword));
 
             return response()->json(['message' => 'CREATED'], 201);
         } catch (\Exception $ex) {
