@@ -41,6 +41,7 @@ $router->group([
 
 ], function () use ($router) {
     $router->post('/', 'PersonController@create');
+    $router->post('password', 'PersonController@sendNewPasswordByEmail');
     $router->put('password/{idPerson}', 'PersonController@updatePassword');
     $router->put('{idPerson}', 'PersonController@update');
     $router->delete('{idPerson}', 'PersonController@delete');

@@ -87,6 +87,28 @@ class PersonController extends Controller
         }
     }
 
+    public function sendNewPasswordByEmail(Request $request) {
+        $this->validate($request, [
+            'mail' => 'string|email'
+        ]);
+         
+        try {
+            $user = Person::where('mail', $request->input('mail'))->first();
+            $bytes = random_bytes(10);
+            $plainPassword = bin2hex($bytes);
+            // dd(bin2hex($bytes));
+            $user->password = app('hash')->make($plainPassword);
+            $user->save();
+
+            // Mail::to($user->mail())->send(new PersonPassword($user, $plainPassword));
+            Mail::to('colibimmo@gmail.com')->to('fjquen@gmail.com')->to($user->mail)->send(new PersonPassword($user, $plainPassword));
+
+            return response()->json(['message' => 'PASSWORD SENT BY EMAIL @ :' . $user->mail], 201);
+        } catch (\Exception $ex) {
+            return response()->json(['message' => $ex->getMessage()], 409);
+        }
+    }
+
     public function update(Request $request, $idPerson)
     {
         $this->validate($request, [
@@ -94,20 +116,30 @@ class PersonController extends Controller
             'firstname' => 'string',
             'mail' => 'string|email',
             'phone' => 'string',
-            // 'password' => 'string',
             'id_Agency' => 'exists:agency,id',
-            'id_Address' => 'exists:address,id',
-            'id_Role' => 'exists:role,id'
+            'id_Role' => 'exists:role,id',
+
+            'number' => 'integer|nullable',
+            'street' => 'string|nullable',
+            'additional_address' => 'string|nullable',
+            'building' => 'string|nullable',
+            'floor' => 'integer|nullable',
+            'residence' => 'string|nullable',
+            'staircase' => 'string|nullable',
+            'id_City' => 'nullable|exists:city,id'
         ]);
 
         try {
             $user = Person::findOrFail($idPerson);
+            $address = Address::findOrFail($user->id_Address);
 
             if ($request->input('mail') && $request->input('mail') != $user->mail && Person::where('mail', $request->input('mail'))->first()) {
                 return response()->json(['mail' => ['The mail has already been taken.']], 409);
             }
 
             $user->update($request->all());
+            $address->update($request->all());
+
             return response()->json(['message' => 'USER UPDATED'], 201);
         } catch (\Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 409);
