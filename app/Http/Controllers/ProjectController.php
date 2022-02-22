@@ -520,8 +520,6 @@ class ProjectController extends Controller
     }
     public function showProjectsByType($id_Type)
     {
-        //$projectBytype = Type_project::find($id)->filter_type_project;
-        // $projects = Project::where('id_Type_project',$id_Type)->get();
         try{
             $projectsByType = Project::where('id_Type_project',$id_Type)->get();
             foreach($projectsByType as $project) {
@@ -529,19 +527,18 @@ class ProjectController extends Controller
                 $project->id_PersonAgent = Person::findOrfail($project->id_PersonAgent); // "id_PersonAgent": 1
                 $project->id_Type_project = Type_project::findOrfail($project->id_Type_project); // "id_Type_project": 1,
                 $project->id_Statut_project = Status_project::findOrfail($project->id_Statut_project); // "id_Statut_project": 1,
-                $project->id_Energy_index = Energy_index::findOrfail($project->id_Energy_index); // "id_Energy_index": 1,
-                $project->id_Address = Address::findOrfail($project->id_Address); // "id_Address": 5,
-                $project->id_Address->city = City::findOrfail($project->id_Address->id_City); // "id_Address": 5,
-                $project->id_Address->department = Department::findOrfail($project->id_Address->city->id_Department);
-                $project->id_Address->region = Region::findOrfail($project->id_Address->department->id_Region);
-                
+                $project->id_Energy_index = Energy_index::find($project->id_Energy_index); // "id_Energy_index": 1,
+                $project->id_Address = Address::find($project->id_Address); // "id_Address": 5,
+                if (isset($project->id_Address)) {
+                    $project->id_Address->city = City::findOrfail($project->id_Address->id_City); // "id_Address": 5,
+                    $project->id_Address->department = Department::findOrfail($project->id_Address->city->id_Department);
+                    $project->id_Address->region = Region::findOrfail($project->id_Address->department->id_Region);
+                }
             }
-            // dd($projects);
-            // return response()->json($projectPerson, 200);
+
             return response()->json($projectsByType, 200);
         }catch(\Exception $ex){
             return response()->json(['message' => $ex->getMessage()], 404);
         }
     }
-
 }
