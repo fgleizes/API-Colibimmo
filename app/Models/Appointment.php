@@ -15,7 +15,8 @@ class Appointment extends Model
         return $this->hasMany('App\Models\Person_appointment', 'id_Appointment','id');
     }
 
-    // public function person_appointmentProject() {
-    //     return $this->hasManyThrough(Project::class, Person_appointment::class, 'id_Appointment', 'id', 'id', 'id_Project');
-    // }
+    // Jointure pour afficher les RDV d'un agent ou d'un client
+    public function person_appointmentProject() {
+        return $this->hasManyThrough(Project::class, Person_appointment::class, 'id_Appointment', 'id', 'id', 'id_Project');
+    }
 }

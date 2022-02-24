@@ -80,14 +80,14 @@ $app->middleware([
     App\Http\Middleware\CorsMiddleware::class
 ]);
 
- $app->routeMiddleware([
+$app->routeMiddleware([
     'auth' => App\Http\Middleware\Authenticate::class,
     'roles' => App\Http\Middleware\Roles::class
- ]);
-
- $app->routeMiddleware([
-    'auth' => App\Http\Middleware\CorsMiddleware::class,
 ]);
+
+// $app->routeMiddleware([
+//     'auth' => App\Http\Middleware\CorsMiddleware::class,
+// ]);
 
 /*
 |--------------------------------------------------------------------------
