@@ -96,14 +96,24 @@ class PersonController extends Controller
             $user = Person::where('mail', $request->input('mail'))->first();
             $bytes = random_bytes(10);
             $plainPassword = bin2hex($bytes);
-            // dd(bin2hex($bytes));
             $user->password = app('hash')->make($plainPassword);
             $user->save();
 
             // Mail::to($user->mail())->send(new PersonPassword($user, $plainPassword));
-            Mail::to('colibimmo@gmail.com')->to('fjquen@gmail.com')->to($user->mail)->send(new PersonPassword($user, $plainPassword));
+            // Mail::to('colibimmo@gmail.com')->bcc(['florentgleizes@hotmail.com', 'fjquen@gmail.com'])->send(new PersonPassword($user, $plainPassword));
+            $data = [
+                'personLastname' => $user->lastname, 
+                'personFirstname' => $user->firstname, 
+                'plainPassword' => $plainPassword
+            ];
+            Mail::send('emails.person.password', $data, function ($message) {
+                // $message->from('us@example.com', 'Laravel');
+                $message->to('colibimmo@gmail.com');
+                $message->bcc(['florentgleizes@gmail.com', 'fjquen@gmail.com']);
+                $message->subject('ColibImmo - Mot de passe provisoire à modifier.');
+            });
 
-            return response()->json(['message' => 'PASSWORD SENT BY EMAIL @ :' . $user->mail], 201);
+            return response()->json(['message' => 'PASSWORD SENT BY EMAIL @ : ' . $user->mail], 201);
         } catch (\Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 409);
         }
@@ -153,7 +163,7 @@ class PersonController extends Controller
             
             $this->validate($request, [
                 'old_password' => 'string|required',
-                'new_password' => 'string|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{6,}$/|confirmed|min:6|different:old_password'
+                'new_password' => 'string|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}$/|confirmed|min:8|different:old_password'
             ]);
             
     
