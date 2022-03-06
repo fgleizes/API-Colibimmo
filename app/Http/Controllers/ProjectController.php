@@ -367,7 +367,11 @@ class ProjectController extends Controller
             $favoriteProjects = Favorite::where('id_project', $id)->get();
             $personAppointmentProjects = Person_appointment::where('id_project', $id)->get();
             $roomProjects = Room::where('id_project', $id)->get();
-            $propertyProjects = Type_property_project::where('id_project', $id)->get();
+            $type_propertyProjects = Type_property_project::where('id_project', $id)->get();
+            $documentProjects = Document::where('id_project', $id)->get();
+            $locationProjects = Location_project::where('id_project', $id)->get();
+            $noteProjects = Note::where('id_project', $id)->get();
+            $room_Projects = Room_project::where('id_project', $id)->get();
             foreach ($personAppointmentProjects as $personAppointmentProject) {
                 $personAppointmentProject->delete(); 
             }
@@ -380,8 +384,20 @@ class ProjectController extends Controller
             foreach ($roomProjects as $roomProject) {
                 $roomProject->delete(); 
             }
-            foreach ($propertyProjects as $propertyProject) {
-                $propertyProject->delete(); 
+            foreach ($type_propertyProjects as $type_propertyProject) {
+                $type_propertyProject->delete(); 
+            }
+            foreach ($documentProjects as $documentProject) {
+                $documentProject->delete(); 
+            }
+            foreach ($locationProjects as $locationProject) {
+                $locationProject->delete(); 
+            }
+            foreach ($noteProjects as $noteProject) {
+                $noteProject->delete(); 
+            }
+            foreach ($room_Projects as $room_Project) {
+                $room_Project->delete(); 
             }
             $project->delete();
     
