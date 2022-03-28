@@ -25,6 +25,8 @@ use Illuminate\Support\Facades\Lang;
 use App\Models\Type_property_project;
 use App\Models\Type_room;
 use App\Models\Department;
+use App\Models\Favorite;
+use App\Models\Person_appointment;
 use App\Models\Region;
 
 class ProjectController extends Controller
@@ -371,8 +373,40 @@ class ProjectController extends Controller
         try {
             $project = Project::findOrFail($id);
             $optionProjects = Option_project::where('id_project', $id)->get();
+            $favoriteProjects = Favorite::where('id_project', $id)->get();
+            $personAppointmentProjects = Person_appointment::where('id_project', $id)->get();
+            $roomProjects = Room::where('id_project', $id)->get();
+            $type_propertyProjects = Type_property_project::where('id_project', $id)->get();
+            $documentProjects = Document::where('id_project', $id)->get();
+            $locationProjects = Location_project::where('id_project', $id)->get();
+            $noteProjects = Note::where('id_project', $id)->get();
+            $room_Projects = Room_project::where('id_project', $id)->get();
+            foreach ($personAppointmentProjects as $personAppointmentProject) {
+                $personAppointmentProject->delete(); 
+            }
+            foreach ($favoriteProjects as $favoriteProject) {
+                $favoriteProject->delete(); 
+            }
             foreach ($optionProjects as $optionProject) {
                 $optionProject->delete(); 
+            }
+            foreach ($roomProjects as $roomProject) {
+                $roomProject->delete(); 
+            }
+            foreach ($type_propertyProjects as $type_propertyProject) {
+                $type_propertyProject->delete(); 
+            }
+            foreach ($documentProjects as $documentProject) {
+                $documentProject->delete(); 
+            }
+            foreach ($locationProjects as $locationProject) {
+                $locationProject->delete(); 
+            }
+            foreach ($noteProjects as $noteProject) {
+                $noteProject->delete(); 
+            }
+            foreach ($room_Projects as $room_Project) {
+                $room_Project->delete(); 
             }
             $project->delete();
     
