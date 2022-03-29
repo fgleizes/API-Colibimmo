@@ -119,6 +119,7 @@ $router->group([
     $router->put('{id}', 'ProjectController@update');
     $router->delete('{id}','ProjectController@delete');
     $router->get('person/{id_Person}','ProjectController@showByPerson');
+    $router->get('personAgent/{id_PersonAgent}','ProjectController@showByAgent');
     $router->get('/typeProject/','ProjectController@showAllTypeProject');
     $router->get('typeProject/{id}','ProjectController@showTypeProject');
     $router->get('statutProject/{id}','ProjectController@showStatutProject');
