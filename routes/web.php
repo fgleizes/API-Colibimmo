@@ -128,6 +128,7 @@ $router->group([
     $router->get('mainImage/{id}','ProjectController@showMainImageProject');
     $router->get('images/{id}','ProjectController@showImagesProject');
     $router->get('projectsByType/{id_Type}','ProjectController@showProjectsByType');
+    $router->get('/home/', 'ProjectController@showProjectsHomeView');
     $router->get('{id}', 'ProjectController@showOne');
     $router->get('/','ProjectController@show');
 });
