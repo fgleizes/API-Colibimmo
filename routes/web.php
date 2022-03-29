@@ -49,8 +49,6 @@ $router->group([
     $router->get('role/{idRole}', 'PersonController@showByRole');
     $router->get('{idPerson}', 'PersonController@showOne');
     $router->get('/', ['middleware' => 'roles:2', 'uses' => 'PersonController@show']);
-    $router->post('favorite', 'PersonController@FavoriteCreate');
-    $router->delete('delete_favorite/{id}', 'PersonController@DeleteFavorite');
 });
 
 $router->put('post/{id}', ['middleware' => 'role:editor', function ($id) {
@@ -242,6 +240,8 @@ $router->group([
     'prefix' => 'favorite'
 
 ], function () use ($router) {
+    $router->post('/', 'FavoriteController@FavoriteCreate');
+    $router->delete('{id}', 'FavoriteController@DeleteFavorite');
     $router->get('/', 'FavoriteController@ListFavorite');
 });
 
