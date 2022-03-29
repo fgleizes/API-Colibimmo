@@ -18,10 +18,33 @@ class FavoriteController extends Controller
         $this->middleware('auth:api');
     }
 
+    public function FavoriteCreate(Request $request)
+    {
+        $this->validate($request, [
+            'id_Project' => 'exists:project,id',
+        ]);
+
+        $favorite = new Favorite();
+        $favorite->id_Person = Auth::user()->id;
+        $favorite->id_Project = $request->input('id_Project');
+        $favorite->save();
+        return response()->json(['message' => 'FAVORITE ADDED'], 201);
+    }
+
+    public function DeleteFavorite($id)
+    {
+        try {
+            Favorite::findOrFail($id)->delete();
+            return response()->json(['message' => 'FAVORITE DELETED'], 200);
+        } catch (\Exception $ex) {
+            return response()->json(['message' => $ex->getMessage()], 409);
+        }
+    }
+
     public function ListFavorite()
     {
             try{
-                return response()->json(Favorite::with('Favorite')->where('id_Person','=', Auth::user()->id)->get(), 200);
+                return response()->json(Favorite::where('id_Person','=', Auth::user()->id)->get(), 200);
             }catch (\Exception $ex){
                 return response()->json(['message' => $ex->getMessage()], 404);
             }   
