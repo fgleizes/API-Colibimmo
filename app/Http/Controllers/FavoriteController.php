@@ -24,7 +24,7 @@ class FavoriteController extends Controller
             'id_Project' => 'exists:project,id',
         ]);
 
-        $favorite = Favorite::where('id_Project', $request->input('id_Project'))->where('id_Person', Auth::user()->id)->get();
+        $favorite = Favorite::where('id_Project', $request->input('id_Project'))->where('id_Person', Auth::user()->id)->first();
 
         if(empty($favorite)) {
             $favorite = new Favorite();
