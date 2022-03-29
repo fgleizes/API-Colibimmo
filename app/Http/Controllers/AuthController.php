@@ -72,8 +72,37 @@ class AuthController extends Controller
         if (!$token = Auth::attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
-
+        $user = Auth::user();
+        echo($user->id_Role);
         return $this->respondWithToken($token);
+    }
+
+    public function loginMobile(Request $request)
+    {
+        echo("hey");
+        $this->validate($request, [
+            'mail' => 'required|string',
+            'password' => 'required|string'
+        ]);
+
+        $credentials = $request->only(['mail', 'password']);
+
+        if (!$token = Auth::attempt($credentials)) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+        $user = Auth::user();
+        echo($user->id_Role);
+        if($user->id_Role = 4)
+        {
+            return $this->respondWithToken($token);
+        }
+        else
+        {
+            return response()->json(['error' => 'Seulement les agents peuvent se connecter'], 403);
+        }
+
+
+
     }
 
     /**
