@@ -220,29 +220,6 @@ class PersonController extends Controller
     {
         return response()->json(Person::where('id_Role', 1)->where('id_Agency', $idAgency)->get(), 200);
     }
-
-    public function FavoriteCreate(Request $request)
-    {
-        $this->validate($request, [
-            'id_Project' => 'exists:project,id',
-        ]);
-
-        $favorite = new Favorite();
-        $favorite->id_Person = Auth::user()->id;
-        $favorite->id_Project = $request->input('id_Project');
-        $favorite->save();
-        return response()->json(['message' => 'FAVORITE ADDED'], 200);
-    }
-
-    public function DeleteFavorite($id)
-    {
-        try {
-            Favorite::findOrFail($id)->delete();
-            return response()->json(['message' => 'FAVORITE DELETED'], 200);
-        } catch (\Exception $ex) {
-            return response()->json(['message' => $ex->getMessage()], 409);
-        }
-    }
 }
 
 function mergeAddress($object) {

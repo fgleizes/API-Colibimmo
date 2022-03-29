@@ -24,11 +24,17 @@ class FavoriteController extends Controller
             'id_Project' => 'exists:project,id',
         ]);
 
-        $favorite = new Favorite();
-        $favorite->id_Person = Auth::user()->id;
-        $favorite->id_Project = $request->input('id_Project');
-        $favorite->save();
-        return response()->json(['message' => 'FAVORITE ADDED'], 201);
+        $favorite = Favorite::where('id_Project', $request->input('id_Project'))->where('id_Person', Auth::user()->id)->first();
+
+        if(empty($favorite)) {
+            $favorite = new Favorite();
+            $favorite->id_Person = Auth::user()->id;
+            $favorite->id_Project = $request->input('id_Project');
+            $favorite->save();
+            return response()->json(['message' => 'FAVORITE ADDED'], 200);
+        } else {
+            return response()->json(['message' => 'FAVORITE ALREADY ADDED'], 200);
+        }
     }
 
     public function DeleteFavorite($id)
@@ -43,11 +49,10 @@ class FavoriteController extends Controller
 
     public function ListFavorite()
     {
-            try{
-                return response()->json(Favorite::where('id_Person','=', Auth::user()->id)->get(), 200);
-            }catch (\Exception $ex){
-                return response()->json(['message' => $ex->getMessage()], 404);
-            }   
-        
+        try{
+            return response()->json(Favorite::where('id_Person','=', Auth::user()->id)->get(), 200);
+        }catch (\Exception $ex){
+            return response()->json(['message' => $ex->getMessage()], 404);
+        }
     }
 }
