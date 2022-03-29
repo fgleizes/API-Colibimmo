@@ -23,7 +23,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login', 'register']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register','loginMobile']]);
     }
 
     public function register(Request $request)
@@ -70,16 +70,15 @@ class AuthController extends Controller
         $credentials = $request->only(['mail', 'password']);
 
         if (!$token = Auth::attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'error'], 401);
         }
-        $user = Auth::user();
-        echo($user->id_Role);
+       
         return $this->respondWithToken($token);
     }
 
     public function loginMobile(Request $request)
     {
-        echo("hey");
+        
         $this->validate($request, [
             'mail' => 'required|string',
             'password' => 'required|string'
@@ -91,15 +90,13 @@ class AuthController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
         $user = Auth::user();
-        echo($user->id_Role);
-        if($user->id_Role = 4)
+        
+        if($user->id_Role != 4)
         {
-            return $this->respondWithToken($token);
-        }
-        else
-        {
+            
             return response()->json(['error' => 'Seulement les agents peuvent se connecter'], 403);
         }
+        return $this->respondWithToken($token);
 
 
 
