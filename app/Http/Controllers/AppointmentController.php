@@ -165,6 +165,7 @@ class AppointmentController extends Controller
                 foreach ($appointment->person_appointmentProject as $project) {
                     $project->personAgent = Person::findOrfail($project->id_PersonAgent);
                     $project->person = Person::findOrfail($project->id_Person);
+                    $project->address = Address::findOrfail($project->person->id_Address);
                 }
             }
             return response()->json( $appointments, 200);
