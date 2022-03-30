@@ -31,7 +31,9 @@ class FavoriteController extends Controller
 
         if($favorite->wasRecentlyCreated) {
             return response()->json(['message' => 'FAVORITE ADDED', 'data' => $favorite], 201);
-        } 
+        } else {
+            return response()->json(['message' => 'FAVORITE ALREADY ADDED'], 304);
+        }
     }
 
     public function DeleteFavorite($id)
