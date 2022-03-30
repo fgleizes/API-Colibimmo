@@ -24,17 +24,14 @@ class FavoriteController extends Controller
             'id_Project' => 'exists:project,id',
         ]);
 
-        $favorite = Favorite::where('id_Project', $request->input('id_Project'))->where('id_Person', Auth::user()->id)->first();
+        $favorite = Favorite::firstOrCreate([
+            'id_Project' => $request->input('id_Project'),
+            'id_Person' => Auth::user()->id
+        ]);
 
-        if(empty($favorite)) {
-            $favorite = new Favorite();
-            $favorite->id_Person = Auth::user()->id;
-            $favorite->id_Project = $request->input('id_Project');
-            $favorite->save();
-            return response()->json(['message' => 'FAVORITE ADDED'], 200);
-        } else {
-            return response()->json(['message' => 'FAVORITE ALREADY ADDED'], 200);
-        }
+        if($favorite->wasRecentlyCreated) {
+            return response()->json(['message' => 'FAVORITE ADDED', 'data' => $favorite], 201);
+        } 
     }
 
     public function DeleteFavorite($id)

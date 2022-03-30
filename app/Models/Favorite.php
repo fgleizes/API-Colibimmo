@@ -8,6 +8,7 @@ class Favorite extends Model
 {
     protected $table = "favorite";
     protected $primaryKey = 'id';
+    protected $fillable = ['id_Project', 'id_Person'];
     public $timestamps = false;
 
     public function Favorite()
