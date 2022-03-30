@@ -25,11 +25,16 @@ class FavoriteController extends Controller
         ]);
 
         $favorite = Favorite::firstOrCreate([
-            'id_Project' => $request->input('id_Project'),
-            'id_Person' => Auth::user()->id
+            'id_Person' => Auth::user()->id,
+            'id_Project' => $request->input('id_Project')
         ]);
 
         if($favorite->wasRecentlyCreated) {
+            $favorite = [
+                'id' => $favorite->id,
+                'id_Person' => $favorite->id_Person,
+                'id_Project' => $favorite->id_Project
+            ];
             return response()->json(['message' => 'FAVORITE ADDED', 'data' => $favorite], 201);
         } else {
             return response()->json(['message' => 'FAVORITE ALREADY ADDED'], 304);
@@ -39,8 +44,9 @@ class FavoriteController extends Controller
     public function DeleteFavorite($id)
     {
         try {
-            Favorite::findOrFail($id)->delete();
-            return response()->json(['message' => 'FAVORITE DELETED'], 200);
+            $favorite = Favorite::findOrFail($id);
+            $favorite->delete();
+            return response()->json(['message' => 'FAVORITE DELETED', "data" => $favorite], 200);
         } catch (\Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 409);
         }
