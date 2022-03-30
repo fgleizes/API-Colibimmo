@@ -292,6 +292,14 @@ class ProjectController extends Controller
                     $project->address->region = Region::findOrfail($project->address->department->id_Region);
                     unset($project->id_Address);
                 }
+                $project->option_project=Option_project::where('id_Project', $project->id)->get();
+                foreach($project->option_project as $key => $value) {
+                    $project->option_project[$key]->name = Option::findOrFail($value->id_Option)->name;
+                }
+                $project->room_project=Room::where('id_Project', $project->id)->get();
+                foreach($project->room_project as $key => $value) {
+                    $project->room_project[$key]->name = Type_room::findOrFail($value->id_Type_room)->name;
+                }
                 $project->personAgent->agency = Agency::find($project->personAgent->id_Agency);
                 if (isset($project->personAgent->id_Agency)) {
                     $project->personAgent->agency->address = Address::findOrfail($project->personAgent->agency->id_Address);
