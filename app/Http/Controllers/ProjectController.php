@@ -205,25 +205,7 @@ class ProjectController extends Controller
     {
         try {
             $projects = Project::where('id_Person',$id_Person)->get();
-            // dd($projects);
-            // $projectPerson=[];
-            // foreach ($projects as $key => $value) {
-            //     $projectPerson[$key] = Project::findOrFail($value->id);
-            //     $type_project = Type_project::findOrfail($projectPerson[$key]->id_Type_project);
-            //     $projectPerson[$key]->type_project = $type_project->name;
-            //     $customer = $projectPerson[$key]->id_Person;
-            //     $projectPerson[$key]->customer= Person::findOrfail($customer);
-            //     $manageProject = Manage_project::findOrfail($projectPerson[$key]->id_Manage_project);
-            //     $projectPerson[$key]->manageProject = Person::findOrfail($manageProject->id_Person);
-            //     $address = $projectPerson[$key]->id_Address;
-            //     $projectPerson[$key]->address= Address::findOrfail($address);
-            //     $agency = $projectPerson[$key]->manageProject->id_Agency;
-            //     $projectPerson[$key]->agency = Agency::findOrfail($agency);
-            //     $energyIndex = Energy_index::findOrfail($projectPerson[$key]->id_Energy_index);
-            //     $projectPerson[$key]->energyIndex = $energyIndex->index;
-            //     $statutProject = Status_project::findOrfail($projectPerson[$key]->id_Statut_project);
-            //     $projectPerson[$key]->statutProject = $statutProject->name;
-            // }
+            
             foreach($projects as $project) {
                 $project->person = Person::findOrfail($project->id_Person);
                 $project->personAgent = Person::findOrfail($project->id_PersonAgent);
@@ -247,8 +229,6 @@ class ProjectController extends Controller
                 }
                 $project->type_property = Type_property_project::where('id_Project', $project->id)->get();
             }
-            // dd($projects);
-            // return response()->json($projectPerson, 200);
             return response()->json($projects, 200);
             
         } catch (\Exception $ex) {
@@ -260,25 +240,7 @@ class ProjectController extends Controller
     {
         try {
             $projects = Project::where('id_PersonAgent',$id_PersonAgent)->get();
-            // dd($projects);
-            // $projectPerson=[];
-            // foreach ($projects as $key => $value) {
-            //     $projectPerson[$key] = Project::findOrFail($value->id);
-            //     $type_project = Type_project::findOrfail($projectPerson[$key]->id_Type_project);
-            //     $projectPerson[$key]->type_project = $type_project->name;
-            //     $customer = $projectPerson[$key]->id_Person;
-            //     $projectPerson[$key]->customer= Person::findOrfail($customer);
-            //     $manageProject = Manage_project::findOrfail($projectPerson[$key]->id_Manage_project);
-            //     $projectPerson[$key]->manageProject = Person::findOrfail($manageProject->id_Person);
-            //     $address = $projectPerson[$key]->id_Address;
-            //     $projectPerson[$key]->address= Address::findOrfail($address);
-            //     $agency = $projectPerson[$key]->manageProject->id_Agency;
-            //     $projectPerson[$key]->agency = Agency::findOrfail($agency);
-            //     $energyIndex = Energy_index::findOrfail($projectPerson[$key]->id_Energy_index);
-            //     $projectPerson[$key]->energyIndex = $energyIndex->index;
-            //     $statutProject = Status_project::findOrfail($projectPerson[$key]->id_Statut_project);
-            //     $projectPerson[$key]->statutProject = $statutProject->name;
-            // }
+
             foreach($projects as $project) {
                 $project->person = Person::findOrfail($project->id_Person);
                 $project->personAgent = Person::findOrfail($project->id_PersonAgent);
@@ -310,8 +272,6 @@ class ProjectController extends Controller
                 }
                 $project->type_property = Type_property_project::where('id_Project', $project->id)->get();
             }
-            // dd($projects);
-            // return response()->json($projectPerson, 200);
             return response()->json($projects, 200);
             
         } catch (\Exception $ex) {
@@ -334,26 +294,24 @@ class ProjectController extends Controller
             foreach($favorites as $favorite) {
                 $project = Project::findOrFail($favorite->id_Project);
                 $project->person = Person::findOrfail($project->id_Person);
-                $project->personAgent = Person::findOrfail($project->id_PersonAgent);
-                $project->type_Project = Type_project::findOrfail($project->id_Type_project); // "id_Type_project": 1,
+                $project->id_PersonAgent = Person::findOrfail($project->id_PersonAgent); // "id_PersonAgent": 1
+                $project->id_Type_project = Type_project::findOrfail($project->id_Type_project); // "id_Type_project": 1,
                 $project->id_Statut_project = Status_project::findOrfail($project->id_Statut_project); // "id_Statut_project": 1,
-                $project->id_Energy_index = Energy_index::findOrfail($project->id_Energy_index); // "id_Energy_index": 1,
-                $project->address = Address::find($project->id_Address); // "id_Address": 5,
-                if(isset($project->id_Address)) {
-                    $project->address->city = City::findOrfail($project->address->id_City);
-                    $project->address->department = Department::findOrfail($project->address->city->id_Department);
-                    $project->address->region = Region::findOrfail($project->address->department->id_Region);
-                    unset($project->id_Address);
+                $project->id_Energy_index = Energy_index::find($project->id_Energy_index); // "id_Energy_index": 1,
+                $project->id_Address = Address::find($project->id_Address); // "id_Address": 5,
+                $project->option_project = Option_project::where('id_Project', $project->id)->get();
+                foreach ($project->option_project as $key => $value) {
+                    $project->option_project[$key]->name = Option::findOrFail($value->id_Option)->name;
                 }
-                $project->personAgent->agency = Agency::find($project->personAgent->id_Agency);
-                if (isset($project->personAgent->id_Agency)) {
-                    $project->personAgent->agency->address = Address::findOrfail($project->personAgent->agency->id_Address);
-                    $project->personAgent->agency->city = City::findOrfail($project->personAgent->agency->address->id_City);
-                    $project->personAgent->agency->department = Department::findOrfail($project->personAgent->agency->city->id_Department);
-                    $project->personAgent->agency->region = Region::findOrfail($project->personAgent->agency->department->id_Region);
-                    unset($project->personAgent->id_Agency);
+                $project->room_project = Room::where('id_Project', $project->id)->get();
+                foreach ($project->room_project as $key => $value) {
+                    $project->room_project[$key]->name = Type_room::findOrFail($value->id_Type_room)->name;
                 }
-                $project->type_property = Type_property_project::where('id_Project', $project->id)->get();
+                if (isset($project->id_Address)) {
+                    $project->id_Address->city = City::findOrfail($project->id_Address->id_City); // "id_Address": 5,
+                    $project->id_Address->department = Department::findOrfail($project->id_Address->city->id_Department);
+                    $project->id_Address->region = Region::findOrfail($project->id_Address->department->id_Region);
+                }
                 array_push($projects, $project);
             }
 
