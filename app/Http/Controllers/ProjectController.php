@@ -320,6 +320,51 @@ class ProjectController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function showFavorites($id_Person)
+    {
+        try {
+            $favorites = Favorite::where('id_Person',$id_Person)->get();
+            $projects = [];
+
+            foreach($favorites as $favorite) {
+                $project = Project::findOrFail($favorite->id_Project);
+                $project->person = Person::findOrfail($project->id_Person);
+                $project->personAgent = Person::findOrfail($project->id_PersonAgent);
+                $project->type_Project = Type_project::findOrfail($project->id_Type_project); // "id_Type_project": 1,
+                $project->id_Statut_project = Status_project::findOrfail($project->id_Statut_project); // "id_Statut_project": 1,
+                $project->id_Energy_index = Energy_index::findOrfail($project->id_Energy_index); // "id_Energy_index": 1,
+                $project->address = Address::find($project->id_Address); // "id_Address": 5,
+                if(isset($project->id_Address)) {
+                    $project->address->city = City::findOrfail($project->address->id_City);
+                    $project->address->department = Department::findOrfail($project->address->city->id_Department);
+                    $project->address->region = Region::findOrfail($project->address->department->id_Region);
+                    unset($project->id_Address);
+                }
+                $project->personAgent->agency = Agency::find($project->personAgent->id_Agency);
+                if (isset($project->personAgent->id_Agency)) {
+                    $project->personAgent->agency->address = Address::findOrfail($project->personAgent->agency->id_Address);
+                    $project->personAgent->agency->city = City::findOrfail($project->personAgent->agency->address->id_City);
+                    $project->personAgent->agency->department = Department::findOrfail($project->personAgent->agency->city->id_Department);
+                    $project->personAgent->agency->region = Region::findOrfail($project->personAgent->agency->department->id_Region);
+                    unset($project->personAgent->id_Agency);
+                }
+                $project->type_property = Type_property_project::where('id_Project', $project->id)->get();
+                array_push($projects, $project);
+            }
+
+            return response()->json($projects, 200);
+            
+        } catch (\Exception $ex) {
+            return response()->json(['message' => $ex->getMessage()], 404);
+        }
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
