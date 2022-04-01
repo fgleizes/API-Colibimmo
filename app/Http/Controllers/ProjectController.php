@@ -28,6 +28,7 @@ use App\Models\Department;
 use App\Models\Favorite;
 use App\Models\Person_appointment;
 use App\Models\Region;
+use Illuminate\Support\Facades\Auth;
 
 class ProjectController extends Controller
 {
@@ -223,6 +224,51 @@ class ProjectController extends Controller
             return response()->json(['message' => $ex->getMessage()], 404);
         }
     }
+
+
+    public function showByAgentAuth()
+    {
+        try {
+            $projects = Project::where('id_PersonAgent',Auth::user()->id)->get();
+            
+            foreach($projects as $project) {
+                $project->person = Person::findOrfail($project->id_Person);
+                $project->personAgent = Person::findOrfail($project->id_PersonAgent);
+                $project->type_Project = Type_project::findOrfail($project->id_Type_project); // "id_Type_project": 1,
+                $project->id_Statut_project = Status_project::findOrfail($project->id_Statut_project); // "id_Statut_project": 1,
+                $project->id_Energy_index = Energy_index::findOrfail($project->id_Energy_index); // "id_Energy_index": 1,
+                $project->address = Address::find($project->id_Address); // "id_Address": 5,
+                if(isset($project->id_Address)) {
+                    $project->address->city = City::findOrfail($project->address->id_City);
+                    $project->address->department = Department::findOrfail($project->address->city->id_Department);
+                    $project->address->region = Region::findOrfail($project->address->department->id_Region);
+                    unset($project->id_Address);
+                }
+                $project->option_project=Option_project::where('id_Project', $project->id)->get();
+                foreach($project->option_project as $key => $value) {
+                    $project->option_project[$key]->name = Option::findOrFail($value->id_Option)->name;
+                }
+                $project->room_project=Room::where('id_Project', $project->id)->get();
+                foreach($project->room_project as $key => $value) {
+                    $project->room_project[$key]->name = Type_room::findOrFail($value->id_Type_room)->name;
+                }
+                $project->personAgent->agency = Agency::find($project->personAgent->id_Agency);
+                if (isset($project->personAgent->id_Agency)) {
+                    $project->personAgent->agency->address = Address::findOrfail($project->personAgent->agency->id_Address);
+                    $project->personAgent->agency->city = City::findOrfail($project->personAgent->agency->address->id_City);
+                    $project->personAgent->agency->department = Department::findOrfail($project->personAgent->agency->city->id_Department);
+                    $project->personAgent->agency->region = Region::findOrfail($project->personAgent->agency->department->id_Region);
+                    unset($project->personAgent->id_Agency);
+                }
+                $project->type_property = Type_property_project::where('id_Project', $project->id)->get();
+            }
+            return response()->json($projects, 200);
+            
+        } catch (\Exception $ex) {
+            return response()->json(['message' => $ex->getMessage()], 404);
+        }
+    }
+
 
     public function showByAgent($id_PersonAgent)
     {
@@ -618,31 +664,84 @@ class ProjectController extends Controller
     public function showProjectsByType($id_Type)
     {
         try{
-            $projectsByType = Project::where('id_Statut_project', '1')->where('id_Type_project',$id_Type)->get();
-            foreach($projectsByType as $project) {
+            $projects = Project::where('id_Statut_project', '1')->where('id_Type_project',$id_Type)->get();
+            foreach($projects as $project) {
+
                 $project->person = Person::findOrfail($project->id_Person);
-                $project->id_PersonAgent = Person::findOrfail($project->id_PersonAgent); // "id_PersonAgent": 1
-                $project->id_Type_project = Type_project::findOrfail($project->id_Type_project); // "id_Type_project": 1,
+                $project->personAgent = Person::findOrfail($project->id_PersonAgent);
+                $project->type_Project = Type_project::findOrfail($project->id_Type_project); // "id_Type_project": 1,
                 $project->id_Statut_project = Status_project::findOrfail($project->id_Statut_project); // "id_Statut_project": 1,
                 $project->id_Energy_index = Energy_index::find($project->id_Energy_index); // "id_Energy_index": 1,
-                $project->id_Address = Address::find($project->id_Address); // "id_Address": 5,
-                $project->option_project = Option_project::where('id_Project', $project->id)->get();
-                foreach ($project->option_project as $key => $value) {
+                $project->address = Address::find($project->id_Address); // "id_Address": 5,
+                if(isset($project->id_Address)) {
+                    $project->address->city = City::findOrfail($project->address->id_City);
+                    $project->address->department = Department::findOrfail($project->address->city->id_Department);
+                    $project->address->region = Region::findOrfail($project->address->department->id_Region);
+                    unset($project->id_Address);
+                }
+                $project->option_project=Option_project::where('id_Project', $project->id)->get();
+                foreach($project->option_project as $key => $value) {
                     $project->option_project[$key]->name = Option::findOrFail($value->id_Option)->name;
                 }
-                $project->room_project = Room::where('id_Project', $project->id)->get();
-                foreach ($project->room_project as $key => $value) {
+                $project->room_project=Room::where('id_Project', $project->id)->get();
+                foreach($project->room_project as $key => $value) {
                     $project->room_project[$key]->name = Type_room::findOrFail($value->id_Type_room)->name;
                 }
-                if (isset($project->id_Address)) {
-                    $project->id_Address->city = City::findOrfail($project->id_Address->id_City); // "id_Address": 5,
-                    $project->id_Address->department = Department::findOrfail($project->id_Address->city->id_Department);
-                    $project->id_Address->region = Region::findOrfail($project->id_Address->department->id_Region);
+                $project->personAgent->agency = Agency::find($project->personAgent->id_Agency);
+                if (isset($project->personAgent->id_Agency)) {
+                    $project->personAgent->agency->address = Address::findOrfail($project->personAgent->agency->id_Address);
+                    $project->personAgent->agency->city = City::findOrfail($project->personAgent->agency->address->id_City);
+                    $project->personAgent->agency->department = Department::findOrfail($project->personAgent->agency->city->id_Department);
+                    $project->personAgent->agency->region = Region::findOrfail($project->personAgent->agency->department->id_Region);
+                    unset($project->personAgent->id_Agency);
                 }
+                $project->type_property = Type_property_project::where('id_Project', $project->id)->get();
             }
+            return response()->json($projects, 200);
+            
+        } catch (\Exception $ex) {
+            return response()->json(['message' => $ex->getMessage()], 404);
+        }
+    }
+    public function showProjectsByTypeByAuthAgent($id_Type)
+    {
+        try{
+            $projects = Project::where('id_Type_project',$id_Type)->where('id_Statut_project', '1')->where('id_PersonAgent',Auth::user()->id)->get();
+            foreach($projects as $project) {
 
-            return response()->json($projectsByType, 200);
-        }catch(\Exception $ex){
+                $project->person = Person::findOrfail($project->id_Person);
+                $project->personAgent = Person::findOrfail($project->id_PersonAgent);
+                $project->type_Project = Type_project::findOrfail($project->id_Type_project); // "id_Type_project": 1,
+                $project->id_Statut_project = Status_project::findOrfail($project->id_Statut_project); // "id_Statut_project": 1,
+                $project->id_Energy_index = Energy_index::find($project->id_Energy_index); // "id_Energy_index": 1,
+                $project->address = Address::find($project->id_Address); // "id_Address": 5,
+                if(isset($project->id_Address)) {
+                    $project->address->city = City::findOrfail($project->address->id_City);
+                    $project->address->department = Department::findOrfail($project->address->city->id_Department);
+                    $project->address->region = Region::findOrfail($project->address->department->id_Region);
+                    unset($project->id_Address);
+                }
+                $project->option_project=Option_project::where('id_Project', $project->id)->get();
+                foreach($project->option_project as $key => $value) {
+                    $project->option_project[$key]->name = Option::findOrFail($value->id_Option)->name;
+                }
+                $project->room_project=Room::where('id_Project', $project->id)->get();
+                foreach($project->room_project as $key => $value) {
+                    $project->room_project[$key]->name = Type_room::findOrFail($value->id_Type_room)->name;
+                }
+                $project->personAgent->agency = Agency::find($project->personAgent->id_Agency);
+                if (isset($project->personAgent->id_Agency)) {
+                    $project->personAgent->agency->address = Address::findOrfail($project->personAgent->agency->id_Address);
+                    $project->personAgent->agency->city = City::findOrfail($project->personAgent->agency->address->id_City);
+                    $project->personAgent->agency->department = Department::findOrfail($project->personAgent->agency->city->id_Department);
+                    $project->personAgent->agency->region = Region::findOrfail($project->personAgent->agency->department->id_Region);
+                    unset($project->personAgent->id_Agency);
+                }
+                $project->type_property = Type_property_project::where('id_Project', $project->id)->get();
+            }
+            return response()->json($projects, 200);
+            
+        } catch (\Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 404);
         }
     }

@@ -121,7 +121,7 @@ $router->group([
     $router->get('search','ProjectController@showBySearch');
     $router->get('person/{id_Person}','ProjectController@showByPerson');
     $router->get('favorites/{id_Person}','ProjectController@showFavorites');
-    $router->get('personAgent/{id_PersonAgent}','ProjectController@showByAgent');
+    $router->get('personAgent/','ProjectController@showByAgentAuth');
     $router->get('/typeProject/','ProjectController@showAllTypeProject');
     $router->get('typeProject/{id}','ProjectController@showTypeProject');
     $router->get('statutProject/{id}','ProjectController@showStatutProject');
@@ -131,6 +131,7 @@ $router->group([
     $router->get('mainImage/{id}','ProjectController@showMainImageProject');
     $router->get('images/{id}','ProjectController@showImagesProject');
     $router->get('projectsByType/{id_Type}','ProjectController@showProjectsByType');
+    $router->get('projectsByTypeByAuthAgent/{id_Type}','ProjectController@showProjectsByTypeByAuthAgent');
     $router->get('/home/', 'ProjectController@showProjectsHomeView');
     $router->get('{id}', 'ProjectController@showOne');
     $router->get('/','ProjectController@show');
