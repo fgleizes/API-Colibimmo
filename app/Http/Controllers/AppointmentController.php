@@ -157,7 +157,7 @@ class AppointmentController extends Controller
     public function showAppointmentsForAuthUser()
     {
         try {
-            $appointments = Appointment::with('person_appointmentProject:id_PersonAgent,id_Person,reference')->whereHas('person_appointmentProject', function($q) {
+            $appointments = Appointment::with('person_appointmentProject:id_PersonAgent,id_Person,reference,id_Project')->whereHas('person_appointmentProject', function($q) {
                 $q->where('id_PersonAgent', Auth::user()->id);
             })->get();
 
@@ -165,7 +165,11 @@ class AppointmentController extends Controller
                 foreach ($appointment->person_appointmentProject as $project) {
                     $project->personAgent = Person::findOrfail($project->id_PersonAgent);
                     $project->person = Person::findOrfail($project->id_Person);
-                    $project->address = Address::findOrfail($project->person->id_Address);
+                    $project->project = Project::findOrfail($project->id_Project);
+                    $project->address = Address::findOrfail($project->project->id_Address);
+                    $project->typeProject = Type_project::findOrfail($project->project->id_Type_project);
+                    $project->statutProject = Status_project::findOrfail($project->project->id_Statut_project);
+                    $project->energyIndex = Energy_index::findOrfail($project->project->id_Energy_index);
                 }
             }
             return response()->json( $appointments, 200);
