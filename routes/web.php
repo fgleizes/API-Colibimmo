@@ -120,7 +120,7 @@ $router->group([
     $router->delete('{id}','ProjectController@delete');
     $router->get('person/{id_Person}','ProjectController@showByPerson');
     $router->get('favorites/{id_Person}','ProjectController@showFavorites');
-    $router->get('personAgent/{id_PersonAgent}','ProjectController@showByAgent');
+    $router->get('personAgent/','ProjectController@showByAgentAuth');
     $router->get('/typeProject/','ProjectController@showAllTypeProject');
     $router->get('typeProject/{id}','ProjectController@showTypeProject');
     $router->get('statutProject/{id}','ProjectController@showStatutProject');
