@@ -118,6 +118,7 @@ $router->group([
     $router->post('/', 'ProjectController@create');
     $router->put('{id}', 'ProjectController@update');
     $router->delete('{id}','ProjectController@delete');
+    $router->get('search','ProjectController@showBySearch');
     $router->get('person/{id_Person}','ProjectController@showByPerson');
     $router->get('favorites/{id_Person}','ProjectController@showFavorites');
     $router->get('personAgent/{id_PersonAgent}','ProjectController@showByAgent');

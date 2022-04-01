@@ -8,8 +8,8 @@ class Address extends Model
 {
     protected $table = 'address';
     protected $primaryKey = 'id';
-    protected $fillable = ['number','street','additional_address','building','floor','residence','staircase'];
-    protected $hidden = ['id_City'];
+    protected $fillable = ['number','street','additional_address','building','floor','residence','staircase', 'id_City'];
+    protected $hidden = [];
     public $timestamps = false;
 }
 

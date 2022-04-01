@@ -32,16 +32,6 @@ use App\Models\Region;
 class ProjectController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -75,8 +65,6 @@ class ProjectController extends Controller
             'id_PersonAgent' => 'exists:person,id|required'
             
         ]);
-
-
 
         try {
             $project = new Project();
@@ -282,7 +270,7 @@ class ProjectController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int  $id_Person
      * @return \Illuminate\Http\Response
      */
     public function showFavorites($id_Person)
@@ -292,7 +280,7 @@ class ProjectController extends Controller
             $projects = [];
 
             foreach($favorites as $favorite) {
-                $project = Project::findOrFail($favorite->id_Project);
+                $project = Project::where('id_Statut_project', '1')->findOrFail($favorite->id_Project);
                 $project->person = Person::findOrfail($project->id_Person);
                 $project->id_PersonAgent = Person::findOrfail($project->id_PersonAgent); // "id_PersonAgent": 1
                 $project->id_Type_project = Type_project::findOrfail($project->id_Type_project); // "id_Type_project": 1,
@@ -630,7 +618,7 @@ class ProjectController extends Controller
     public function showProjectsByType($id_Type)
     {
         try{
-            $projectsByType = Project::where('id_Type_project',$id_Type)->where('id_Statut_project', '1')->get();
+            $projectsByType = Project::where('id_Statut_project', '1')->where('id_Type_project',$id_Type)->get();
             foreach($projectsByType as $project) {
                 $project->person = Person::findOrfail($project->id_Person);
                 $project->id_PersonAgent = Person::findOrfail($project->id_PersonAgent); // "id_PersonAgent": 1
@@ -662,7 +650,7 @@ class ProjectController extends Controller
     public function showProjectsHomeView()
     {
         try {
-            $projects = Project::where('id_Type_project', '2')->orWhere('id_Type_project', '3')->limit(20)->orderBy('updated_at', 'DESC')->get();
+            $projects = Project::where('id_Statut_project', '1')->where('id_Type_project', '2')->orWhere('id_Type_project', '3')->limit(20)->orderBy('updated_at', 'DESC')->get();
             foreach ($projects as $project) {
                 $project->person = Person::findOrfail($project->id_Person);
                 $project->id_PersonAgent = Person::findOrfail($project->id_PersonAgent); // "id_PersonAgent": 1
@@ -689,5 +677,65 @@ class ProjectController extends Controller
         } catch (\Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 404);
         }
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function showBySearch(Request $request)
+    {
+        $this->validate($request, [
+            'data' => 'required|string',
+            'id_Type_project' => 'exists:type_project,id|required'
+        ]);
+
+        $regularExpression = '/[ -]/';
+        $replacement = '';
+        $search = preg_replace($regularExpression, $replacement, strtolower($request['data'])); 
+
+        // $regions = Region::where('slug', 'LIKE', '%' . $search . '%')->get();
+
+        // $departments = Department::where('slug', 'LIKE', '%' . $search . '%')->get();
+
+        $cities = City::where('slug', 'LIKE', '%' . $search . '%')->orWhere('zip_code', 'LIKE', '%' . $search . '%')->get();
+        $projects = [];
+
+        if(sizeof($cities) > 0) {
+            foreach ($cities as $key => $city) {
+                $idCities[$key] = $city->id;
+            }
+    
+            $addresses = Address::whereIn('id_City', $idCities)->get();
+            foreach ($addresses as $key => $address) {
+                $idAdresses[$key] = $address->id;
+            }
+    
+            $projects = Project::whereIn('id_Address', $idAdresses)->where('id_Statut_project', '1')->where('id_Type_project', $request['id_Type_project'])->get();
+            foreach ($projects as $project) {
+                $project->person = Person::findOrfail($project->id_Person);
+                $project->id_PersonAgent = Person::findOrfail($project->id_PersonAgent); // "id_PersonAgent": 1
+                $project->id_Type_project = Type_project::findOrfail($project->id_Type_project); // "id_Type_project": 1,
+                $project->id_Statut_project = Status_project::findOrfail($project->id_Statut_project); // "id_Statut_project": 1,
+                $project->id_Energy_index = Energy_index::find($project->id_Energy_index); // "id_Energy_index": 1,
+                $project->id_Address = Address::find($project->id_Address); // "id_Address": 5,
+                $project->option_project = Option_project::where('id_Project', $project->id)->get();
+                foreach ($project->option_project as $key => $value) {
+                    $project->option_project[$key]->name = Option::findOrFail($value->id_Option)->name;
+                }
+                $project->room_project = Room::where('id_Project', $project->id)->get();
+                foreach ($project->room_project as $key => $value) {
+                    $project->room_project[$key]->name = Type_room::findOrFail($value->id_Type_room)->name;
+                }
+                if (isset($project->id_Address)) {
+                    $project->id_Address->city = City::findOrfail($project->id_Address->id_City); // "id_Address": 5,
+                    $project->id_Address->department = Department::findOrfail($project->id_Address->city->id_Department);
+                    $project->id_Address->region = Region::findOrfail($project->id_Address->department->id_Region);
+                }
+            }
+        }
+        return response()->json($projects, 200);
     }
 }
