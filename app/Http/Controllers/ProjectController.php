@@ -731,13 +731,13 @@ class ProjectController extends Controller
     public function showBySearch(Request $request)
     {
         $this->validate($request, [
-            'data' => 'required|string',
+            'search' => 'required|string',
             'id_Type_project' => 'exists:type_project,id|required'
         ]);
 
         $regularExpression = '/[ -]/';
         $replacement = '';
-        $search = preg_replace($regularExpression, $replacement, strtolower($request['data'])); 
+        $search = preg_replace($regularExpression, $replacement, strtolower($request['search'])); 
 
         // $regions = Region::where('slug', 'LIKE', '%' . $search . '%')->get();
 
