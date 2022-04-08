@@ -72,6 +72,12 @@ class NoteController extends Controller
         return response()->json(Note::all(), 200);
     }
 
+    public function showByProject($idProject)
+    {
+        $notes = Note::where('id_Project',$idProject)->get();
+        return response()->json($notes, 200);
+    }
+
     public function showOne($id)
     {
         try{

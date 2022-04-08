@@ -227,6 +227,7 @@ $router->group([
     $router->delete('{id}', 'NoteController@delete');
     $router->get('/', 'NoteController@show');
     $router->get('{id}', 'NoteController@showOne');
+    $router->get('/showByProject/{idProject}', 'NoteController@showByProject');
 });
 
 $router->group([
