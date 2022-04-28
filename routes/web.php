@@ -127,6 +127,7 @@ $router->group([
     $router->get('statutProject/{id}','ProjectController@showStatutProject');
     $router->get('manageProject/{id}','ProjectController@showManageProject');
     $router->get('energieIndex/{id}','ProjectController@showEnergyIndex');
+    $router->get('energieIndexAll','ProjectController@showAllEnergyIndex');
     $router->post('storeDocument/{id}','ProjectController@storeDocumentsToProject');
     $router->get('mainImage/{id}','ProjectController@showMainImageProject');
     $router->get('images/{id}','ProjectController@showImagesProject');

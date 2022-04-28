@@ -489,6 +489,15 @@ class ProjectController extends Controller
         } 
     }
 
+    public function showAllEnergyIndex()
+    {
+        try{
+            return response()->json(Energy_index::all(),200);
+        }catch (\Exception $ex){
+            return response()->json(['message' => $ex->getMessage()], 404);
+        } 
+    }
+
     public function showStatutProject($id)
     {
         try{
