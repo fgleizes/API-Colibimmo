@@ -141,14 +141,17 @@ class PersonController extends Controller
 
         try {
             $user = Person::findOrFail($idPerson);
-            $address = Address::findOrFail($user->id_Address);
 
             if ($request->input('mail') && $request->input('mail') != $user->mail && Person::where('mail', $request->input('mail'))->first()) {
                 return response()->json(['mail' => ['The mail has already been taken.']], 409);
             }
 
             $user->update($request->all());
-            $address->update($request->all());
+
+            if (!empty($user->id_Address)) {
+                $address = Address::findOrFail($user->id_Address);
+                $address->update($request->all());
+            }
 
             return response()->json(['message' => 'USER UPDATED'], 201);
         } catch (\Exception $ex) {
