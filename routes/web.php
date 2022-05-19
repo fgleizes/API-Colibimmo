@@ -50,7 +50,7 @@ $router->group([
     $router->get('agency/{idAgency}', 'PersonController@showByAgency');
     $router->get('role/{idRole}', 'PersonController@showByRole');
     $router->get('{idPerson}', 'PersonController@showOne');
-    $router->get('/', ['middleware' => 'roles:2', 'uses' => 'PersonController@show']);
+    $router->get('/', ['middleware' => 'roles:4', 'uses' => 'PersonController@show']);
 });
 
 $router->put('post/{id}', ['middleware' => 'role:editor', function ($id) {
