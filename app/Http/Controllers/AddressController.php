@@ -160,10 +160,10 @@ class AddressController extends Controller
         }
     }
 
-    public function showCity($id)
+    public function showCity($idCity)
     {
         try {
-            return response()->json(City::findOrFail($id), 200);
+            return response()->json(City::findOrFail($idCity), 200);
         } catch (\Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 404);
         }
