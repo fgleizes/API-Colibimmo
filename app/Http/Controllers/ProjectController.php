@@ -205,7 +205,7 @@ class ProjectController extends Controller
                 $project->personAgent = Person::findOrfail($project->id_PersonAgent);
                 $project->type_Project = Type_project::findOrfail($project->id_Type_project); // "id_Type_project": 1,
                 $project->id_Statut_project = Status_project::findOrfail($project->id_Statut_project); // "id_Statut_project": 1,
-                $project->id_Energy_index = Energy_index::findOrfail($project->id_Energy_index); // "id_Energy_index": 1,
+                $project->id_Energy_index = Energy_index::find($project->id_Energy_index); // "id_Energy_index": 1,
                 $project->address = Address::find($project->id_Address); // "id_Address": 5,
                 if(isset($project->id_Address)) {
                     $project->address->city = City::findOrfail($project->address->id_City);
@@ -240,7 +240,7 @@ class ProjectController extends Controller
                 $project->personAgent = Person::findOrfail($project->id_PersonAgent);
                 $project->type_Project = Type_project::findOrfail($project->id_Type_project); // "id_Type_project": 1,
                 $project->id_Statut_project = Status_project::findOrfail($project->id_Statut_project); // "id_Statut_project": 1,
-                $project->id_Energy_index = Energy_index::findOrfail($project->id_Energy_index); // "id_Energy_index": 1,
+                $project->id_Energy_index = Energy_index::find($project->id_Energy_index); // "id_Energy_index": 1,
                 $project->address = Address::find($project->id_Address); // "id_Address": 5,
                 if(isset($project->id_Address)) {
                     $project->address->city = City::findOrfail($project->address->id_City);
