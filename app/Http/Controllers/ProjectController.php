@@ -115,25 +115,27 @@ class ProjectController extends Controller
 
             //recuperation des entrées pour room et ajouts.
             $inputRooms = $request->input('rooms');
-            $rooms=unserialize($inputRooms);
-           
-            foreach($rooms as $room){
-                $roomProject = new Room();
-                $roomProject->id_Type_room = $room['id_Type_room'];
-                $roomProject->area = $room['area'];
-                $roomProject->id_Project = $project->id;
-                $roomProject->save();
+            if(isset($inputRooms)) {
+                $rooms=unserialize($inputRooms);
+                foreach($rooms as $room){
+                    $roomProject = new Room();
+                    $roomProject->id_Type_room = $room['id_Type_room'];
+                    $roomProject->area = $room['area'];
+                    $roomProject->id_Project = $project->id;
+                    $roomProject->save();
+                }
             }
 
             //recuperation des entrées pour options_project et ajouts.
             $inputOptions = $request->input('options');
-            $options=unserialize($inputOptions);
-            
-            foreach($options as $option){
-                $optionProject = new Option_project();
-                $optionProject->id_Option = $option;
-                $optionProject->id_Project = $project->id;
-                $optionProject->save();
+            if(isset($inputOptions)) {
+                $options=unserialize($inputOptions);
+                foreach($options as $option){
+                    $optionProject = new Option_project();
+                    $optionProject->id_Option = $option;
+                    $optionProject->id_Project = $project->id;
+                    $optionProject->save();
+                }
             }
 
             // $project->save();
@@ -166,11 +168,14 @@ class ProjectController extends Controller
             
             // $project->id_Type_project=Type_project::findOrFail($project->id_Type_project);
             $project->type_Project = Type_project::findOrfail($project->id_Type_project);
-            $project->id_Statut_project=Status_project::findOrFail($project->id_Statut_project);            
-            $project->id_Address=Address::findOrFail($project->id_Address);
-            $project->id_Address->City=City::findOrFail($project->id_Address->id_City);
-            $project->id_Address->City->Departement=Department::findOrFail($project->id_Address->City->id_Department);
-            $project->id_Address->City->Departement->Region=Region::findOrFail($project->id_Address->City->Departement->id_Region);
+            $project->id_Statut_project=Status_project::findOrFail($project->id_Statut_project);
+
+            if(isset($project->id_Address)) {
+                $project->id_Address=Address::findOrFail($project->id_Address);
+                $project->id_Address->City=City::findOrFail($project->id_Address->id_City);
+                $project->id_Address->City->Departement=Department::findOrFail($project->id_Address->City->id_Department);
+                $project->id_Address->City->Departement->Region=Region::findOrFail($project->id_Address->City->Departement->id_Region);
+            }
 
             // $manageProject = Manage_project::findOrFail($project->id_Manage_project);
             $project->personAgent = Person::findOrFail($project->id_PersonAgent);
