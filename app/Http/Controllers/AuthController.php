@@ -102,7 +102,6 @@ class AuthController extends Controller
 
     public function loginMobile(Request $request)
     {
-
         $this->validate($request, [
             'mail' => 'required|string',
             'password' => 'required|string'
@@ -115,7 +114,7 @@ class AuthController extends Controller
         }
         $user = Auth::user();
 
-        if ($user->id_Role <= 4) {
+        if ($user->id_Role > 4) {
             return response()->json(['error' => 'Seulement les agents peuvent se connecter'], 403);
         }
         return $this->respondWithToken($token);
