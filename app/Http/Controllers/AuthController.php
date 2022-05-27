@@ -26,6 +26,101 @@ class AuthController extends Controller
         $this->middleware('auth:api', ['except' => ['login', 'register','loginMobile']]);
     }
 
+    /**
+     * Get the token array structure.
+     *
+     * @param  string $token
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function respondWithToken($token)
+    {
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => Auth::factory()->getTTL() * 60
+        ]);
+    }
+
+    /**
+     * Get a JWT via given credentials.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function login(Request $request)
+    {
+        $this->validate($request, [
+            'mail' => 'required|string',
+            'password' => 'required|string'
+        ]);
+
+        $credentials = $request->only(['mail', 'password']);
+
+        if (!$token = Auth::attempt($credentials)) {
+            return response()->json(['error' => 'error'], 401);
+        }
+
+        return $this->respondWithToken($token);
+    }
+
+    /**
+     * Log the user out (Invalidate the token).
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function logout()
+    {
+        Auth::logout();
+
+        return response()->json(['message' => 'Successfully logged out']);
+    }
+
+    /**
+     * Get the authenticated User.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function me()
+    {
+        $user = Auth::user();
+        $role = Role::findOrFail($user->id_Role);
+        $user->role = $role;
+        ControllersMergeAddress(($user));
+
+        return response()->json($user, 200);
+    }
+
+    /**s
+     * Refresh a token.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function refresh()
+    {
+        return $this->respondWithToken(Auth::refresh());
+    }
+
+    public function loginMobile(Request $request)
+    {
+
+        $this->validate($request, [
+            'mail' => 'required|string',
+            'password' => 'required|string'
+        ]);
+
+        $credentials = $request->only(['mail', 'password']);
+
+        if (!$token = Auth::attempt($credentials)) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+        $user = Auth::user();
+
+        if ($user->id_Role <= 4) {
+            return response()->json(['error' => 'Seulement les agents peuvent se connecter'], 403);
+        }
+        return $this->respondWithToken($token);
+    }
+
     public function register(Request $request)
     {
         $this->validate($request, [
@@ -53,106 +148,6 @@ class AuthController extends Controller
         } catch (\Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 409);
         }
-    }
-
-    // /**
-    //  * Get a JWT via given credentials.
-    //  *
-    //  * @return \Illuminate\Http\JsonResponse
-    //  */
-    public function login(Request $request)
-    {
-        $this->validate($request, [
-            'mail' => 'required|string',
-            'password' => 'required|string'
-        ]);
-
-        $credentials = $request->only(['mail', 'password']);
-
-        if (!$token = Auth::attempt($credentials)) {
-            return response()->json(['error' => 'error'], 401);
-        }
-       
-        return $this->respondWithToken($token);
-    }
-
-    public function loginMobile(Request $request)
-    {
-        
-        $this->validate($request, [
-            'mail' => 'required|string',
-            'password' => 'required|string'
-        ]);
-
-        $credentials = $request->only(['mail', 'password']);
-
-        if (!$token = Auth::attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
-        $user = Auth::user();
-        
-        if($user->id_Role != 4)
-        {
-            
-            return response()->json(['error' => 'Seulement les agents peuvent se connecter'], 403);
-        }
-        return $this->respondWithToken($token);
-
-
-
-    }
-
-    /**
-     * Get the authenticated User.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function me()
-    {
-        $user = Auth::user();
-        $role = Role::findOrFail($user->id_Role);
-        $user->role = $role;
-        ControllersMergeAddress(($user));
-
-        return response()->json($user, 200);
-    }
-
-    /**
-     * Log the user out (Invalidate the token).
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function logout()
-    {
-        Auth::logout();
-
-        return response()->json(['message' => 'Successfully logged out']);
-    }
-
-    /**s
-     * Refresh a token.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function refresh()
-    {
-        return $this->respondWithToken(Auth::refresh());
-    }
-
-    /**
-     * Get the token array structure.
-     *
-     * @param  string $token
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    protected function respondWithToken($token)
-    {
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => Auth::factory()->getTTL() * 60
-        ]);
     }
 }
 

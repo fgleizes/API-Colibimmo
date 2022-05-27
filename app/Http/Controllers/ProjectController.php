@@ -5,13 +5,16 @@ namespace App\Http\Controllers;
 use App\Models\City;
 use App\Models\Note;
 use App\Models\Room;
+use App\Models\Agency;
 use App\Models\Option;
 use App\Models\Person;
+use App\Models\Region;
 use App\Models\Address;
 use App\Models\Project;
-use App\Models\Agency;
 use App\Models\Document;
-use App\Models\Appointment;
+use App\Models\Favorite;
+use App\Models\Type_room;
+use App\Models\Department;
 use App\Models\Energy_index;
 use App\Models\Room_project;
 use App\Models\Type_project;
@@ -20,15 +23,11 @@ use App\Models\Manage_project;
 use App\Models\Option_project;
 use App\Models\Status_project;
 use App\Models\Location_project;
+use App\Models\Person_appointment;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Lang;
 use App\Models\Type_property_project;
-use App\Models\Type_room;
-use App\Models\Department;
-use App\Models\Favorite;
-use App\Models\Person_appointment;
-use App\Models\Region;
-use Illuminate\Support\Facades\Auth;
 
 class ProjectController extends Controller
 {
@@ -696,6 +695,7 @@ class ProjectController extends Controller
                     unset($project->personAgent->id_Agency);
                 }
                 $project->type_property = Type_property_project::where('id_Project', $project->id)->get();
+                // $project->type_property->name = Type_property::find($project->type_property->id);
             }
             return response()->json($projects, 200);
             

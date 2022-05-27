@@ -56,9 +56,9 @@ class AppointmentController extends Controller
                 $personAppointment2->save();
             }
 
-            return response()->json(['message' => 'APPOINTMENT CREATED'], 200);
+            return response()->json(['message' => 'APPOINTMENT CREATED'], 201);
         } catch (\Exception $ex) {
-            return response()->json(['message' => $ex->getMessage()], 404);
+            return response()->json(['message' => $ex->getMessage()], 409);
         }
 
     }
@@ -103,7 +103,7 @@ class AppointmentController extends Controller
 
             return response()->json(['message' => 'APPOINTMENT UPDATED'], 200);
         } catch (\Exception $ex) {
-            return response()->json(['message' => $ex->getMessage()], 404);
+            return response()->json(['message' => $ex->getMessage()], 409);
         }
     }
 
@@ -166,10 +166,10 @@ class AppointmentController extends Controller
                     $project->personAgent = Person::findOrfail($project->id_PersonAgent);
                     $project->person = Person::findOrfail($project->id_Person);
                     $project->project = Project::findOrfail($project->id_Project);
-                    $project->address = Address::findOrfail($project->project->id_Address);
                     $project->typeProject = Type_project::findOrfail($project->project->id_Type_project);
                     $project->statutProject = Status_project::findOrfail($project->project->id_Statut_project);
-                    $project->energyIndex = Energy_index::findOrfail($project->project->id_Energy_index);
+                    $project->project->address = Address::find($project->project->id_Address);
+                    $project->energyIndex = Energy_index::find($project->project->id_Energy_index);
                 }
             }
             return response()->json( $appointments, 200);

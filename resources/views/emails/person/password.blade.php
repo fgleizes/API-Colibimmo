@@ -1,4 +1,4 @@
-Bonjour, <em>{{ $personLastname }} {{ $personFirstname }}</em>,
+<p>Bonjour, <em>{{ $personLastname }} {{ $personFirstname }}</em>,</p>
 <p>Veuillez trouver ci-dessous votre nouveau mot de passe</p>
 <div>
     <h1>Mot de passe:{{ $plainPassword }}</h1>

@@ -26,12 +26,12 @@ $router->group([
 
 ], function () use ($router) {
     
-    $router->post('register', 'AuthController@register');
-    $router->get('login', 'AuthController@login');
-    $router->get('loginMobile', 'AuthController@loginMobile');
-    $router->get('logout', 'AuthController@logout');
-    $router->get('refresh', 'AuthController@refresh');
-    $router->get('me', 'AuthController@me');
+    $router->post('/register', 'AuthController@register');
+    $router->get('/login', 'AuthController@login');
+    $router->get('/loginMobile', 'AuthController@loginMobile');
+    $router->get('/logout', 'AuthController@logout');
+    $router->get('/refresh', 'AuthController@refresh');
+    $router->get('/me', 'AuthController@me');
     
 });
 

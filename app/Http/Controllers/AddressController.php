@@ -12,12 +12,22 @@ use App\Models\Region;
 
 class AddressController extends Controller
 {
-
+    /**
+     * Create a new AddressController instance.
+     *
+     * @return void
+     */
     public function __construct()
     {
+        // The addressController methods require authentication except for the following methods
         $this->middleware('auth:api', ['except' => ['showCities','showCity','showDepartments','showDepartment','showRegions','showRegion']]);
     }
 
+    /**
+     * Create a new Address.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function create(Request $request)
     {
         $this->validate($request, [
@@ -29,7 +39,7 @@ class AddressController extends Controller
             'residence' => 'string|nullable',
             'staircase' => 'string|nullable',
             'name' => 'string|required',
-            // 'id_City' => 'exist:city,id'
+            'id_City' => 'exist:city,id'
         ]);
 
         try {
@@ -100,11 +110,21 @@ class AddressController extends Controller
         }
     }
 
+    /**
+     * Get all addresses
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function showAdresses()
     {
         return response()->json(Address::all(), 200);
     }
 
+    /**
+     * Get one address
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function showAdress($idAddress)
     {
         $address = Address::findOrFail($idAddress);
