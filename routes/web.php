@@ -256,12 +256,12 @@ $router->group([
 /**
  * Routes Document
  */
-$router->group([
-    'prefix' => 'document'
+// $router->group([
+//     'prefix' => 'document'
 
-], function () use ($router) {
-    $router->post('/', 'ProjectController@store');
-    $router->put('{id}', 'ProjectController@update');
-    $router->delete('{id}', 'ProjectController@delete');
-    $router->get('{id}', 'ProjectController@create');
-});
+// ], function () use ($router) {
+//     $router->post('/', 'ProjectController@store');
+//     $router->put('{id}', 'ProjectController@update');
+//     $router->delete('{id}', 'ProjectController@delete');
+//     $router->get('{id}', 'ProjectController@create');
+// });

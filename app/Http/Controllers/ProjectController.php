@@ -632,7 +632,7 @@ class ProjectController extends Controller
     public function showProjectsByType($id_Type)
     {
         try {
-            $projectsByType = Project::where('id_Statut_project', '1')->where('id_Type_project', $id_Type)->get();
+            $projectsByType = Project::where('id_Statut_project', '1')->where('id_Type_project', $id_Type)->orderBy('updated_at', 'DESC')->get();
             foreach ($projectsByType as $project) {
                 $project->person = Person::findOrfail($project->id_Person);
                 $project->id_PersonAgent = Person::findOrfail($project->id_PersonAgent); // "id_PersonAgent": 1
@@ -757,7 +757,7 @@ class ProjectController extends Controller
 
         // $departments = Department::where('slug', 'LIKE', '%' . $search . '%')->get();
 
-        $cities = City::where('slug', 'LIKE', '%' . $search . '%')->orWhere('zip_code', 'LIKE', '%' . $search . '%')->get();
+        $cities = City::where('slug', 'LIKE', '%' . $search . '%')->orWhere('zip_code', 'LIKE', '%' . $search . '%')->orderBy('updated_at', 'DESC')->get();
         $projects = [];
 
         if(sizeof($cities) > 0) {
