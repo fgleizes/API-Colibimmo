@@ -757,7 +757,7 @@ class ProjectController extends Controller
 
         // $departments = Department::where('slug', 'LIKE', '%' . $search . '%')->get();
 
-        $cities = City::where('slug', 'LIKE', '%' . $search . '%')->orWhere('zip_code', 'LIKE', '%' . $search . '%')->orderBy('updated_at', 'DESC')->get();
+        $cities = City::where('slug', 'LIKE', '%' . $search . '%')->orWhere('zip_code', 'LIKE', '%' . $search . '%')->get();
         $projects = [];
 
         if(sizeof($cities) > 0) {
@@ -770,7 +770,7 @@ class ProjectController extends Controller
                 $idAdresses[$key] = $address->id;
             }
     
-            $projects = Project::whereIn('id_Address', $idAdresses)->where('id_Statut_project', '1')->where('id_Type_project', $request['id_Type_project'])->get();
+            $projects = Project::whereIn('id_Address', $idAdresses)->where('id_Statut_project', '1')->where('id_Type_project', $request['id_Type_project'])->orderBy('updated_at', 'DESC')->get();
             foreach ($projects as $project) {
                 $project->person = Person::findOrfail($project->id_Person);
                 $project->id_PersonAgent = Person::findOrfail($project->id_PersonAgent); // "id_PersonAgent": 1
