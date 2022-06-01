@@ -40,7 +40,6 @@ class PersonController extends Controller
             'floor' => 'integer|nullable',
             'residence' => 'string|nullable',
             'staircase' => 'string|nullable',
-            // 'name' => 'string|nullable',
             'id_City' => 'nullable|exists:city,id',
             'id_Agency' => 'nullable|exists:agency,id',
             'id_Role' => 'required|exists:role,id'
@@ -56,7 +55,6 @@ class PersonController extends Controller
                 $address->floor = $request->input('floor');
                 $address->residence = $request->input('residence');
                 $address->staircase = $request->input('staircase');
-                // $address->id_City = City::where('name', $request->input('name'))->firstOrFail()->id;
                 $address->id_City = $request->input('id_City');
                 $address->save();
             }
@@ -68,7 +66,6 @@ class PersonController extends Controller
             $user->phone = $request->input('phone');
             $bytes = random_bytes(10);
             $plainPassword = bin2hex($bytes);
-            // dd(bin2hex($bytes));
             $user->password = app('hash')->make($plainPassword);
             $user->id_Agency = $request->input('id_Agency');;
             $user->id_Role = $request->input('id_Role');
@@ -107,7 +104,6 @@ class PersonController extends Controller
                 'plainPassword' => $plainPassword
             ];
             Mail::send('emails.person.password', $data, function ($message) {
-                // $message->from('us@example.com', 'Laravel');
                 $message->to('colibimmo@gmail.com');
                 $message->bcc(['florentgleizes@gmail.com', 'fjquen@gmail.com']);
                 $message->subject('ColibImmo - Mot de passe provisoire à modifier.');
